@@ -1,55 +1,55 @@
+# email_sender.py - INATUMIA SENDGRID KUTUMA UJUMBE
+
 import os
+from datetime import datetime
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
 
-# Load variables from .env file
+# **1. HAKUNA IMPORT INAHITAJIKA HAPA TENA (Logic ya add_subscriber ipo kwenye sql_manager)**
+
+# 2. Configuration (Load environment variables & Sender)
 load_dotenv()
-
-# Set up environment variables
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+# Kumbuka: Hii inapaswa kubadilishwa na domain yako (mfano: info@lexontech.com)
+SENDER_EMAIL = 'saidimohamedisaidi7@gmail.com' 
 
-
-SENDER_EMAIL = 'saidimohamedisaidi7@gmail.com'  
-RECEIVER_EMAIL = 'saidiifm@gmail.com' # 
-
-# --- FUNCTION TO SEND EMAIL ---
-def send_test_email(receiver_email):
-    """
-    Inatuma email ya kujaribia kwa kutumia SendGrid API.
-    """
+# --- 3. SENDGRID FUNCTION ---
+def send_welcome_email(recipient_email, recipient_name):
+    """Inatuma email ya kukaribisha (Welcome Email) kwa kutumia SendGrid."""
     if not SENDGRID_API_KEY:
-        print("KOSA: SENDGRID_API_KEY haijapatikana kwenye faili la .env. Tafadhali rejesha Hatua ya 5A.")
-        return
+        print("KOSA: SENDGRID_API_KEY haijapatikana.")
+        return False
 
-    # Ujumbe wa Email
+    subject = f"Karibu, {recipient_name}! Mafunzo ya Teknolojia ya LEXON"
+
+    # Hiki ndicho kitakachoonekana kwenye email (HTML)
+    html_content = f"""
+    <html>
+    <body>
+        <h2>Hongera, {recipient_name}!</h2>
+        <p>Tunakukaribisha rasmi kwenye orodha LEXON TECH SOLUTION.</p>
+        <p>Kuanzia sasa, tutakutumia habari za karibuni na fursa za kujifunza kuhusu miradi ya code na teknolojia.</p>
+        <p>Asante kwa kujiunga nasi!</p>
+        <br>
+        <p>Salamu,</p>
+        <p>Timu ya LEXON TECH SOLUTION</p>
+    </body>
+    </html>
+    """
+
     message = Mail(
         from_email=SENDER_EMAIL,
-        to_emails=receiver_email,
-        subject='Jaribio: Muunganisho wa Mfumo wa Email wa LEXON',
-        html_content='<strong>Hongera!</strong> Huu ni ujumbe wa jaribio. Inamaanisha SendGrid na code yako vimeunganishwa kikamilifu. Uko tayari kwa uzinduzi!'
+        to_emails=recipient_email,
+        subject=subject,
+        html_content=html_content
     )
 
     try:
-        # Inatuma email
         sg = SendGridAPIClient(SENDGRID_API_KEY)
         response = sg.send(message)
-        
-        # Inathibitisha kama imetumwa
-        print("--- MATOKEO YA SENDGRID ---")
-        print(f"STATUS CODE: {response.status_code}")
-        print(f"JIBU LA SERVER: {response.body}")
-        
-        if response.status_code == 202:
-            print(f"\nFANIKIO: Email ya jaribio imetumwa kwa {receiver_email}. Tafadhali angalia SPAM/Inbox.")
-        else:
-             print(f"\nKUSHINDWA: Email haikutumwa. Angalia status code na logi ya SendGrid.")
-
+        print(f"EMAIL FANIKIO: Email imetumiwa kwa {recipient_email}. Status Code: {response.status_code}")
+        return True
     except Exception as e:
-        print(f"\nKOSA LA JUMLA: Kuna hitilafu kwenye muunganisho wa SendGrid. {e}")
-
-# --- RUN TEST ---
-if __name__ == '__main__':
-    # MUHIMU: Badilisha email hizi mbili na email yako ya kutuma na kupokea
-    print(f"Inajaribu kutuma email kutoka {SENDER_EMAIL} kwenda {RECEIVER_EMAIL}...")
-    send_test_email(RECEIVER_EMAIL)
+        print(f"EMAIL KOSA: Imeshindwa kutuma email: {e}")
+        return False

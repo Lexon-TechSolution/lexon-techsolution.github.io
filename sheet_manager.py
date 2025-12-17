@@ -1,71 +1,61 @@
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime
+# Kwanza kabisa, hakikisha mistari hii ipo juu ya faili
 import os
+from datetime import datetime
+import gspread 
+from dotenv import load_dotenv
 
-# 1. Taja Majina Yako
-# Jina la faili la ufunguo wa JSON ulilopakua
-SERVICE_ACCOUNT_FILE = 'credentials.json' 
-# Jina la Spreadsheet yako (lazima liwe sahihi)
-SPREADSHEET_NAME = 'LEXON Email Subscribers Database' 
-# Jina la Sheet ya kwanza (Sheet 1)
-WORKSHEET_NAME = 'Sheet1' 
+load_dotenv()
+
+# Anwani ya service account (Credentials.json)
+SERVICE_ACCOUNT_FILE = 'credentials.json'
 
 def setup_sheet_client():
-    """Huanzisha muunganisho wa gspread."""
+    """Inarudisha client wa Google Sheet baada ya authentication."""
     try:
-        # Aina ya ruhusa tunazoomba (Drive na Sheets)
-        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        client = gspread.service_account(filename=SERVICE_ACCOUNT_FILE)
         
-        # Inatumia faili la JSON kwa ajili ya uthibitisho (authentication)
-        creds = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNT_FILE, scope)
-        client = gspread.authorize(creds)
+        # BADILISHA JINA LA SHEET HAPA NA JINA ULILOLITUMIA MWANZO
+        sheet = client.open("Google Sheets Automation") 
         
-        # Inafungua Spreadsheet kwa jina
-        spreadsheet = client.open(SPREADSHEET_NAME)
-        worksheet = spreadsheet.worksheet(WORKSHEET_NAME)
-        
-        return worksheet
-    except FileNotFoundError:
-        print(f"KOSA: File la '{SERVICE_ACCOUNT_FILE}' halikupatikana. Hakikisha liko kwenye folder hili.")
-        return None
+        # Chagua Worksheet ya kwanza (Sheet 1)
+        return sheet.get_worksheet(0)
     except Exception as e:
-        print(f"KOSA la Google Sheets: {e}")
+        print(f"KOSA (Setup): Imeshindwa kuunganisha na Google Sheet: {e}")
         return None
 
-
+# Kisha function ya Smart-Trigger inafuata hapa:
 def add_subscriber(email: str, jina: str = 'Mgeni'):
     """
     Inaandika email mpya kwenye Sheet ya Wateja.
-    Inarudisha True kama imefanikiwa, False kama kuna kosa.
+    Inatumia Smart-Trigger Logic: Validation na Duplicate Check.
     """
     worksheet = setup_sheet_client()
     if worksheet is None:
         return False
 
     try:
+        # 1. DATA VALIDATION: Kwanza, angalia muundo wa email ni sahihi
+        if "@" not in email or "." not in email:
+            print(f"KOSA (Validation): Muundo wa email '{email}' si sahihi. Haikupitishwa.")
+            return False
+
+        # 2. DUPLICATE CHECK: Angalia kama email tayari ipo
+        existing_emails = worksheet.col_values(1)
+        if email in existing_emails:
+            print(f"ONYO (Duplicate Check): Email '{email}' tayari ipo. Haikuongezwa tena.")
+            return True 
+
+        # Ikiwa email ni mpya na sahihi, ndipo tunaendelea na kuandika:
         tarehe_leo = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
-        # Data ya kuingiza (katika mfumo wa orodha)
+        # Data ya kuingiza
         new_row = [email, jina, tarehe_leo]
         
         # Inatumia append_row kuongeza data mwishoni mwa Sheet
         worksheet.append_row(new_row)
         
-        print(f"FANIKIO: Email '{email}' imeongezwa kwenye Sheet.")
+        print(f"FANIKIO: Email '{email}' imeongezwa kwenye Sheet. Iko tayari kwa 'trigger' ya email.")
         return True
     except Exception as e:
         print(f"KOSA wakati wa kuandika kwenye Sheet: {e}")
         return False
-
-
-# Mfumo wa kujaribu:
-if __name__ == '__main__':
-    # Jaribu kuongeza email bandia (TEST)
-    test_email = f"test_user_{datetime.now().timestamp()}@lexon.com"
-    test_name = "Juma Lexon"
-    
-    if add_subscriber(test_email, test_name):
-        print("Tafadhali angalia Google Sheet yako ili kuona rekodi mpya.")
-    else:
-        print("Kujaribu kuandika kwenye Sheet KUSHINDWA.")

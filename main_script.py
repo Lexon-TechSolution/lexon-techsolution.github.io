@@ -1,90 +1,58 @@
+# main_script.py - INAENDESHA LEXON SMART-TRIGGER KWA KUTUMIA SQL
+
 import os
-from datetime import datetime
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+import time
 from dotenv import load_dotenv
 
-# **1. IMPORT MUHIMU:** Tunatumia function ya add_subscriber kutoka kwenye sheet_manager.py
-from sheet_manager import add_subscriber 
+# Hii inatumwa kwa ajili ya Email (Tunaacha kwa backup)
+from email_sender import send_welcome_email
 
-# 2. Configuration (Load environment variables & Sender)
+# HII inachukua nafasi ya sheet_manager na kuleta Inventory/Loans Logic
+from sql_manager import get_product_menu, record_client_identity 
+
 load_dotenv()
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-SENDER_EMAIL = 'saidimohamedisaidi7@gmail.com' # Email yako iliyothibitishwa na SendGrid
 
-# --- 3. SENDGRID FUNCTION ---
-def send_welcome_email(recipient_email, recipient_name):
-    """Inatuma email ya kukaribisha (Welcome Email) kwa kutumia SendGrid."""
-    if not SENDGRID_API_KEY:
-        print("KOSA: SENDGRID_API_KEY haijapatikana.")
-        return False
-        
-    subject = f"Karibu, {recipient_name}! Mafunzo ya Teknolojia ya LEXON"
+# --- MFUMO WA KUENDESHA (Msimamo wa sasa) ---
+if __name__ == "__main__":
+    print("LEXON SMART-TRIGGER / WHATSAPP STORE INAANZA...")
     
-    # Hiki ndicho kitakachoonekana kwenye email (HTML)
-    html_content = f"""
-    <html>
-    <body>
-        <h2>Hongera, {recipient_name}!</h2>
-        <p>Tunakukaribisha rasmi kwenye orodha LEXON TECH SOLUTION.</p>
-        <p>Kuanzia sasa, tutakutumia habari za karibuni na fursa za kujifunza kuhusu miradi ya code na biashara za kidijitali.</p>
-        <p>Asante kwa kujiunga nasi!</p>
-        <br>
-        <p>Salamu,</p>
-        <p>Timu ya LEXON TECH SOLUTION</p>
-    </body>
-    </html>
-    """
+    # Huu ni mfano tu wa jinsi ya kutumia functions mpya:
 
-    message = Mail(
-        from_email=SENDER_EMAIL,
-        to_emails=recipient_email,
-        subject=subject,
-        html_content=html_content
-    )
-
-    try:
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
-        response = sg.send(message)
-        
-        if response.status_code == 202:
-            print(f"FANIKIO LA EMAIL: Welcome Email imetumwa kwa {recipient_email}. ✅")
-            return True
-        else:
-            print(f"KUSHINDWA KUTUMA EMAIL: Status Code {response.status_code}")
-            return False
-
-    except Exception as e:
-        print(f"KOSA LA MUUNGANISHO WA SENDGRID: {e}")
-        return False
-
-# --- 4. MAIN LOGIC (Kuunganisha Sheet na Email) ---
-def process_new_subscriber(email: str, name: str):
-    """Inahifadhi data kwenye Google Sheet kisha inatuma Welcome Email."""
-    
-    print(f"\n--- INAANZA KAZI kwa: {email} ---")
-    
-    # Hatua ya 1: Hifadhi kwenye Google Sheet
-    if add_subscriber(email, name):
-        print("Hatua ya 1: Kuhifadhi data kwenye Sheet IMESHINDA. ")
-        
-        # Hatua ya 2: Tuma Welcome Email
-        if send_welcome_email(email, name):
-            print("Hatua ya 2: Kutuma Welcome Email IMESHINDA. ")
-            print(f"\nMFUMO MZIMA KWA {name} UMEKAMILIKA KWA MAFANIKIO! 🥳")
-            return True
-        else:
-            print("MFUMO ULISHINDWA KUKAMILIKA: Email haikutumwa.")
-            return False
+    # 1. MFUMO WA WHATSAPP STORE (Inaonyesha bidhaa)
+    print("\n--- INVENTORY TEST ---")
+    product_list = get_product_menu()
+    if product_list:
+        print("Orodha ya Bidhaa Kutoka SQL (WhatsApp Menu):")
+        for item in product_list:
+            print(f"- {item}")
     else:
-        print("MFUMO ULISHINDWA KUKAMILIKA: Data haikuhifadhiwa.")
-        return False
+        print("KOSA: Imeshindwa kuonyesha Inventory. Angalia connection ya SQL.")
 
-# --- 5. RUN TEST ---
-if __name__ == '__main__':
-    # >>>>>>>>>>>>>>>>>> WEKA DATA MPYA HAPA <<<<<<<<<<<<<<<<<<<<
-    # Email unayotaka kuingiza kwenye sheet na kumtumia email ya jaribio
-    client_email = "saidiifm@gmail.com" 
-    client_name = "Saidi Lexson" 
+    # 2. MFUMO WA MICROFINANCE (Kuhifadhi Taarifa za Utambulisho)
+    print("\n--- CLIENT REGISTRATION TEST ---")
+    test_client = {
+        "full_name": "Lexon Mtumiaji",
+        "national_id": "19901010-00000-00000",
+        "address": "Kinondoni, DSM",
+        "max_loan": 500000.00
+    }
     
-    process_new_subscriber(client_email, client_name)
+    success = record_client_identity(
+        test_client["full_name"],
+        test_client["national_id"],
+        test_client["address"],
+        test_client["max_loan"]
+    )
+    
+    if success:
+        print("FANIKIO: Data ya Utambulisho imeandikwa kwenye SQL.")
+        
+        # 3. SMART TRIGGER: Tuma Email ya Confirmation (Kama ilivyokuwa mwanzo)
+        test_email = "test@example.com" # Badilisha na Email Halisi
+        send_welcome_email(test_email, test_client["full_name"])
+        print(f"FANIKIO: Email ya welcome imetumiwa kwa {test_email}")
+        
+    else:
+        print("KOSA: Imeshindwa kuandika data kwenye SQL. HAKUNA Smart-Trigger iliyotokea.")
+    
+    print("\nLEXON SYSTEM: Kazi ya kwanza imekamilika. Unahitaji kuunganisha SQL server na WhatsApp API sasa.")
