@@ -1,4 +1,4 @@
 pg8000
 sendgrid
-python-dotenv
 flask
+python-dotenv
