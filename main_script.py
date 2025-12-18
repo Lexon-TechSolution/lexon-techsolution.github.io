@@ -1,11 +1,23 @@
-
 import os
 import pg8000.native
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import time
+from flask import Flask
+import threading
 
-# Mipangilio kutoka Environment Variables
+# --- SEHEMU YA WEB SERVER KWA AJILI YA KOYEB ---
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Lexon Automation Engine is Running!"
+
+def run_web_server():
+    # Koyeb inahitaji port 8000 ili isizime
+    app.run(host='0.0.0.0', port=8000)
+
+# --- SEHEMU YA MAZINGIRA (CONFIG) ---
 DB_HOST = os.environ.get('DB_HOST')
 DB_NAME = os.environ.get('DB_NAME')
 DB_USER = os.environ.get('DB_USER')
@@ -26,16 +38,13 @@ def send_email(to_email, customer_name):
     except Exception as e:
         print(f"Kosa la SendGrid: {e}")
 
-def main():
-    print("Mfumo umeanza kwa kutumia pg8000...")
+def main_loop():
+    print("Injini ya automation imeanza...")
     while True:
         try:
-            # Unganisha na Database kwa kutumia pg8000
             db = pg8000.native.Connection(
                 user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432
             )
-            
-            # Tafuta wateja
             rows = db.run("SELECT email, name FROM customers WHERE email_sent = FALSE LIMIT 5")
             
             for row in rows:
@@ -45,10 +54,13 @@ def main():
             
             db.close()
         except Exception as e:
-            print(f"Kosa: {e}")
+            print(f"Kosa la Database: {e}")
             
         print("Nasubiri dakika 5...")
         time.sleep(300)
 
 if __name__ == "__main__":
-    main()
+    # Washa Web Server upande mmoja (Background)
+    threading.Thread(target=run_web_server, daemon=True).start()
+    # Washa Injini ya barua pepe upande wa pili
+    main_loop()
