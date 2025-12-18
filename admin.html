@@ -13,7 +13,7 @@
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         button { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
         button:hover { background: #1557b0; }
-        .status { padding: 10px; margin-top: 10px; border-radius: 4px; display: none; }
+        .status { padding: 10px; margin-top: 10px; border-radius: 4px; display: none; text-align: center; font-weight: bold; }
         .success { background: #d4edda; color: #155724; display: block; }
         .error { background: #f8d7da; color: #721c24; display: block; }
     </style>
@@ -21,63 +21,79 @@
 <body>
 
 <div class="container">
+    <div id="statusBox" class="status"></div>
+
     <div class="card">
         <h2>1. Sajili Muuzaji Mpya (Vendor)</h2>
-        <p style="font-size: 0.9em; color: #666;">Tumia hii kusajili duka jipya (mfano: Korosho Point, Simu Shop)</p>
+        <p style="font-size: 0.9em; color: #666;">Sajili duka (mfano: korosho_store, simu_shop)</p>
         <input type="text" id="v_id" placeholder="Vendor ID (mfano: korosho_store)">
         <input type="text" id="v_name" placeholder="Jina la Biashara">
         <input type="text" id="v_phone" placeholder="Namba ya WhatsApp (Anza na 255...)">
-        <button onclick="saveVendor()">Sajili Duka</button>
+        <button onclick="saveVendor()">Sajili Duka Live</button>
     </div>
 
     <div class="card">
         <h2>2. Ongeza Bidhaa</h2>
-        <label>Chagua Duka:</label>
-        <select id="p_vendor_id">
-            <option value="nguo_store">Lexon Fashion Juju</option>
-            <option value="simu_shop">Lexon Mobile Home</option>
-            </select>
+        <label>Duka la Bidhaa (Vendor ID):</label>
+        <input type="text" id="p_vendor_id" placeholder="Andika Vendor ID (mfano: nguo_store)">
         
         <input type="text" id="p_name" placeholder="Jina la Bidhaa">
         <input type="number" id="p_price" placeholder="Bei (Tsh)">
         <input type="text" id="p_img" placeholder="Link ya Picha (URL)">
         <button onclick="saveProduct()" style="background: #28a745;">Weka Bidhaa Sokoni</button>
     </div>
-    
-    <div id="statusBox" class="status"></div>
 </div>
 
 <script>
-    // Kumbuka: Hapa tutaunganisha na API yako ya Koyeb baadaye kidogo
-    // Kwa sasa tunaweka mfumo wa "Alert" ili uone unavyofanya kazi
-    
+    // URL yako ya Koyeb
+    const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+
     function showStatus(msg, isError = false) {
         const box = document.getElementById('statusBox');
         box.innerText = msg;
         box.className = isError ? 'status error' : 'status success';
-        setTimeout(() => box.style.display = 'none', 3000);
+        box.style.display = 'block';
+        setTimeout(() => box.style.display = 'none', 5000);
     }
 
-    function saveVendor() {
+    async function saveVendor() {
         const data = {
             id: document.getElementById('v_id').value,
             name: document.getElementById('v_name').value,
             phone: document.getElementById('v_phone').value
         };
-        console.log("Inasajili Vendor:", data);
-        showStatus("Duka la " + data.name + " limesajiliwa kwenye mfumo!");
+
+        if(!data.id || !data.name || !data.phone) {
+            showStatus("Tafadhali jaza nafasi zote!", true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${KOYEB_URL}/add_vendor`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if(response.ok) {
+                showStatus("Hongera! Duka la " + data.name + " limesajiliwa Live!");
+            } else {
+                showStatus("Kosa: " + result.message, true);
+            }
+        } catch (error) {
+            showStatus("Imeshindikana kuungana na Server. Hakikisha Koyeb iko Online.", true);
+        }
     }
 
-    function saveProduct() {
+    async function saveProduct() {
         const data = {
             vendor: document.getElementById('p_vendor_id').value,
             name: document.getElementById('p_name').value,
-            price: document.getElementById('p_price').value
+            price: document.getElementById('p_price').value,
+            img: document.getElementById('p_img').value
         };
-        console.log("Inaongeza Bidhaa:", data);
-        showStatus("Bidhaa ya " + data.name + " imeongezwa kwa muuzaji " + data.vendor);
-    }
-</script>
 
-</body>
-</html>
+        if(!data.vendor || !data.name || !data.price) {
+            showStatus("Jaza Vendor ID, Jina la Bidhaa na Bei!", true);
+            return;
+        }
