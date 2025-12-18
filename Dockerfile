@@ -7,8 +7,8 @@ WORKDIR /app
 # Copy mafaili yako yote kuingia kwenye seva
 COPY . .
 
-# Install maktaba zinazohitajika
-RUN pip install --no-cache-dir pg8000 sendgrid python-dotenv
+# LAZIMA: Install maktaba zote hapa ili Docker izijue
+RUN pip install --no-cache-dir pg8000 sendgrid flask python-dotenv
 
 # Amri ya kuwasha injini yako
 CMD ["python", "main_script.py"]
