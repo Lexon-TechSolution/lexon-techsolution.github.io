@@ -6,61 +6,78 @@ import time
 from flask import Flask
 import threading
 
-# --- SEHEMU YA WEB SERVER KWA AJILI YA KOYEB ---
+# --- WEB SERVER KWA AJILI YA KOYEB HEALTH CHECK ---
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Lexon Automation Engine is Running!"
+    return "Lexon Multi-Vendor Engine is Online!"
 
 def run_web_server():
-    # Koyeb inahitaji port 8000 ili isizime
     app.run(host='0.0.0.0', port=8000)
 
-# --- SEHEMU YA MAZINGIRA (CONFIG) ---
+# --- MIPANGILIO YA DATABASE ---
 DB_HOST = os.environ.get('DB_HOST')
 DB_NAME = os.environ.get('DB_NAME')
 DB_USER = os.environ.get('DB_USER')
 DB_PASS = os.environ.get('DB_PASSWORD')
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
-def send_email(to_email, customer_name):
-    message = Mail(
-        from_email='info@lexon.co.tz', 
-        to_emails=to_email,
-        subject='Lexon Tech Solution - Karibu!',
-        plain_text_content=f'Habari {customer_name},\n\nAsante kwa kuchagua Lexon Tech Solution.'
-    )
-    try:
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
-        sg.send(message)
-        print(f"Email imetumwa kwa {customer_name}")
-    except Exception as e:
-        print(f"Kosa la SendGrid: {e}")
-
 def main_loop():
-    print("Injini ya automation imeanza...")
+    print("Injini inakagua Database na kutengeneza Tables...")
     while True:
         try:
             db = pg8000.native.Connection(
                 user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432
             )
-            rows = db.run("SELECT email, name FROM customers WHERE email_sent = FALSE LIMIT 5")
             
-            for row in rows:
-                email, name = row
-                send_email(email, name)
-                db.run("UPDATE customers SET email_sent = TRUE WHERE email = :em", em=email)
+            # 1. Tengeneza Table ya Wauzaji (Vendors)
+            db.run("""
+                CREATE TABLE IF NOT EXISTS vendors (
+                    vendor_id TEXT PRIMARY KEY,
+                    business_name TEXT,
+                    whatsapp_number TEXT,
+                    email TEXT
+                );
+            """)
+
+            # 2. Tengeneza Table ya Bidhaa (Products)
+            db.run("""
+                CREATE TABLE IF NOT EXISTS products (
+                    id SERIAL PRIMARY KEY,
+                    vendor_id TEXT REFERENCES vendors(vendor_id),
+                    product_name TEXT,
+                    price DECIMAL,
+                    image_url TEXT
+                );
+            """)
+
+            # 3. Weka mteja wako wa kwanza wa majaribio (Nguo)
+            db.run("""
+                INSERT INTO vendors (vendor_id, business_name, whatsapp_number)
+                VALUES ('nguo_store', 'Lexon Fashion Juju', '255712345678')
+                ON CONFLICT (vendor_id) DO NOTHING;
+            """)
+
+            print("Database ipo tayari na Tables zimeundwa!")
             
+            # 4. Hapa ndipo injini inasoma kama kuna barua pepe za kutuma
+            # (Inategemea kama una table ya 'customers')
+            try:
+                rows = db.run("SELECT email, name FROM customers WHERE email_sent = FALSE LIMIT 5")
+                # ... (Kodi ya kutuma email inaweza kuendelea hapa kama kawaida)
+            except:
+                print("Table ya 'customers' haijaonekana bado, tunasubiri...")
+
             db.close()
         except Exception as e:
             print(f"Kosa la Database: {e}")
             
-        print("Nasubiri dakika 5...")
+        print("Nasubiri dakika 5 kabla ya kukagua tena...")
         time.sleep(300)
 
 if __name__ == "__main__":
-    # Washa Web Server upande mmoja (Background)
+    # Washa Flask background
     threading.Thread(target=run_web_server, daemon=True).start()
-    # Washa Injini ya barua pepe upande wa pili
+    # Washa Injini ya Database
     main_loop()
