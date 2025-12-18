@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexon SaaS Admin</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { color: #1a73e8; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { background: #1a73e8; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
+        button:hover { background: #1557b0; }
+        .status { padding: 10px; margin-top: 10px; border-radius: 4px; display: none; }
+        .success { background: #d4edda; color: #155724; display: block; }
+        .error { background: #f8d7da; color: #721c24; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>1. Sajili Muuzaji Mpya (Vendor)</h2>
+        <p style="font-size: 0.9em; color: #666;">Tumia hii kusajili duka jipya (mfano: Korosho Point, Simu Shop)</p>
+        <input type="text" id="v_id" placeholder="Vendor ID (mfano: korosho_store)">
+        <input type="text" id="v_name" placeholder="Jina la Biashara">
+        <input type="text" id="v_phone" placeholder="Namba ya WhatsApp (Anza na 255...)">
+        <button onclick="saveVendor()">Sajili Duka</button>
+    </div>
+
+    <div class="card">
+        <h2>2. Ongeza Bidhaa</h2>
+        <label>Chagua Duka:</label>
+        <select id="p_vendor_id">
+            <option value="nguo_store">Lexon Fashion Juju</option>
+            <option value="simu_shop">Lexon Mobile Home</option>
+            </select>
+        
+        <input type="text" id="p_name" placeholder="Jina la Bidhaa">
+        <input type="number" id="p_price" placeholder="Bei (Tsh)">
+        <input type="text" id="p_img" placeholder="Link ya Picha (URL)">
+        <button onclick="saveProduct()" style="background: #28a745;">Weka Bidhaa Sokoni</button>
+    </div>
+    
+    <div id="statusBox" class="status"></div>
+</div>
+
+<script>
+    // Kumbuka: Hapa tutaunganisha na API yako ya Koyeb baadaye kidogo
+    // Kwa sasa tunaweka mfumo wa "Alert" ili uone unavyofanya kazi
+    
+    function showStatus(msg, isError = false) {
+        const box = document.getElementById('statusBox');
+        box.innerText = msg;
+        box.className = isError ? 'status error' : 'status success';
+        setTimeout(() => box.style.display = 'none', 3000);
+    }
+
+    function saveVendor() {
+        const data = {
+            id: document.getElementById('v_id').value,
+            name: document.getElementById('v_name').value,
+            phone: document.getElementById('v_phone').value
+        };
+        console.log("Inasajili Vendor:", data);
+        showStatus("Duka la " + data.name + " limesajiliwa kwenye mfumo!");
+    }
+
+    function saveProduct() {
+        const data = {
+            vendor: document.getElementById('p_vendor_id').value,
+            name: document.getElementById('p_name').value,
+            price: document.getElementById('p_price').value
+        };
+        console.log("Inaongeza Bidhaa:", data);
+        showStatus("Bidhaa ya " + data.name + " imeongezwa kwa muuzaji " + data.vendor);
+    }
+</script>
+
+</body>
+</html>
