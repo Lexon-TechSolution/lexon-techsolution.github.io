@@ -3,131 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Online Store</title>
+    <title>Lexon Shop | Checkout Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .checkout-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
+        .checkout-modal.active { display: flex; }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
+    <div id="product-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4"></div>
 
-    <nav class="bg-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <img id="logo" src="https://via.placeholder.com/50" class="w-10 h-10 rounded-full object-cover">
-            <h1 id="name" class="font-bold text-lg text-blue-600">Loading Store...</h1>
+    <div class="fixed bottom-0 w-full bg-white p-4 shadow-2xl flex justify-between items-center border-t">
+        <div>
+            <p class="text-xs text-gray-500">Jumla ya Agizo</p>
+            <p id="total-price" class="text-xl font-bold text-blue-600">Tsh 0</p>
         </div>
-        <button onclick="document.getElementById('cart-modal').classList.toggle('hidden')" class="bg-blue-600 text-white px-4 py-2 rounded-full relative">
-            <i class="fas fa-shopping-cart"></i> 
-            <span id="ccount" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-2 rounded-full">0</span>
-        </button>
-    </nav>
+        <button onclick="openCheckout()" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold">Kamilisha Agizo</button>
+    </div>
 
-    <div id="grid" class="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        </div>
-
-    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-end z-[100]">
-        <div class="bg-white w-full max-w-sm h-full p-6 shadow-2xl flex flex-col">
-            <h2 class="text-xl font-bold mb-6 flex items-center">
-                <i class="fas fa-shopping-basket mr-2 text-blue-600"></i> Kikapu Chako
-            </h2>
-            <div id="items" class="flex-1 overflow-y-auto space-y-4">
-                </div>
-            <div class="border-t pt-4 mt-4">
-                <p class="text-lg font-bold flex justify-between">
-                    <span>Jumla:</span>
-                    <span id="total" class="text-blue-600">Tsh 0</span>
-                </p>
-                <button onclick="checkout()" class="w-full bg-green-600 hover:bg-green-500 text-white py-4 mt-6 rounded-xl font-bold flex items-center justify-center space-x-2">
-                    <i class="fab fa-whatsapp text-2xl"></i>
-                    <span>TUMA ORDER WHATSAPP</span>
+    <div id="checkoutModal" class="checkout-modal">
+        <div class="bg-white p-8 rounded-2xl w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold mb-4">Taarifa za Agizo</h2>
+            <div class="space-y-4">
+                <input type="text" id="cust_name" placeholder="Jina Kamili" class="w-full p-4 border rounded-xl outline-none">
+                <input type="email" id="cust_email" placeholder="Barua Pepe (Kwa ajili ya risiti)" class="w-full p-4 border rounded-xl outline-none">
+                <input type="text" id="cust_phone" placeholder="Namba ya WhatsApp" class="w-full p-4 border rounded-xl outline-none">
+                <button onclick="finalCheckout()" id="finalBtn" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg">
+                    TUMA AGIZO SASA
                 </button>
-                <button onclick="document.getElementById('cart-modal').classList.add('hidden')" class="w-full mt-4 text-gray-400 text-sm">Funga</button>
+                <button onclick="closeCheckout()" class="w-full text-gray-500 text-sm">Ghairi</button>
             </div>
         </div>
     </div>
 
     <script>
         const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        let cart = []; 
-        let vendor = { phone: "255", name: "Duka" };
+        let cart = []; // Mfumo wako wa cart uendelee hapa
 
-        async function init() {
-            // Tunachukua ID kutoka kwenye link (mfano: index.html?id=duka1)
-            const urlParams = new URLSearchParams(window.location.search);
-            const vid = urlParams.get('id') || 'lexon_shop'; 
+        function openCheckout() {
+            if(cart.length === 0) return alert("Kikapu kiko wazi!");
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.remove('active');
+        }
+
+        async function finalCheckout() {
+            const btn = document.getElementById('finalBtn');
+            const email = document.getElementById('cust_email').value;
+            const name = document.getElementById('cust_name').value;
+            
+            if(!email || !name) return alert("Tafadhali jaza Jina na Email!");
+
+            btn.innerText = "Inatengeneza Risiti...";
+            btn.disabled = true;
+
+            const orderData = {
+                email: email,
+                name: name,
+                cart: cart,
+                total: document.getElementById('total-price').innerText,
+                vendor_name: "Lexon Store Pro"
+            };
 
             try {
-                // 1. Pata data za Vendor (Logo na Jina)
-                const vRes = await fetch(`${KOYEB_URL}/get_vendor?id=${vid}`);
-                if(vRes.ok) {
-                    vendor = await vRes.json();
-                    document.getElementById('logo').src = vendor.logo_url;
-                    document.getElementById('name').innerText = vendor.business_name;
-                }
-
-                // 2. Pata bidhaa za huyo Vendor
-                const pRes = await fetch(`${KOYEB_URL}/get_products?vendor_id=${vid}`);
-                const products = await pRes.json();
-                let html = '';
-                products.forEach(p => {
-                    const statusBtn = p.in_stock ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-400 cursor-not-allowed';
-                    const statusText = p.in_stock ? 'Weka Kikapuni' : 'Sold Out';
-                    
-                    html += `
-                        <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 product-card">
-                            <img src="${p.img1}" class="w-full h-40 object-cover rounded-xl mb-3">
-                            <h3 class="font-bold text-gray-800 text-sm md:text-base">${p.product_name}</h3>
-                            <p class="text-blue-600 font-bold text-sm">Tsh ${p.price.toLocaleString()}</p>
-                            <button onclick="${p.in_stock ? `addToCart('${p.product_name}', ${p.price})` : ''}" class="w-full ${statusBtn} text-white py-2 rounded-lg mt-3 text-xs md:text-sm font-semibold transition">
-                                ${statusText}
-                            </button>
-                        </div>`;
+                // Hapa ndipo tunaituma kwenye Injini ili SendGrid ifanye kazi
+                await fetch(`${KOYEB_URL}/process_checkout`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(orderData)
                 });
-                document.getElementById('grid').innerHTML = html || '<p class="col-span-full text-center py-10 text-gray-400">Hakuna bidhaa bado.</p>';
-            } catch (e) {
-                console.error("Error loading store:", e);
-                document.getElementById('name').innerText = "Duka Halijapatikana";
+
+                // Baada ya Email, tunampeleka WhatsApp kama kawaida
+                let msg = `Habari, mimi ni ${name}. Agizo langu:\n`;
+                cart.forEach(i => msg += `- ${i.name} (Tsh ${i.price})\n`);
+                msg += `Jumla: ${orderData.total}`;
+                
+                window.location.href = `https://wa.me/255XXXXXXXXX?text=${encodeURIComponent(msg)}`;
+            } catch(e) {
+                alert("Kosa la mtandao!");
             }
         }
-
-        function addToCart(n, p) {
-            cart.push({n, p});
-            updateCart();
-            alert(n + " imeongezwa kwenye kikapu!");
-        }
-
-        function updateCart() {
-            document.getElementById('ccount').innerText = cart.length;
-            let h = ''; 
-            let t = 0;
-            cart.forEach((i, idx) => { 
-                h += `
-                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                    <div>
-                        <p class="font-bold text-sm">${i.n}</p>
-                        <p class="text-xs text-blue-600">Tsh ${i.p.toLocaleString()}</p>
-                    </div>
-                    <button onclick="removeFromCart(${idx})" class="text-red-500"><i class="fas fa-trash"></i></button>
-                </div>`; 
-                t += i.p; 
-            });
-            document.getElementById('items').innerHTML = h || '<p class="text-center text-gray-400 mt-10">Kikapu kiko tupu</p>';
-            document.getElementById('total').innerText = "Tsh " + t.toLocaleString();
-        }
-
-        function removeFromCart(idx) {
-            cart.splice(idx, 1);
-            updateCart();
-        }
-
-        function checkout() {
-            if(cart.length === 0) return alert("Kikapu kiko tupu!");
-            let msg = `Habari ${vendor.business_name}, nahitaji kuagiza:\n\n`;
-            let t = 0;
-            cart.forEach(i => { msg += `- ${i.n}: Tsh ${i.p.toLocaleString()}\n`; t += i.p; });
-            msg += `\n*JUMLA: Tsh ${t.toLocaleString()}*`;
-            window.open(`https://wa.me/${vendor.whatsapp_number}?text=${encodeURIComponent(msg)}`);
-        }
-
-        init();
     </script>
 </body>
 </html>
