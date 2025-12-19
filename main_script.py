@@ -1,82 +1,76 @@
 import os
 import pg8000.native
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import threading
+import time
 
-# --- WEB SERVER NA API (MACHO YA MFUMO) ---
 app = Flask(__name__)
-CORS(app)  # Hii inaruhusu admin.html kuongea na Koyeb bila kuzuiliwa
+CORS(app)
 
-# MIPANGILIO YA DATABASE (Inatoka kwenye Environment Variables)
+# MIPANGILIO YA DATABASE
 DB_HOST = os.environ.get('DB_HOST')
 DB_NAME = os.environ.get('DB_NAME')
 DB_USER = os.environ.get('DB_USER')
 DB_PASS = os.environ.get('DB_PASSWORD')
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
-@app.route('/')
-def home():
-    return "Lexon Multi-Vendor Engine is Online!"
-
-# 1. API ya Kusajili Duka Jipya (Vendor)
-@app.route('/add_vendor', methods=['POST'])
+# --- API ZA VENDORS ---
+@app.route('/add_vendor_full', methods=['POST'])
 def add_vendor():
-    try:
-        data = request.json
-        db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
-        db.run("""
-            INSERT INTO vendors (vendor_id, business_name, whatsapp_number) 
-            VALUES (:id, :n, :p) 
-            ON CONFLICT (vendor_id) DO UPDATE SET business_name = :n, whatsapp_number = :p
-        """, id=data['id'], n=data['name'], p=data['phone'])
-        db.close()
-        return jsonify({"status": "success", "message": "Duka limesajiliwa!"}), 200
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    data = request.json
+    db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
+    db.run("""
+        INSERT INTO vendors (vendor_id, business_name, whatsapp_number, logo_url) 
+        VALUES (:id, :n, :p, :l) 
+        ON CONFLICT (vendor_id) DO UPDATE SET business_name = :n, whatsapp_number = :p, logo_url = :l
+    """, id=data['id'], n=data['name'], p=data['phone'], l=data['logo'])
+    db.close()
+    return jsonify({"status": "success"})
 
-# 2. API ya Kuongeza Bidhaa
-@app.route('/add_product', methods=['POST'])
+@app.route('/get_vendor', methods=['GET'])
+def get_vendor():
+    vid = request.args.get('id')
+    db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
+    row = db.run("SELECT business_name, whatsapp_number, logo_url FROM vendors WHERE vendor_id = :id", id=vid)
+    db.close()
+    if row:
+        return jsonify({"business_name": row[0][0], "whatsapp_number": row[0][1], "logo_url": row[0][2]})
+    return jsonify({"error": "Not found"}), 404
+
+# --- API ZA PRODUCTS ---
+@app.route('/add_product_full', methods=['POST'])
 def add_product():
-    try:
-        data = request.json
-        db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
-        db.run("""
-            INSERT INTO products (vendor_id, product_name, price, image_url) 
-            VALUES (:vid, :n, :pr, :img)
-        """, vid=data['vendor'], n=data['name'], pr=data['price'], img=data['img'])
-        db.close()
-        return jsonify({"status": "success", "message": "Bidhaa imeongezwa!"}), 200
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    data = request.json
+    db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
+    db.run("""
+        INSERT INTO products (vendor_id, product_name, price, description, img1, img2, img3, in_stock) 
+        VALUES (:vid, :n, :pr, :desc, :i1, :i2, :i3, TRUE)
+    """, vid=data['vendor'], n=data['name'], pr=data['price'], desc=data['desc'], i1=data['img1'], i2=data['img2'], i3=data['img3'])
+    db.close()
+    return jsonify({"status": "success"})
 
-def run_web_server():
-    app.run(host='0.0.0.0', port=8000)
+@app.route('/get_products', methods=['GET'])
+def get_products():
+    vid = request.args.get('vendor_id')
+    db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
+    rows = db.run("SELECT id, product_name, price, description, img1, img2, img3, in_stock FROM products WHERE vendor_id = :id ORDER BY id DESC", id=vid)
+    db.close()
+    return jsonify([{"id": r[0], "product_name": r[1], "price": float(r[2]), "description": r[3], "img1": r[4], "img2": r[5], "img3": r[6], "in_stock": r[7]} for r in rows])
 
-# --- INJINI YA NYUMA (BACKEND LOOP) ---
-def main_loop():
-    print("Injini inakagua Database na kutengeneza Tables...")
-    while True:
-        try:
-            db = pg8000.native.Connection(
-                user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432
-            )
-            
-            # Hakikisha Tables zipo
-            db.run("CREATE TABLE IF NOT EXISTS vendors (vendor_id TEXT PRIMARY KEY, business_name TEXT, whatsapp_number TEXT, email TEXT);")
-            db.run("CREATE TABLE IF NOT EXISTS products (id SERIAL PRIMARY KEY, vendor_id TEXT REFERENCES vendors(vendor_id), product_name TEXT, price DECIMAL, image_url TEXT);")
-            
-            print("Database ipo tayari!")
-            db.close()
-        except Exception as e:
-            print(f"Kosa la Database kwenye Loop: {e}")
-            
-        time.sleep(300)
+@app.route('/get_stats', methods=['GET'])
+def get_stats():
+    db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
+    count = db.run("SELECT COUNT(*) FROM products")[0][0]
+    total = db.run("SELECT SUM(price) FROM products")[0][0] or 0
+    db.close()
+    return jsonify({"total_items": count, "total_value": float(total)})
+
+def setup_db():
+    db = pg8000.native.Connection(user=DB_USER, host=DB_HOST, database=DB_NAME, password=DB_PASS, port=5432)
+    db.run("CREATE TABLE IF NOT EXISTS vendors (vendor_id TEXT PRIMARY KEY, business_name TEXT, whatsapp_number TEXT, logo_url TEXT);")
+    db.run("CREATE TABLE IF NOT EXISTS products (id SERIAL PRIMARY KEY, vendor_id TEXT REFERENCES vendors(vendor_id), product_name TEXT, price DECIMAL, description TEXT, img1 TEXT, img2 TEXT, img3 TEXT, in_stock BOOLEAN DEFAULT TRUE);")
+    db.close()
 
 if __name__ == "__main__":
-    # Washa kila kitu kwa mpigo
-    threading.Thread(target=run_web_server, daemon=True).start()
-    main_loop()
+    setup_db()
+    threading.Thread(target=lambda: app.run(host='0.0.0.0', port=8000)).start()
