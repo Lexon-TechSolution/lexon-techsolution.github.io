@@ -2,100 +2,113 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Business Hub | Professional Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lexon Dashboard | Store Manager v3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #020617; color: white; font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
         .stat-card { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 20px; padding: 20px; border: 1px solid #334155; }
-        input, textarea { background: #0f172a !important; border: 1px solid #334155 !important; color: white !important; width: 100%; padding: 12px; border-radius: 12px; margin-bottom: 10px; outline: none; }
-        .btn-main { background: linear-gradient(90deg, #4f46e5, #9333ea); padding: 12px; border-radius: 12px; font-weight: 800; width: 100%; transition: 0.3s; }
-        .btn-main:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(79, 70, 229, 0.4); }
-        .product-item { background: #1e293b; padding: 10px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        #dashboardView { display: none; }
+        input, textarea { background: #0f172a !important; border: 1px solid #334155 !important; color: white !important; width: 100%; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; font-size: 14px; }
+        .btn-main { background: linear-gradient(90deg, #4f46e5, #9333ea); padding: 14px; border-radius: 12px; font-weight: 800; width: 100%; transition: 0.3s; color: white; border: none; }
+        .product-mini-card { background: #111827; border-radius: 15px; padding: 10px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; border: 1px solid #1f2937; }
+        #dashboardView, #settingsView { display: none; }
+        .hidden { display: none; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
-        <div id="authView" class="max-w-md mx-auto mt-20">
-            <div class="text-center mb-10">
-                <h1 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mb-2">LEXON</h1>
-                <p class="text-slate-400 font-semibold uppercase tracking-widest text-xs">The Future of SaaS Commerce</p>
+    <div class="max-w-5xl mx-auto">
+        
+        <div id="authView" class="max-w-md mx-auto mt-10">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">LEXON HUB</h1>
+                <p class="text-slate-400 text-xs mt-2 font-bold tracking-widest uppercase">Business Manager</p>
             </div>
-
             <div class="glass p-8 rounded-[2rem] shadow-2xl">
-                <div class="flex bg-slate-900 p-1 rounded-xl mb-8">
-                    <button onclick="toggleAuth('login')" id="tabL" class="flex-1 py-3 rounded-lg text-sm font-bold bg-indigo-600">INGIA</button>
-                    <button onclick="toggleAuth('reg')" id="tabR" class="flex-1 py-3 rounded-lg text-sm font-bold text-slate-500">USAJILI</button>
+                <div class="flex bg-slate-900 p-1 rounded-xl mb-6">
+                    <button onclick="toggleAuth('login')" id="tabL" class="flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600">INGIA</button>
+                    <button onclick="toggleAuth('reg')" id="tabR" class="flex-1 py-3 rounded-lg text-xs font-bold text-slate-500">USAJILI</button>
                 </div>
-
-                <div id="formContainer">
-                    <input type="text" id="store_id" placeholder="Ingiza Store ID yako">
-                    <div id="regExtra" class="hidden">
+                <div id="authForm">
+                    <input type="text" id="store_id" placeholder="ID ya Duka lako">
+                    <div id="regFields" class="hidden">
                         <input type="text" id="v_name" placeholder="Jina la Biashara">
                         <input type="text" id="v_phone" placeholder="WhatsApp (255...)">
-                        <label class="text-[10px] text-slate-500 ml-2">LOGO YA DUKA (Optional)</label>
+                        <label class="text-[10px] text-slate-500 ml-2">LOGO YA DUKA</label>
                         <input type="file" id="v_logo" class="text-xs">
                     </div>
-                    <button onclick="handleAuth()" id="actionBtn" class="btn-main mt-4 italic">Fungua Dashboard <i class="fas fa-chevron-right ml-2"></i></button>
+                    <button onclick="handleAuth()" class="btn-main mt-4 italic">FUNGUA DASHBOARD <i class="fas fa-arrow-right ml-2"></i></button>
                 </div>
             </div>
         </div>
 
-        <div id="dashboardView" class="animate-in fade-in duration-1000">
-            <header class="flex flex-wrap justify-between items-end gap-4 mb-10">
-                <div>
-                    <h2 class="text-3xl font-black" id="dispName">...</h2>
-                    <p class="text-indigo-400 font-mono text-sm" id="dispId">@ID</p>
+        <div id="dashboardView" class="animate-in fade-in duration-500">
+            <header class="flex justify-between items-center mb-8 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                <div class="flex items-center gap-3">
+                    <img id="dashLogo" src="" class="w-10 h-10 rounded-full object-cover hidden border border-indigo-500">
+                    <div>
+                        <h2 id="dispStoreName" class="text-xl font-black text-white">...</h2>
+                        <p id="dispStoreId" class="text-indigo-400 text-xs font-mono">@id</p>
+                    </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="copyStoreLink()" class="bg-indigo-900/40 text-indigo-400 px-4 py-2 rounded-xl text-xs font-bold border border-indigo-500/30 hover:bg-indigo-600 hover:text-white transition"><i class="fas fa-share-alt mr-2"></i> SHARE SHOP</button>
-                    <button onclick="location.reload()" class="bg-red-900/20 text-red-500 px-4 py-2 rounded-xl text-xs font-bold border border-red-500/30">LOGOUT</button>
+                    <button onclick="openSettings()" class="bg-slate-800 text-slate-300 p-3 rounded-xl hover:text-indigo-400 transition"><i class="fas fa-cog"></i></button>
+                    <button onclick="location.reload()" class="bg-red-500/10 text-red-500 px-4 py-2 rounded-xl text-[10px] font-bold border border-red-500/20">LOGOUT</button>
                 </div>
             </header>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
                 <div class="stat-card">
-                    <p class="text-slate-400 text-[10px] uppercase font-bold">Invetory</p>
-                    <h3 id="invCount" class="text-3xl font-black mt-1">0</h3>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold">Stock Count</p>
+                    <h3 id="invCount" class="text-2xl font-black mt-1">0</h3>
+                </div>
+                <div class="stat-card border-green-500/40">
+                    <p class="text-[10px] text-green-500 uppercase font-bold">Oda Leo</p>
+                    <h3 class="text-2xl font-black mt-1">0</h3>
                 </div>
                 <div class="stat-card">
-                    <p class="text-slate-400 text-[10px] uppercase font-bold text-green-500">Mauzo Analysis</p>
-                    <h3 class="text-3xl font-black mt-1 text-green-500">+18%</h3>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold">Duka Link</p>
+                    <button onclick="copyLink()" class="text-[10px] mt-2 bg-indigo-500/20 text-indigo-400 p-1 rounded px-3">COPY LINK</button>
                 </div>
-                <div class="stat-card">
-                    <p class="text-slate-400 text-[10px] uppercase font-bold">Store Views</p>
-                    <h3 class="text-3xl font-black mt-1">2.4k</h3>
-                </div>
-                <div class="stat-card border-purple-500">
-                    <p class="text-purple-400 text-[10px] uppercase font-bold">Ushauri wa AI</p>
-                    <p class="text-[11px] mt-1 italic text-slate-300 leading-tight">"Bidhaa zako 3 zimependwa sana leo, ongeza picha zaidi kuziuza haraka!"</p>
+                <div class="stat-card border-orange-500/40">
+                    <p class="text-[10px] text-orange-400 uppercase font-bold">Ushauri</p>
+                    <p class="text-[9px] italic mt-1 leading-tight">"Duka lako linapendeza! Pandisha bidhaa zaidi."</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="glass p-8 rounded-[2rem]">
-                    <h3 class="text-xl font-bold mb-6 flex items-center text-indigo-400"><i class="fas fa-plus-circle mr-3"></i> Pandisha Bidhaa</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-[2rem]">
+                    <h3 class="font-bold text-indigo-400 mb-6 uppercase text-sm tracking-widest underline decoration-2 underline-offset-8">Pandisha Bidhaa</h3>
                     <input type="text" id="p_name" placeholder="Jina la Bidhaa">
                     <input type="number" id="p_price" placeholder="Bei (Tsh)">
-                    <textarea id="p_desc" placeholder="Maelezo fupi..." class="h-20"></textarea>
+                    <textarea id="p_desc" placeholder="Maelezo..." class="h-20"></textarea>
                     <div class="grid grid-cols-3 gap-2 mb-4">
-                        <div class="text-center"><label class="text-[9px] text-slate-500">Img 1</label><input type="file" id="img1" class="text-[10px]"></div>
-                        <div class="text-center"><label class="text-[9px] text-slate-500">Img 2</label><input type="file" id="img2" class="text-[10px]"></div>
-                        <div class="text-center"><label class="text-[9px] text-slate-500">Img 3</label><input type="file" id="img3" class="text-[10px]"></div>
+                        <input type="file" id="img1" class="text-[9px]">
+                        <input type="file" id="img2" class="text-[9px]">
+                        <input type="file" id="img3" class="text-[9px]">
                     </div>
-                    <button onclick="uploadProduct()" id="upBtn" class="btn-main">HIFADHI BIDHAA</button>
+                    <button onclick="uploadProduct()" id="upBtn" class="btn-main">HIFADHI</button>
                 </div>
+                <div class="glass p-6 rounded-[2rem]">
+                    <h3 class="font-bold text-purple-400 mb-6 uppercase text-sm tracking-widest">Bidhaa Zilizopo</h3>
+                    <div id="stockList" class="space-y-3 max-h-[400px] overflow-y-auto pr-2"></div>
+                </div>
+            </div>
+        </div>
 
-                <div class="glass p-8 rounded-[2rem] max-h-[500px] overflow-y-auto">
-                    <h3 class="text-xl font-bold mb-6 flex items-center text-purple-400"><i class="fas fa-boxes mr-3"></i> Manage Stock</h3>
-                    <div id="stockList" class="text-slate-500 text-sm text-center">
-                        Inapakia bidhaa zako...
-                    </div>
+        <div id="settingsView" class="animate-in fade-in max-w-lg mx-auto">
+            <div class="glass p-8 rounded-[2rem]">
+                <h3 class="text-xl font-black mb-6 flex items-center gap-2"><i class="fas fa-edit text-indigo-500"></i> Edit Store Profile</h3>
+                <input type="text" id="edit_name" placeholder="Jina Jipya la Duka">
+                <input type="text" id="edit_phone" placeholder="WhatsApp Mpya (255...)">
+                <label class="text-[10px] text-slate-500 ml-2">UPDATE LOGO</label>
+                <input type="file" id="edit_logo" class="text-xs mb-4">
+                <div class="flex gap-2">
+                    <button onclick="closeSettings()" class="flex-1 py-4 font-bold text-slate-500">RUDI</button>
+                    <button onclick="saveSettings()" id="saveBtn" class="flex-[2] btn-main">HIFADHI MABADILIKO</button>
                 </div>
             </div>
         </div>
@@ -104,7 +117,8 @@
     <script>
         const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         let isLogin = true;
-        let currentId = "";
+        let storeId = "";
+        let currentData = null;
 
         const toBase64 = f => new Promise(res => {
             if(!f) return res(null);
@@ -113,87 +127,92 @@
             r.onload = () => res(r.result);
         });
 
-        function toggleAuth(type) {
-            isLogin = type === 'login';
-            document.getElementById('regExtra').classList.toggle('hidden', isLogin);
-            document.getElementById('tabL').className = isLogin ? "flex-1 py-3 rounded-lg text-sm font-bold bg-indigo-600" : "flex-1 py-3 rounded-lg text-sm font-bold text-slate-500";
-            document.getElementById('tabR').className = !isLogin ? "flex-1 py-3 rounded-lg text-sm font-bold bg-indigo-600" : "flex-1 py-3 rounded-lg text-sm font-bold text-slate-500";
+        function toggleAuth(m) {
+            isLogin = m === 'login';
+            document.getElementById('regFields').classList.toggle('hidden', isLogin);
+            document.getElementById('tabL').className = isLogin ? "flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600 text-white" : "flex-1 py-3 rounded-lg text-xs font-bold text-slate-500";
+            document.getElementById('tabR').className = !isLogin ? "flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600 text-white" : "flex-1 py-3 rounded-lg text-xs font-bold text-slate-500";
         }
 
         async function handleAuth() {
             const id = document.getElementById('store_id').value.trim().toLowerCase();
             if(!id) return alert("Weka ID!");
-
-            if(isLogin) {
-                currentId = id;
-                loadDashboard();
-            } else {
+            if(isLogin) { storeId = id; loadDashboard(); } 
+            else {
                 const logo = await toBase64(document.getElementById('v_logo').files[0]);
                 const data = { id, name: document.getElementById('v_name').value, phone: document.getElementById('v_phone').value, logo };
-                try {
-                    const res = await fetch(`${KOYEB_URL}/add_vendor_full`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify(data)
-                    });
-                    if(res.ok) { alert("Duka limesajiliwa!"); currentId = id; loadDashboard(); }
-                } catch(e) { alert("Server Error!"); }
+                const res = await fetch(`${KOYEB_URL}/add_vendor_full`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+                if(res.ok) { alert("Sajiliwa!"); storeId = id; loadDashboard(); }
             }
         }
 
         async function loadDashboard() {
-            document.getElementById('authView').style.display = "none";
-            document.getElementById('dashboardView').style.display = "block";
-            document.getElementById('dispId').innerText = `@${currentId}`;
-            
-            try {
-                const res = await fetch(`${KOYEB_URL}/get_products?v=${currentId}`);
-                const data = await res.json();
-                document.getElementById('dispName').innerText = data.vendor_name || "Duka Lako";
+            const res = await fetch(`${KOYEB_URL}/get_products?v=${storeId}`);
+            const data = await res.json();
+            if(data.status === "success") {
+                currentData = data;
+                document.getElementById('authView').style.display = "none";
+                document.getElementById('dashboardView').style.display = "block";
+                document.getElementById('dispStoreName').innerText = data.vendor_name;
+                document.getElementById('dispStoreId').innerText = `@${storeId}`;
                 document.getElementById('invCount').innerText = data.products.length;
+                if(data.vendor_logo) { 
+                    const img = document.getElementById('dashLogo');
+                    img.src = data.vendor_logo; img.classList.remove('hidden');
+                }
                 renderStock(data.products);
-            } catch(e) { console.log(e); }
+            } else { alert("Store ID not found!"); }
         }
 
         function renderStock(products) {
             const list = document.getElementById('stockList');
-            if(products.length === 0) { list.innerText = "Huna bidhaa yoyote."; return; }
-            list.innerHTML = products.map(p => `
-                <div class="product-item">
-                    <div class="text-left">
-                        <p class="font-bold text-white text-xs uppercase">${p.name}</p>
-                        <p class="text-indigo-400 text-[10px]">Tsh ${p.price}</p>
-                    </div>
-                    <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-300 p-2"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `).join('');
+            list.innerHTML = products.length ? products.map(p => `
+                <div class="product-mini-card">
+                    <img src="${p.img1}" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1"><p class="text-xs font-bold truncate uppercase">${p.name}</p><p class="text-indigo-400 text-[10px]">Tsh ${Number(p.price).toLocaleString()}</p></div>
+                    <button onclick="deleteItem('${p.id}')" class="text-red-500 p-2"><i class="fas fa-trash"></i></button>
+                </div>`).join('') : "<p class='text-center py-10 opacity-30'>Huna bidhaa.</p>";
+        }
+
+        function openSettings() {
+            document.getElementById('dashboardView').style.display = "none";
+            document.getElementById('settingsView').style.display = "block";
+            document.getElementById('edit_name').value = currentData.vendor_name;
+            document.getElementById('edit_phone').value = currentData.vendor_phone;
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsView').style.display = "none";
+            document.getElementById('dashboardView').style.display = "block";
+        }
+
+        async function saveSettings() {
+            const btn = document.getElementById('saveBtn');
+            btn.innerText = "Inahifadhi..."; btn.disabled = true;
+            const logo = await toBase64(document.getElementById('edit_logo').files[0]);
+            const data = { id: storeId, name: document.getElementById('edit_name').value, phone: document.getElementById('edit_phone').value, logo: logo || currentData.vendor_logo };
+            
+            await fetch(`${KOYEB_URL}/update_vendor`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            alert("Mabadiliko yamehifadhiwa!");
+            location.reload();
         }
 
         async function uploadProduct() {
             const btn = document.getElementById('upBtn');
             btn.innerText = "Inapakia..."; btn.disabled = true;
             const imgs = [await toBase64(document.getElementById('img1').files[0]), await toBase64(document.getElementById('img2').files[0]), await toBase64(document.getElementById('img3').files[0])];
-            const data = { vendor: currentId, name: document.getElementById('p_name').value, price: document.getElementById('p_price').value, desc: document.getElementById('p_desc').value, img1: imgs[0], img2: imgs[1], img3: imgs[2] };
-            
-            try {
-                const res = await fetch(`${KOYEB_URL}/add_product_full`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-                if(res.ok) { alert("Bidhaa imepakiwa!"); loadDashboard(); }
-            } catch(e) { alert("Hitilafu!"); }
-            btn.innerText = "HIFADHI BIDHAA"; btn.disabled = false;
+            const data = { vendor: storeId, name: document.getElementById('p_name').value, price: document.getElementById('p_price').value, desc: document.getElementById('p_desc').value, img1: imgs[0], img2: imgs[1], img3: imgs[2] };
+            await fetch(`${KOYEB_URL}/add_product_full`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            loadDashboard();
+            btn.innerText = "HIFADHI"; btn.disabled = false;
         }
 
-        function copyStoreLink() {
-            const link = `https://Lexon-TechSolution.github.io/shop.html?v=${currentId}`;
+        async function deleteItem(pId) { if(confirm("Futa?")) { await fetch(`${KOYEB_URL}/delete_product?id=${pId}`, { method: 'DELETE' }); loadDashboard(); } }
+
+        function copyLink() {
+            const link = `https://Lexon-TechSolution.github.io/shop.html?v=${storeId}`;
             navigator.clipboard.writeText(link);
-            alert("Link ya duka imenakiliwa!");
-        }
-
-        async function deleteProduct(pId) {
-            if(!confirm("Je, una uhakika unataka kufuta bidhaa hii?")) return;
-            try {
-                const res = await fetch(`${KOYEB_URL}/delete_product?id=${pId}`, { method: 'DELETE' });
-                if(res.ok) { alert("Bidhaa imefutwa!"); loadDashboard(); }
-            } catch(e) { alert("Kosa la kufuta!"); }
+            alert("Link ya duka imekopiwa!");
         }
     </script>
 </body>
