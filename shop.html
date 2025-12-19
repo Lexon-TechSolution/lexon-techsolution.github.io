@@ -3,88 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Shop | Checkout Pro</title>
+    <title>Lexon Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .checkout-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
-        .checkout-modal.active { display: flex; }
-    </style>
 </head>
-<body class="bg-gray-50">
-    <div id="product-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4"></div>
-
-    <div class="fixed bottom-0 w-full bg-white p-4 shadow-2xl flex justify-between items-center border-t">
-        <div>
-            <p class="text-xs text-gray-500">Jumla ya Agizo</p>
-            <p id="total-price" class="text-xl font-bold text-blue-600">Tsh 0</p>
-        </div>
-        <button onclick="openCheckout()" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold">Kamilisha Agizo</button>
+<body class="bg-gray-100 min-h-screen">
+    <div class="p-6 bg-white shadow text-center">
+        <h1 id="shopName" class="text-2xl font-bold">Lexon Motor Shop</h1>
     </div>
-
-    <div id="checkoutModal" class="checkout-modal">
-        <div class="bg-white p-8 rounded-2xl w-full max-w-md mx-4">
-            <h2 class="text-2xl font-bold mb-4">Taarifa za Agizo</h2>
-            <div class="space-y-4">
-                <input type="text" id="cust_name" placeholder="Jina Kamili" class="w-full p-4 border rounded-xl outline-none">
-                <input type="email" id="cust_email" placeholder="Barua Pepe (Kwa ajili ya risiti)" class="w-full p-4 border rounded-xl outline-none">
-                <input type="text" id="cust_phone" placeholder="Namba ya WhatsApp" class="w-full p-4 border rounded-xl outline-none">
-                <button onclick="finalCheckout()" id="finalBtn" class="w-full bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg">
-                    TUMA AGIZO SASA
-                </button>
-                <button onclick="closeCheckout()" class="w-full text-gray-500 text-sm">Ghairi</button>
+    <div class="p-6 max-w-4xl mx-auto">
+        <div id="productGrid" class="grid grid-cols-2 gap-4">
             </div>
-        </div>
     </div>
 
     <script>
         const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        let cart = []; // Mfumo wako wa cart uendelee hapa
+        const urlParams = new URLSearchParams(window.location.search);
+        const vid = urlParams.get('v');
 
-        function openCheckout() {
-            if(cart.length === 0) return alert("Kikapu kiko wazi!");
-            document.getElementById('checkoutModal').classList.add('active');
-        }
-
-        function closeCheckout() {
-            document.getElementById('checkoutModal').classList.remove('active');
-        }
-
-        async function finalCheckout() {
-            const btn = document.getElementById('finalBtn');
-            const email = document.getElementById('cust_email').value;
-            const name = document.getElementById('cust_name').value;
-            
-            if(!email || !name) return alert("Tafadhali jaza Jina na Email!");
-
-            btn.innerText = "Inatengeneza Risiti...";
-            btn.disabled = true;
-
-            const orderData = {
-                email: email,
-                name: name,
-                cart: cart,
-                total: document.getElementById('total-price').innerText,
-                vendor_name: "Lexon Store Pro"
-            };
-
+        async function loadShop() {
+            if(!vid) return;
             try {
-                // Hapa ndipo tunaituma kwenye Injini ili SendGrid ifanye kazi
-                await fetch(`${KOYEB_URL}/process_checkout`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(orderData)
-                });
-
-                // Baada ya Email, tunampeleka WhatsApp kama kawaida
-                let msg = `Habari, mimi ni ${name}. Agizo langu:\n`;
-                cart.forEach(i => msg += `- ${i.name} (Tsh ${i.price})\n`);
-                msg += `Jumla: ${orderData.total}`;
-                
-                window.location.href = `https://wa.me/255XXXXXXXXX?text=${encodeURIComponent(msg)}`;
-            } catch(e) {
-                alert("Kosa la mtandao!");
-            }
+                const res = await fetch(`${KOYEB_URL}/get_products?v=${vid}`);
+                const data = await res.json();
+                if(data.status === "success") {
+                    document.getElementById('shopName').innerText = data.vendor_name;
+                    const grid = document.getElementById('productGrid');
+                    grid.innerHTML = data.products.map(p => `
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="font-bold">${p.name}</h3>
+                            <p class="text-blue-600">TSH ${p.price}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch(e) { console.log("Error loading shop"); }
         }
+        loadShop();
     </script>
 </body>
 </html>
