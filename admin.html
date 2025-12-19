@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lexon Dashboard | Store Manager v3</title>
+    <title>Lexon Dashboard | Store Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { background: #020617; color: white; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #020617; color: white; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
         .stat-card { background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 20px; padding: 20px; border: 1px solid #334155; }
-        input, textarea { background: #0f172a !important; border: 1px solid #334155 !important; color: white !important; width: 100%; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; font-size: 14px; }
-        .btn-main { background: linear-gradient(90deg, #4f46e5, #9333ea); padding: 14px; border-radius: 12px; font-weight: 800; width: 100%; transition: 0.3s; color: white; border: none; }
+        input, textarea { background: #0f172a !important; border: 1px solid #334155 !important; color: white !important; width: 100%; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; font-size: 14px; transition: 0.3s; }
+        input:focus { border-color: #4f46e5 !important; box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2); }
+        .btn-main { background: linear-gradient(90deg, #4f46e5, #9333ea); padding: 14px; border-radius: 12px; font-weight: 800; width: 100%; transition: 0.3s; cursor: pointer; border: none; color: white; }
+        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
         .product-mini-card { background: #111827; border-radius: 15px; padding: 10px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; border: 1px solid #1f2937; }
-        #dashboardView, #settingsView { display: none; }
-        .hidden { display: none; }
+        #dashboardView, #settingsView, .hidden { display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -25,160 +26,257 @@
         <div id="authView" class="max-w-md mx-auto mt-10">
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">LEXON HUB</h1>
-                <p class="text-slate-400 text-xs mt-2 font-bold tracking-widest uppercase">Business Manager</p>
+                <p class="text-slate-400 text-xs mt-2 uppercase tracking-widest font-bold">Manage Your Business</p>
             </div>
+
             <div class="glass p-8 rounded-[2rem] shadow-2xl">
                 <div class="flex bg-slate-900 p-1 rounded-xl mb-6">
                     <button onclick="toggleAuth('login')" id="tabL" class="flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600">INGIA</button>
                     <button onclick="toggleAuth('reg')" id="tabR" class="flex-1 py-3 rounded-lg text-xs font-bold text-slate-500">USAJILI</button>
                 </div>
+
                 <div id="authForm">
-                    <input type="text" id="store_id" placeholder="ID ya Duka lako">
+                    <input type="text" id="store_id" placeholder="Ingiza ID ya Duka (mfano: duka01)">
+                    
                     <div id="regFields" class="hidden">
                         <input type="text" id="v_name" placeholder="Jina la Biashara">
-                        <input type="text" id="v_phone" placeholder="WhatsApp (255...)">
-                        <label class="text-[10px] text-slate-500 ml-2">LOGO YA DUKA</label>
-                        <input type="file" id="v_logo" class="text-xs">
+                        <input type="text" id="v_phone" placeholder="WhatsApp (Mfano: 255712345678)">
+                        <label class="text-[10px] text-slate-500 ml-2 uppercase">Logo ya Duka</label>
+                        <input type="file" id="v_logo" class="text-xs mt-1">
                     </div>
-                    <button onclick="handleAuth()" class="btn-main mt-4 italic">FUNGUA DASHBOARD <i class="fas fa-arrow-right ml-2"></i></button>
+
+                    <button onclick="handleAuth()" id="authBtn" class="btn-main mt-4">
+                        FUNGUA DASHBOARD <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div id="dashboardView" class="animate-in fade-in duration-500">
+        <div id="dashboardView">
             <header class="flex justify-between items-center mb-8 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
                 <div class="flex items-center gap-3">
-                    <img id="dashLogo" src="" class="w-10 h-10 rounded-full object-cover hidden border border-indigo-500">
+                    <img id="dashLogo" src="" class="w-10 h-10 rounded-full object-cover border border-indigo-500 hidden">
                     <div>
                         <h2 id="dispStoreName" class="text-xl font-black text-white">...</h2>
                         <p id="dispStoreId" class="text-indigo-400 text-xs font-mono">@id</p>
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="openSettings()" class="bg-slate-800 text-slate-300 p-3 rounded-xl hover:text-indigo-400 transition"><i class="fas fa-cog"></i></button>
+                    <button onclick="openSettings()" class="bg-slate-800 p-3 rounded-xl hover:text-indigo-400 transition"><i class="fas fa-cog"></i></button>
                     <button onclick="location.reload()" class="bg-red-500/10 text-red-500 px-4 py-2 rounded-xl text-[10px] font-bold border border-red-500/20">LOGOUT</button>
                 </div>
             </header>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-                <div class="stat-card">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold">Stock Count</p>
-                    <h3 id="invCount" class="text-2xl font-black mt-1">0</h3>
-                </div>
-                <div class="stat-card border-green-500/40">
-                    <p class="text-[10px] text-green-500 uppercase font-bold">Oda Leo</p>
-                    <h3 class="text-2xl font-black mt-1">0</h3>
-                </div>
-                <div class="stat-card">
-                    <p class="text-[10px] text-slate-400 uppercase font-bold">Duka Link</p>
-                    <button onclick="copyLink()" class="text-[10px] mt-2 bg-indigo-500/20 text-indigo-400 p-1 rounded px-3">COPY LINK</button>
-                </div>
-                <div class="stat-card border-orange-500/40">
-                    <p class="text-[10px] text-orange-400 uppercase font-bold">Ushauri</p>
-                    <p class="text-[9px] italic mt-1 leading-tight">"Duka lako linapendeza! Pandisha bidhaa zaidi."</p>
-                </div>
-            </div>
-
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="glass p-6 rounded-[2rem]">
-                    <h3 class="font-bold text-indigo-400 mb-6 uppercase text-sm tracking-widest underline decoration-2 underline-offset-8">Pandisha Bidhaa</h3>
+                    <h3 class="font-bold text-indigo-400 mb-6 flex items-center uppercase text-sm tracking-wider"><i class="fas fa-plus-circle mr-2"></i> Pandisha Bidhaa</h3>
                     <input type="text" id="p_name" placeholder="Jina la Bidhaa">
                     <input type="number" id="p_price" placeholder="Bei (Tsh)">
-                    <textarea id="p_desc" placeholder="Maelezo..." class="h-20"></textarea>
+                    <textarea id="p_desc" placeholder="Maelezo mafupi ya bidhaa..." class="h-20"></textarea>
+                    
                     <div class="grid grid-cols-3 gap-2 mb-4">
-                        <input type="file" id="img1" class="text-[9px]">
-                        <input type="file" id="img2" class="text-[9px]">
-                        <input type="file" id="img3" class="text-[9px]">
+                        <div class="text-center"><label class="text-[8px] text-slate-500">Picha 1</label><input type="file" id="img1" class="text-[9px]"></div>
+                        <div class="text-center"><label class="text-[8px] text-slate-500">Picha 2</label><input type="file" id="img2" class="text-[9px]"></div>
+                        <div class="text-center"><label class="text-[8px] text-slate-500">Picha 3</label><input type="file" id="img3" class="text-[9px]"></div>
                     </div>
-                    <button onclick="uploadProduct()" id="upBtn" class="btn-main">HIFADHI</button>
+
+                    <button onclick="uploadProduct()" id="upBtn" class="btn-main">HIFADHI BIDHAA</button>
+                    
+                    <div class="mt-6 p-4 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-center">
+                        <p class="text-[10px] text-indigo-300 mb-1">Duka lako lipo hapa:</p>
+                        <a id="shopLink" href="#" target="_blank" class="text-[11px] font-mono text-white underline break-all">---</a>
+                        <button onclick="copyLink()" class="block w-full mt-2 text-[10px] font-bold text-indigo-400 uppercase">Nakili Link (Copy)</button>
+                    </div>
                 </div>
+
                 <div class="glass p-6 rounded-[2rem]">
-                    <h3 class="font-bold text-purple-400 mb-6 uppercase text-sm tracking-widest">Bidhaa Zilizopo</h3>
-                    <div id="stockList" class="space-y-3 max-h-[400px] overflow-y-auto pr-2"></div>
+                    <h3 class="font-bold text-purple-400 mb-6 flex items-center uppercase text-sm tracking-wider"><i class="fas fa-boxes mr-2"></i> Stock Yako</h3>
+                    <div id="stockList" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                        <p class="text-center text-slate-600 text-xs py-10 italic">Inapakia bidhaa zako...</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div id="settingsView" class="animate-in fade-in max-w-lg mx-auto">
+        <div id="settingsView" class="max-w-md mx-auto">
             <div class="glass p-8 rounded-[2rem]">
-                <h3 class="text-xl font-black mb-6 flex items-center gap-2"><i class="fas fa-edit text-indigo-500"></i> Edit Store Profile</h3>
-                <input type="text" id="edit_name" placeholder="Jina Jipya la Duka">
-                <input type="text" id="edit_phone" placeholder="WhatsApp Mpya (255...)">
-                <label class="text-[10px] text-slate-500 ml-2">UPDATE LOGO</label>
-                <input type="file" id="edit_logo" class="text-xs mb-4">
-                <div class="flex gap-2">
+                <h3 class="text-xl font-black mb-6 flex items-center gap-2 uppercase tracking-tighter"><i class="fas fa-user-edit text-indigo-500"></i> Edit Profile</h3>
+                <input type="text" id="edit_name" placeholder="Jina Jipya la Biashara">
+                <input type="text" id="edit_phone" placeholder="Namba ya WhatsApp (255...)">
+                <label class="text-[10px] text-slate-500 ml-2 uppercase">Update Logo</label>
+                <input type="file" id="edit_logo" class="text-xs mb-6 mt-1">
+                
+                <div class="flex gap-3">
                     <button onclick="closeSettings()" class="flex-1 py-4 font-bold text-slate-500">RUDI</button>
-                    <button onclick="saveSettings()" id="saveBtn" class="flex-[2] btn-main">HIFADHI MABADILIKO</button>
+                    <button onclick="saveSettings()" id="saveBtn" class="flex-[2] btn-main">HIFADHI</button>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script>
         const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        let isLogin = true;
-        let storeId = "";
-        let currentData = null;
+        let isLoginMode = true;
+        let currentStoreId = "";
+        let currentStoreData = null;
 
+        // Convert file to Base64
         const toBase64 = f => new Promise(res => {
             if(!f) return res(null);
             const r = new FileReader();
             r.readAsDataURL(f);
             r.onload = () => res(r.result);
+            r.onerror = () => res(null);
         });
 
-        function toggleAuth(m) {
-            isLogin = m === 'login';
-            document.getElementById('regFields').classList.toggle('hidden', isLogin);
-            document.getElementById('tabL').className = isLogin ? "flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600 text-white" : "flex-1 py-3 rounded-lg text-xs font-bold text-slate-500";
-            document.getElementById('tabR').className = !isLogin ? "flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600 text-white" : "flex-1 py-3 rounded-lg text-xs font-bold text-slate-500";
+        function toggleAuth(mode) {
+            isLoginMode = mode === 'login';
+            document.getElementById('regFields').style.display = isLoginMode ? "none" : "block";
+            document.getElementById('tabL').className = isLoginMode ? "flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600" : "flex-1 py-3 rounded-lg text-xs font-bold text-slate-500";
+            document.getElementById('tabR').className = !isLoginMode ? "flex-1 py-3 rounded-lg text-xs font-bold bg-indigo-600" : "flex-1 py-3 rounded-lg text-xs font-bold text-slate-500";
         }
 
         async function handleAuth() {
             const id = document.getElementById('store_id').value.trim().toLowerCase();
+            const btn = document.getElementById('authBtn');
+            
             if(!id) return alert("Weka ID!");
-            if(isLogin) { storeId = id; loadDashboard(); } 
-            else {
-                const logo = await toBase64(document.getElementById('v_logo').files[0]);
-                const data = { id, name: document.getElementById('v_name').value, phone: document.getElementById('v_phone').value, logo };
-                const res = await fetch(`${KOYEB_URL}/add_vendor_full`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-                if(res.ok) { alert("Sajiliwa!"); storeId = id; loadDashboard(); }
+
+            btn.innerText = "Inapakia... Subiri";
+            btn.disabled = true;
+
+            try {
+                if(isLoginMode) {
+                    const res = await fetch(`${KOYEB_URL}/get_products?v=${id}`);
+                    const data = await res.json();
+                    if(data.status === "success") {
+                        currentStoreId = id;
+                        loadDashboard();
+                    } else {
+                        alert("ID haijapatikana! Tafadhali jisajili.");
+                    }
+                } else {
+                    const name = document.getElementById('v_name').value;
+                    const phone = document.getElementById('v_phone').value;
+                    const logoFile = document.getElementById('v_logo').files[0];
+                    if(!name || !phone) return alert("Jaza jina na simu!");
+                    
+                    const logo = await toBase64(logoFile);
+                    const res = await fetch(`${KOYEB_URL}/add_vendor_full`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ id, name, phone, logo })
+                    });
+                    if(res.ok) {
+                        alert("Duka limesajiliwa!");
+                        currentStoreId = id;
+                        loadDashboard();
+                    } else {
+                        alert("ID tayari imetumika au kuna hitilafu.");
+                    }
+                }
+            } catch(e) {
+                alert("Hitilafu ya Server! Hakikisha server imewaka.");
+            } finally {
+                btn.innerText = "FUNGUA DASHBOARD";
+                btn.disabled = false;
             }
         }
 
         async function loadDashboard() {
-            const res = await fetch(`${KOYEB_URL}/get_products?v=${storeId}`);
-            const data = await res.json();
-            if(data.status === "success") {
-                currentData = data;
-                document.getElementById('authView').style.display = "none";
-                document.getElementById('dashboardView').style.display = "block";
-                document.getElementById('dispStoreName').innerText = data.vendor_name;
-                document.getElementById('dispStoreId').innerText = `@${storeId}`;
-                document.getElementById('invCount').innerText = data.products.length;
-                if(data.vendor_logo) { 
-                    const img = document.getElementById('dashLogo');
-                    img.src = data.vendor_logo; img.classList.remove('hidden');
+            try {
+                const res = await fetch(`${KOYEB_URL}/get_products?v=${currentStoreId}`);
+                const data = await res.json();
+                if(data.status === "success") {
+                    currentStoreData = data;
+                    document.getElementById('authView').style.display = "none";
+                    document.getElementById('settingsView').style.display = "none";
+                    document.getElementById('dashboardView').style.display = "block";
+                    
+                    document.getElementById('dispStoreName').innerText = data.vendor_name;
+                    document.getElementById('dispStoreId').innerText = `@${currentStoreId}`;
+                    
+                    if(data.vendor_logo) {
+                        const img = document.getElementById('dashLogo');
+                        img.src = data.vendor_logo;
+                        img.classList.remove('hidden');
+                    }
+
+                    const link = `https://lexon-techsolution.github.io/shop.html?v=${currentStoreId}`;
+                    document.getElementById('shopLink').innerText = link;
+                    document.getElementById('shopLink').href = link;
+                    
+                    renderStock(data.products);
                 }
-                renderStock(data.products);
-            } else { alert("Store ID not found!"); }
+            } catch(e) { console.error(e); }
         }
 
         function renderStock(products) {
             const list = document.getElementById('stockList');
-            list.innerHTML = products.length ? products.map(p => `
+            if(!products || products.length === 0) {
+                list.innerHTML = "<p class='text-center py-10 opacity-30 text-xs'>Duka lako bado halina bidhaa.</p>";
+                return;
+            }
+            list.innerHTML = products.map(p => `
                 <div class="product-mini-card">
-                    <img src="${p.img1}" class="w-12 h-12 rounded-lg object-cover">
-                    <div class="flex-1"><p class="text-xs font-bold truncate uppercase">${p.name}</p><p class="text-indigo-400 text-[10px]">Tsh ${Number(p.price).toLocaleString()}</p></div>
-                    <button onclick="deleteItem('${p.id}')" class="text-red-500 p-2"><i class="fas fa-trash"></i></button>
-                </div>`).join('') : "<p class='text-center py-10 opacity-30'>Huna bidhaa.</p>";
+                    <img src="${p.img1 || 'https://via.placeholder.com/50'}" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1 overflow-hidden">
+                        <p class="text-xs font-bold truncate uppercase text-slate-200">${p.name}</p>
+                        <p class="text-indigo-400 text-[10px] font-bold">Tsh ${Number(p.price).toLocaleString()}</p>
+                    </div>
+                    <button onclick="deleteItem('${p.id}')" class="text-red-500 p-2 hover:bg-red-500/10 rounded-full transition"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            `).join('');
+        }
+
+        async function uploadProduct() {
+            const name = document.getElementById('p_name').value;
+            const price = document.getElementById('p_price').value;
+            const btn = document.getElementById('upBtn');
+            if(!name || !price) return alert("Jaza jina na bei!");
+
+            btn.innerText = "Inahifadhi..."; btn.disabled = true;
+
+            const imgs = [
+                await toBase64(document.getElementById('img1').files[0]),
+                await toBase64(document.getElementById('img2').files[0]),
+                await toBase64(document.getElementById('img3').files[0])
+            ];
+
+            try {
+                const res = await fetch(`${KOYEB_URL}/add_product_full`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        vendor: currentStoreId, name, price, desc: document.getElementById('p_desc').value,
+                        img1: imgs[0], img2: imgs[1], img3: imgs[2]
+                    })
+                });
+                if(res.ok) {
+                    alert("Bidhaa imepakiwa!");
+                    // Clear inputs
+                    document.getElementById('p_name').value = ""; document.getElementById('p_price').value = "";
+                    document.getElementById('p_desc').value = "";
+                    loadDashboard();
+                }
+            } catch(e) { alert("Hitilafu imetokea!"); }
+            finally { btn.innerText = "HIFADHI BIDHAA"; btn.disabled = false; }
+        }
+
+        async function deleteItem(pId) {
+            if(!confirm("Una uhakika unataka kufuta bidhaa hii?")) return;
+            try {
+                const res = await fetch(`${KOYEB_URL}/delete_product?id=${pId}`, { method: 'DELETE' });
+                if(res.ok) loadDashboard();
+            } catch(e) { alert("Haikufutika, jaribu tena."); }
         }
 
         function openSettings() {
             document.getElementById('dashboardView').style.display = "none";
             document.getElementById('settingsView').style.display = "block";
-            document.getElementById('edit_name').value = currentData.vendor_name;
-            document.getElementById('edit_phone').value = currentData.vendor_phone;
+            document.getElementById('edit_name').value = currentStoreData.vendor_name;
+            document.getElementById('edit_phone').value = currentStoreData.vendor_phone;
         }
 
         function closeSettings() {
@@ -189,30 +287,32 @@
         async function saveSettings() {
             const btn = document.getElementById('saveBtn');
             btn.innerText = "Inahifadhi..."; btn.disabled = true;
-            const logo = await toBase64(document.getElementById('edit_logo').files[0]);
-            const data = { id: storeId, name: document.getElementById('edit_name').value, phone: document.getElementById('edit_phone').value, logo: logo || currentData.vendor_logo };
             
-            await fetch(`${KOYEB_URL}/update_vendor`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            alert("Mabadiliko yamehifadhiwa!");
-            location.reload();
-        }
+            const logo = await toBase64(document.getElementById('edit_logo').files[0]);
+            const data = {
+                id: currentStoreId,
+                name: document.getElementById('edit_name').value,
+                phone: document.getElementById('edit_phone').value,
+                logo: logo || currentStoreData.vendor_logo
+            };
 
-        async function uploadProduct() {
-            const btn = document.getElementById('upBtn');
-            btn.innerText = "Inapakia..."; btn.disabled = true;
-            const imgs = [await toBase64(document.getElementById('img1').files[0]), await toBase64(document.getElementById('img2').files[0]), await toBase64(document.getElementById('img3').files[0])];
-            const data = { vendor: storeId, name: document.getElementById('p_name').value, price: document.getElementById('p_price').value, desc: document.getElementById('p_desc').value, img1: imgs[0], img2: imgs[1], img3: imgs[2] };
-            await fetch(`${KOYEB_URL}/add_product_full`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            loadDashboard();
-            btn.innerText = "HIFADHI"; btn.disabled = false;
+            try {
+                const res = await fetch(`${KOYEB_URL}/update_vendor`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                if(res.ok) {
+                    alert("Profile imefanyiwa marekebisho!");
+                    loadDashboard();
+                }
+            } catch(e) { alert("Hitilafu!"); }
+            finally { btn.innerText = "HIFADHI"; btn.disabled = false; }
         }
-
-        async function deleteItem(pId) { if(confirm("Futa?")) { await fetch(`${KOYEB_URL}/delete_product?id=${pId}`, { method: 'DELETE' }); loadDashboard(); } }
 
         function copyLink() {
-            const link = `https://Lexon-TechSolution.github.io/shop.html?v=${storeId}`;
-            navigator.clipboard.writeText(link);
-            alert("Link ya duka imekopiwa!");
+            const link = document.getElementById('shopLink').innerText;
+            navigator.clipboard.writeText(link).then(() => alert("Link imekopiwa!"));
         }
     </script>
 </body>
