@@ -3,41 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Shop</title>
+    <title>Lexon Shop | Customer View</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .product-card { transition: transform 0.3s ease; border-radius: 20px; overflow: hidden; }
+        .product-card:hover { transform: translateY(-5px); }
+        .slider-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .slider-container::-webkit-scrollbar { display: none; }
+        .slide { flex: 0 0 100%; scroll-snap-align: start; }
+        .category-pill { white-space: nowrap; transition: 0.3s; }
+        .category-pill.active { background: #4f46e5; color: white; }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="p-6 bg-white shadow text-center">
-        <h1 id="shopName" class="text-2xl font-bold">Lexon Motor Shop</h1>
-    </div>
-    <div class="p-6 max-w-4xl mx-auto">
-        <div id="productGrid" class="grid grid-cols-2 gap-4">
+<body class="pb-20">
+
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img id="storeLogo" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full object-cover border-2 border-indigo-500 shadow-sm">
+                <h1 id="storeName" class="text-xl font-bold text-slate-800 tracking-tight italic">Lexon Shop</h1>
             </div>
+            <button class="text-slate-500 hover:text-indigo-600"><i class="fas fa-search text-xl"></i></button>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 mt-6">
+        <div class="bg-indigo-50 p-4 rounded-3xl mb-6">
+            <input type="text" id="searchInp" oninput="filterProducts()" placeholder="Tafuta bidhaa hapa..." class="w-full bg-white border-none rounded-2xl px-5 py-3 shadow-sm outline-none text-sm">
+        </div>
+        
+        <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+            <button class="category-pill active px-5 py-2 rounded-full border border-slate-200 text-xs font-bold">Zote</button>
+            <button class="category-pill px-5 py-2 rounded-full border border-slate-200 text-xs font-bold bg-white">Mpya</button>
+            <button class="category-pill px-5 py-2 rounded-full border border-slate-200 text-xs font-bold bg-white">Ofa</button>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+        <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="col-span-full py-20 text-center">
+                <div class="animate-spin text-indigo-600 text-4xl mb-4"><i class="fas fa-spinner"></i></div>
+                <p class="text-slate-400 animate-pulse">Inapakia bidhaa nzuri kwa ajili yako...</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-slate-900 text-white p-4 rounded-3xl shadow-2xl flex justify-between items-center z-50 border border-slate-700">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 p-2 rounded-xl"><i class="fas fa-shopping-bag"></i></div>
+            <div>
+                <p class="text-[10px] text-slate-400 leading-none">Msaada?</p>
+                <p class="text-xs font-bold">Tupo Online 24/7</p>
+            </div>
+        </div>
+        <button onclick="contactSupport()" class="bg-white text-slate-900 px-6 py-2 rounded-2xl text-xs font-black hover:bg-indigo-500 hover:text-white transition">CHAT NASI</button>
     </div>
 
     <script>
         const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         const urlParams = new URLSearchParams(window.location.search);
         const vid = urlParams.get('v');
+        let allProducts = [];
+        let vendorPhone = "";
 
-        async function loadShop() {
-            if(!vid) return;
+        async function initShop() {
+            if(!vid) {
+                document.body.innerHTML = `<div class="h-screen flex items-center justify-center text-center p-10"><div><h1 class="text-4xl font-black mb-4">404</h1><p class="text-slate-500">Duka hili halijatambuliwa kwenye mfumo wetu.</p></div></div>`;
+                return;
+            }
+
             try {
                 const res = await fetch(`${KOYEB_URL}/get_products?v=${vid}`);
                 const data = await res.json();
+                
                 if(data.status === "success") {
-                    document.getElementById('shopName').innerText = data.vendor_name;
-                    const grid = document.getElementById('productGrid');
-                    grid.innerHTML = data.products.map(p => `
-                        <div class="bg-white p-4 rounded shadow">
-                            <h3 class="font-bold">${p.name}</h3>
-                            <p class="text-blue-600">TSH ${p.price}</p>
-                        </div>
-                    `).join('');
+                    document.getElementById('storeName').innerText = data.vendor_name;
+                    vendorPhone = data.vendor_phone || "255700000000";
+                    if(data.vendor_logo) document.getElementById('storeLogo').src = data.vendor_logo;
+                    allProducts = data.products;
+                    renderProducts(allProducts);
                 }
-            } catch(e) { console.log("Error loading shop"); }
+            } catch(e) { console.error("Error loading shop data"); }
         }
-        loadShop();
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            if(products.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-20 text-center"><i class="fas fa-box-open text-5xl text-slate-200 mb-4"></i><p class="text-slate-400">Duka hili halina bidhaa bado.</p></div>`;
+                return;
+            }
+
+            grid.innerHTML = products.map(p => {
+                const images = [p.img1, p.img2, p.img3].filter(i => i !== null);
+                return `
+                <div class="product-card bg-white shadow-sm border border-slate-100 flex flex-col">
+                    <div class="slider-container relative h-48">
+                        ${images.map(img => `
+                            <div class="slide">
+                                <img src="${img}" class="w-full h-full object-cover">
+                            </div>
+                        `).join('')}
+                        ${images.length > 1 ? `<div class="absolute bottom-2 right-2 bg-black/50 text-white text-[8px] px-2 py-1 rounded-full"><i class="fas fa-images mr-1"></i>${images.length}</div>` : ''}
+                    </div>
+                    <div class="p-3 flex flex-col flex-grow">
+                        <h3 class="font-bold text-slate-800 text-sm line-clamp-1 mb-1">${p.name}</h3>
+                        <p class="text-indigo-600 font-black text-sm mb-3">Tsh ${Number(p.price).toLocaleString()}</p>
+                        <button onclick="orderViaWA('${p.name}', '${p.price}')" class="mt-auto w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl text-[10px] font-black transition flex items-center justify-center gap-2">
+                            <i class="fab fa-whatsapp text-sm"></i> AGIZA SASA
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function orderViaWA(name, price) {
+            const msg = `Habari! Naomba nikuulizie bidhaa hii:\n\n*Bidhaa:* ${name}\n*Bei:* Tsh ${Number(price).toLocaleString()}\n\nJe, ipo kwenye stock?`;
+            window.open(`https://wa.me/${vendorPhone}?text=${encodeURIComponent(msg)}`);
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInp').value.toLowerCase();
+            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
+            renderProducts(filtered);
+        }
+
+        function contactSupport() {
+            window.open(`https://wa.me/${vendorPhone}?text=Habari, naomba msaada kuhusu bidhaa za duka lenu.`);
+        }
+
+        initShop();
     </script>
 </body>
 </html>
