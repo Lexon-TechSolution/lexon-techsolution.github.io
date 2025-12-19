@@ -2,125 +2,72 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Admin | Live Control</title>
+    <title>Lexon Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <style>
-        body { background: #0a0a0b; color: white; font-family: sans-serif; }
-        .loader { position: fixed; z-index: 999; top: 0; left: 0; width: 100%; height: 100%; display: flex; background: #0a0a0b; justify-content: center; align-items: center; }
-        .hidden { display: none !important; }
-        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; }
-        input { background: #161618 !important; border: 1px solid #333 !important; color: white !important; margin-bottom: 10px; }
-        .btn-main { background: #4f46e5; border: none; color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 10px; }
-    </style>
 </head>
-<body>
-
-    <div id="loader" class="loader">
-        <img src="https://i.giphy.com/media/fYqaFLAWq7v2oRy4vh/giphy.webp" width="150">
+<body class="bg-gray-900 text-white p-5">
+    <div id="auth" class="max-w-md mx-auto mt-10 p-6 bg-gray-800 rounded-lg">
+        <h2 class="text-xl font-bold mb-4">Ingia/Sajili Duka</h2>
+        <input id="sid" class="w-full p-2 mb-2 bg-gray-700 rounded" placeholder="ID ya Duka">
+        <input id="sname" class="w-full p-2 mb-2 bg-gray-700 rounded" placeholder="Jina (Kama unasajili)">
+        <button onclick="login()" class="w-full bg-blue-600 p-2 rounded font-bold">FUNGUA</button>
     </div>
 
-    <div class="container py-5">
-        <div id="loginView" class="max-w-md mx-auto">
-            <h2 class="text-center text-indigo-500 font-bold mb-4">LEXON HUB ADMIN</h2>
-            <div class="glass">
-                <input type="text" id="store_id" class="form-control" placeholder="ID ya Duka">
-                <div id="regFields" class="hidden">
-                    <input type="text" id="v_name" class="form-control" placeholder="Jina la Duka">
-                    <input type="text" id="v_phone" class="form-control" placeholder="WhatsApp (255...)">
-                </div>
-                <button onclick="handleAuth()" id="authBtn" class="btn-main">FUNGUA DASHBOARD</button>
-                <p class="text-center mt-3 text-xs opacity-50 cursor-pointer" onclick="toggleMode()">Badili Ingia/Sajili</p>
+    <div id="dash" class="hidden max-w-2xl mx-auto">
+        <h1 id="dname" class="text-2xl font-bold mb-5"></h1>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="font-bold mb-3">Ongeza Bidhaa</h3>
+                <input id="pn" class="w-full p-2 mb-2 bg-gray-700 rounded" placeholder="Jina la bidhaa">
+                <input id="pp" class="w-full p-2 mb-2 bg-gray-700 rounded" placeholder="Bei">
+                <button onclick="addP()" class="w-full bg-green-600 p-2 rounded">HIFADHI</button>
             </div>
-        </div>
-
-        <div id="dashView" class="hidden">
-            <div class="flex justify-between items-center mb-5">
-                <h3 id="dispStoreName" class="font-bold">...</h3>
-                <button onclick="location.reload()" class="btn btn-sm btn-danger">Toka</button>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="glass">
-                        <h6 class="text-indigo-400 mb-3">ONGEZA BIDHAA</h6>
-                        <input type="text" id="p_name" class="form-control" placeholder="Jina la Bidhaa">
-                        <input type="number" id="p_price" class="form-control" placeholder="Bei">
-                        <button onclick="addProduct()" id="pBtn" class="btn-main">HIFADHI BIDHAA</button>
-                    </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="glass" id="productList">
-                        <h6 class="text-purple-400 mb-3">STOCK YAKO</h6>
-                        <div id="items" class="space-y-2"></div>
-                    </div>
-                </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="font-bold mb-3">Bidhaa Zako</h3>
+                <div id="plist"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // HAPA NDIYO URL YAKO MPYA TOKA KOYEB
-        const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        let isLogin = true;
-        let currentId = "";
+        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+        let curId = "";
 
-        window.onload = () => setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1500);
-
-        function toggleMode() {
-            isLogin = !isLogin;
-            document.getElementById('regFields').classList.toggle('hidden');
-        }
-
-        async function handleAuth() {
-            const id = document.getElementById('store_id').value.trim().toLowerCase();
-            if(!id) return alert("Weka ID!");
-
+        async function login() {
+            const id = document.getElementById('sid').value.toLowerCase();
+            const name = document.getElementById('sname').value;
+            if(!id) return alert("Weka ID");
+            
             try {
-                if(!isLogin) {
-                    await fetch(`${KOYEB_URL}/add_vendor_full`, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            id: id,
-                            name: document.getElementById('v_name').value,
-                            phone: document.getElementById('v_phone').value
-                        })
-                    });
-                }
-
-                const res = await fetch(`${KOYEB_URL}/get_products?v=${id}`);
-                const data = await res.json();
-                if(data.status === "success") {
-                    currentId = id;
-                    document.getElementById('loginView').classList.add('hidden');
-                    document.getElementById('dashView').classList.remove('hidden');
-                    document.getElementById('dispStoreName').innerText = data.vendor_name;
-                    renderProducts(data.products);
-                } else { alert("ID Haipo!"); }
-            } catch(e) { alert("Server haijibu!"); }
-        }
-
-        function renderProducts(prods) {
-            const div = document.getElementById('items');
-            div.innerHTML = prods.map(p => `<div class="p-3 bg-black/20 border border-white/5 rounded-lg text-sm">${p.name} - Tsh ${p.price}</div>`).join('');
-        }
-
-        async function addProduct() {
-            const name = document.getElementById('p_name').value;
-            const price = document.getElementById('p_price').value;
-            if(!name || !price) return alert("Jaza vyote!");
-
-            try {
-                await fetch(`${KOYEB_URL}/add_product_full`, {
+                await fetch(`${API}/add_vendor_full`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({vendor: currentId, name, price})
+                    body: JSON.stringify({id, name: name || id})
                 });
-                alert("Imefanikiwa!");
-                handleAuth(); // Refresh list
-            } catch(e) { alert("Imefeli!"); }
+                const res = await fetch(`${API}/get_products?v=${id}`);
+                const data = await res.json();
+                curId = id;
+                document.getElementById('auth').classList.add('hidden');
+                document.getElementById('dash').classList.remove('hidden');
+                document.getElementById('dname').innerText = data.vendor_name;
+                showP(data.products);
+            } catch(e) { alert("Server bado haijatambua Port 8000. Subiri dakika 1 kisha jaribu tena."); }
+        }
+
+        function showP(p) {
+            document.getElementById('plist').innerHTML = p.map(i => `<div class='border-b border-gray-700 py-1'>${i.name} - ${i.price}</div>`).join('');
+        }
+
+        async function addP() {
+            const name = document.getElementById('pn').value;
+            const price = document.getElementById('pp').value;
+            await fetch(`${API}/add_product_full`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({vendor: curId, name, price})
+            });
+            alert("Imewekwa!");
+            login();
         }
     </script>
 </body>
