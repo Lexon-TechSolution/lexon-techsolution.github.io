@@ -1,49 +1,97 @@
-<script>
-    const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-    // HAPA: Badilisha iwe jina lako kamili la GitHub kama lilivyo (Case Sensitive)
-    const GITHUB_BASE = "https://Lexon-TechSolution.github.io"; 
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexon Admin | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #0f172a; color: white; font-family: sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        input, textarea { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+        .btn-gradient { background: linear-gradient(90deg, #3b82f6, #8b5cf6); padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body class="p-4">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold text-center text-blue-400 mb-6">LEXON BUSINESS HUB</h1>
+        
+        <div id="successNotice" class="hidden glass p-6 rounded-2xl mb-6 border-green-500 text-center">
+            <h3 class="text-green-400 font-bold">✅ DUKA LIMESAJILIWA!</h3>
+            <a id="storeLink" href="#" target="_blank" class="text-blue-400 underline break-all"></a>
+        </div>
 
-    // ... (toBase64 function ibaki ile ile)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass p-6 rounded-2xl">
+                <h2 class="text-purple-400 mb-4 font-bold">Usajili wa Duka</h2>
+                <input type="text" id="v_id" placeholder="ID ya Duka (mfano: duka01)">
+                <input type="text" id="v_name" placeholder="Jina la Biashara">
+                <input type="text" id="v_phone" placeholder="WhatsApp (255...)">
+                <button onclick="saveFullVendor()" id="vBtn" class="btn-gradient">SAJILI DUKA</button>
+            </div>
 
-    async function saveFullVendor() {
-        const vId = document.getElementById('v_id').value.trim();
-        // ... (data preparation)
+            <div class="glass p-6 rounded-2xl">
+                <h2 class="text-blue-400 mb-4 font-bold">Pakia Bidhaa</h2>
+                <input type="text" id="p_vendor" placeholder="ID ya Duka uliyosajili">
+                <input type="text" id="p_name" placeholder="Jina la Bidhaa">
+                <input type="number" id="p_price" placeholder="Bei (Tsh)">
+                <button onclick="saveFullProduct()" id="pBtn" class="btn-gradient">PANDISHA BIDHAA</button>
+            </div>
+        </div>
+    </div>
 
-        try {
-            const res = await fetch(`${KOYEB_URL}/add_vendor_full`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            
-            if(res.ok) {
-                document.getElementById('successNotice').style.display = "block";
-                // LINK SAHIHI: Tunatumia jina la GitHub tuliloweka juu
-                const finalLink = `${GITHUB_BASE}/shop.html?v=${vId}`;
-                document.getElementById('storeLink').href = finalLink;
-                document.getElementById('storeLink').innerText = finalLink;
-                document.getElementById('p_vendor').value = vId;
-            }
-        } catch(e) { 
-            alert("Inashindwa kuifikia server. Hakikisha Koyeb haijalala."); 
+    <script>
+        const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+        const GITHUB_BASE = "https://Lexon-TechSolution.github.io";
+
+        async function saveFullVendor() {
+            const vId = document.getElementById('v_id').value.trim().toLowerCase();
+            const data = {
+                id: vId,
+                name: document.getElementById('v_name').value,
+                phone: document.getElementById('v_phone').value
+            };
+
+            const btn = document.getElementById('vBtn');
+            btn.innerText = "Inasajili...";
+
+            try {
+                const res = await fetch(`${KOYEB_URL}/add_vendor_full`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                if(res.ok) {
+                    document.getElementById('successNotice').style.display = "block";
+                    const link = `${GITHUB_BASE}/shop.html?v=${vId}`;
+                    document.getElementById('storeLink').href = link;
+                    document.getElementById('storeLink').innerText = link;
+                    document.getElementById('p_vendor').value = vId;
+                }
+            } catch(e) { alert("Error!"); }
+            btn.innerText = "SAJILI DUKA";
         }
-    }
 
-    async function saveFullProduct() {
-        // ... (data preparation)
-        try {
-            const res = await fetch(`${KOYEB_URL}/add_product_full`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            const result = await res.json();
-            if(res.ok) {
-                alert("Bidhaa imepakiwa!");
-            } else {
-                // HAPA: Itakuambia kwanini imekataa (mfano: Picha ni kubwa sana)
-                alert("Kosa: " + result.message);
-            }
-        } catch(e) { alert("Hitilafu ya Mtandao!"); }
-    }
-</script>
+        async function saveFullProduct() {
+            const data = {
+                vendor: document.getElementById('p_vendor').value,
+                name: document.getElementById('p_name').value,
+                price: document.getElementById('p_price').value
+            };
+            const btn = document.getElementById('pBtn');
+            btn.innerText = "Inapakia...";
+
+            try {
+                const res = await fetch(`${KOYEB_URL}/add_product_full`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                if(res.ok) alert("Bidhaa Imepakiwa!");
+            } catch(e) { alert("Hitilafu!"); }
+            btn.innerText = "PANDISHA BIDHAA";
+        }
+    </script>
+</body>
+</html>
