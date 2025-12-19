@@ -1,14 +1,20 @@
-# Tumia toleo la Python lililo thabiti
-FROM python:3.10-slim
+# 1. Tumia Image ya Python
+FROM python:3.9-slim
 
-# Weka folder la kazi
+# 2. Weka folder la kazi
 WORKDIR /app
 
-# Copy mafaili yako yote kuingia kwenye seva
+# 3. Nakili faili la mahitaji kwanza (ili kuongeza speed ya build)
+COPY requirements.txt .
+
+# 4. SAKINISHA MAKTABA (Hapa ndipo flask-cors itasakinishwa)
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 5. Nakili kodi zako zote (main_script.py nk) kuingia kwenye Docker
 COPY . .
 
-# LAZIMA: Install maktaba zote hapa ili Docker izijue
-RUN pip install --no-cache-dir pg8000 sendgrid flask python-dotenv
+# 6. Fungua Port 8000
+EXPOSE 8000
 
-# Amri ya kuwasha injini yako
+# 7. Amuru injini iwake
 CMD ["python", "main_script.py"]
