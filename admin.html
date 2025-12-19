@@ -3,83 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Admin | Advanced Dashboard</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Lexon Admin | Live Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <style>
-        body { background: #101011; color: white; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; }
-        .loader { position: fixed; z-index: 999; top: 0; left: 0; width: 100%; height: 100%; display: flex; background: #101011; justify-content: center; align-items: center; }
+        body { background: #0a0a0b; color: white; font-family: sans-serif; }
+        .loader { position: fixed; z-index: 999; top: 0; left: 0; width: 100%; height: 100%; display: flex; background: #0a0a0b; justify-content: center; align-items: center; }
         .hidden { display: none !important; }
-        input, textarea { background: #1a1a1c !important; border: 1px solid #333 !important; color: white !important; border-radius: 10px !important; }
-        .btn-lexon { background: linear-gradient(45deg, #4f46e5, #9333ea); border: none; color: white; font-weight: bold; border-radius: 10px; padding: 12px; width: 100%; }
+        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; }
+        input { background: #161618 !important; border: 1px solid #333 !important; color: white !important; margin-bottom: 10px; }
+        .btn-main { background: #4f46e5; border: none; color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="mainLoader" class="loader">
-        <img src="https://i.giphy.com/media/fYqaFLAWq7v2oRy4vh/giphy.webp" alt="loading" width="150">
+    <div id="loader" class="loader">
+        <img src="https://i.giphy.com/media/fYqaFLAWq7v2oRy4vh/giphy.webp" width="150">
     </div>
 
     <div class="container py-5">
-        <div id="authView" class="max-w-md mx-auto">
-            <div class="text-center mb-5">
-                <h2 style="font-family: 'Kaushan Script', cursive;" class="text-4xl text-indigo-500">Lexon Hub</h2>
-                <p class="text-xs tracking-widest opacity-50 uppercase">Admin Control Center</p>
-            </div>
-            
-            <div class="glass-card">
-                <div class="nav nav-pills nav-fill mb-4 bg-black/20 p-1 rounded-xl">
-                    <button onclick="toggleAuth('login')" id="tabL" class="nav-link active bg-indigo-600 text-white">INGIA</button>
-                    <button onclick="toggleAuth('reg')" id="tabR" class="nav-link text-white">USAJILI</button>
+        <div id="loginView" class="max-w-md mx-auto">
+            <h2 class="text-center text-indigo-500 font-bold mb-4">LEXON HUB ADMIN</h2>
+            <div class="glass">
+                <input type="text" id="store_id" class="form-control" placeholder="ID ya Duka">
+                <div id="regFields" class="hidden">
+                    <input type="text" id="v_name" class="form-control" placeholder="Jina la Duka">
+                    <input type="text" id="v_phone" class="form-control" placeholder="WhatsApp (255...)">
                 </div>
-
-                <div id="loginForm">
-                    <input type="text" id="store_id" class="form-control mb-3" placeholder="ID ya Duka (mfano: duka01)">
-                    <div id="regFields" class="hidden">
-                        <input type="text" id="v_name" class="form-control mb-3" placeholder="Jina la Biashara">
-                        <input type="text" id="v_phone" class="form-control mb-3" placeholder="WhatsApp (255...)">
-                    </div>
-                    <button onclick="handleAuth()" id="authBtn" class="btn-lexon shadow-lg">FUNGUA DASHBOARD</button>
-                </div>
+                <button onclick="handleAuth()" id="authBtn" class="btn-main">FUNGUA DASHBOARD</button>
+                <p class="text-center mt-3 text-xs opacity-50 cursor-pointer" onclick="toggleMode()">Badili Ingia/Sajili</p>
             </div>
         </div>
 
-        <div id="dashboardView" class="hidden">
-            <div class="row mb-4">
-                <div class="col-md-8">
-                    <h1 id="dispStoreName" class="font-black text-3xl">...</h1>
-                    <p id="dispStoreId" class="text-indigo-400 font-mono"></p>
-                </div>
-                <div class="col-md-4 text-right">
-                    <button onclick="location.reload()" class="btn btn-outline-danger btn-sm rounded-pill">Logout</button>
-                </div>
+        <div id="dashView" class="hidden">
+            <div class="flex justify-between items-center mb-5">
+                <h3 id="dispStoreName" class="font-bold">...</h3>
+                <button onclick="location.reload()" class="btn btn-sm btn-danger">Toka</button>
             </div>
-
+            
             <div class="row">
-                <div class="col-md-5 mb-4">
-                    <div class="glass-card">
-                        <h5 class="mb-4 text-sm font-bold uppercase tracking-widest text-indigo-400">Ongeza Bidhaa</h5>
-                        <input type="text" id="p_name" class="form-control mb-3" placeholder="Jina la Bidhaa">
-                        <input type="number" id="p_price" class="form-control mb-3" placeholder="Bei (Tsh)">
-                        <textarea id="p_desc" class="form-control mb-3" placeholder="Maelezo ya bidhaa..."></textarea>
-                        <button onclick="uploadProduct()" id="upBtn" class="btn-lexon">HIFADHI</button>
-                    </div>
-
-                    <div class="glass-card mt-4 border-indigo-500/30">
-                        <p class="text-[10px] uppercase font-bold text-slate-400">Link ya Duka Lako:</p>
-                        <button onclick="copyLink()" class="btn btn-dark btn-block mt-2 text-xs py-3 rounded-xl border border-white/5">
-                            <i class="fa fa-copy mr-2"></i> COPY SHOP LINK
-                        </button>
+                <div class="col-md-5">
+                    <div class="glass">
+                        <h6 class="text-indigo-400 mb-3">ONGEZA BIDHAA</h6>
+                        <input type="text" id="p_name" class="form-control" placeholder="Jina la Bidhaa">
+                        <input type="number" id="p_price" class="form-control" placeholder="Bei">
+                        <button onclick="addProduct()" id="pBtn" class="btn-main">HIFADHI BIDHAA</button>
                     </div>
                 </div>
-
                 <div class="col-md-7">
-                    <div class="glass-card">
-                        <h5 class="mb-4 text-sm font-bold uppercase tracking-widest text-purple-400">Bidhaa Zilizopo</h5>
-                        <div id="stockList" class="row">
-                            </div>
+                    <div class="glass" id="productList">
+                        <h6 class="text-purple-400 mb-3">STOCK YAKO</h6>
+                        <div id="items" class="space-y-2"></div>
                     </div>
                 </div>
             </div>
@@ -87,90 +61,66 @@
     </div>
 
     <script>
+        // HAPA NDIYO URL YAKO MPYA TOKA KOYEB
         const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        let currentStoreId = "";
+        let isLogin = true;
+        let currentId = "";
 
-        // Ondoa Loader baada ya sekunde 2
-        window.onload = () => {
-            setTimeout(() => { document.getElementById('mainLoader').classList.add('hidden'); }, 2000);
-        };
+        window.onload = () => setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1500);
 
-        function toggleAuth(mode) {
-            const isLogin = mode === 'login';
-            document.getElementById('regFields').classList.toggle('hidden', isLogin);
-            document.getElementById('tabL').className = isLogin ? "nav-link active bg-indigo-600" : "nav-link text-white";
-            document.getElementById('tabR').className = !isLogin ? "nav-link active bg-indigo-600" : "nav-link text-white";
+        function toggleMode() {
+            isLogin = !isLogin;
+            document.getElementById('regFields').classList.toggle('hidden');
         }
 
         async function handleAuth() {
             const id = document.getElementById('store_id').value.trim().toLowerCase();
-            const btn = document.getElementById('authBtn');
             if(!id) return alert("Weka ID!");
 
-            btn.innerText = "Inapakia...";
             try {
-                const isReg = !document.getElementById('regFields').classList.contains('hidden');
-                if(isReg) {
-                    const name = document.getElementById('v_name').value;
-                    const phone = document.getElementById('v_phone').value;
+                if(!isLogin) {
                     await fetch(`${KOYEB_URL}/add_vendor_full`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({id, name, phone})
+                        body: JSON.stringify({
+                            id: id,
+                            name: document.getElementById('v_name').value,
+                            phone: document.getElementById('v_phone').value
+                        })
                     });
                 }
-                
+
                 const res = await fetch(`${KOYEB_URL}/get_products?v=${id}`);
                 const data = await res.json();
                 if(data.status === "success") {
-                    currentStoreId = id;
-                    document.getElementById('authView').classList.add('hidden');
-                    document.getElementById('dashboardView').classList.remove('hidden');
+                    currentId = id;
+                    document.getElementById('loginView').classList.add('hidden');
+                    document.getElementById('dashView').classList.remove('hidden');
                     document.getElementById('dispStoreName').innerText = data.vendor_name;
-                    document.getElementById('dispStoreId').innerText = "@" + id;
                     renderProducts(data.products);
-                } else { alert("ID haikupatikana!"); }
-            } catch(e) { alert("Server Error!"); }
-            finally { btn.innerText = "FUNGUA DASHBOARD"; }
+                } else { alert("ID Haipo!"); }
+            } catch(e) { alert("Server haijibu!"); }
         }
 
         function renderProducts(prods) {
-            const container = document.getElementById('stockList');
-            if(!prods.length) { container.innerHTML = "<p class='p-5 opacity-30 mx-auto'>Hamna bidhaa bado.</p>"; return; }
-            container.innerHTML = prods.map(p => `
-                <div class="col-6 mb-3">
-                    <div class="p-3 bg-black/40 rounded-xl border border-white/5">
-                        <p class="text-xs font-bold mb-0">${p.name}</p>
-                        <p class="text-indigo-400 text-[10px]">Tsh ${p.price}</p>
-                    </div>
-                </div>
-            `).join('');
+            const div = document.getElementById('items');
+            div.innerHTML = prods.map(p => `<div class="p-3 bg-black/20 border border-white/5 rounded-lg text-sm">${p.name} - Tsh ${p.price}</div>`).join('');
         }
 
-        async function uploadProduct() {
-            const btn = document.getElementById('upBtn');
-            const data = {
-                vendor: currentStoreId,
-                name: document.getElementById('p_name').value,
-                price: document.getElementById('p_price').value,
-                desc: document.getElementById('p_desc').value
-            };
-            if(!data.name || !data.price) return alert("Jaza Jina na Bei!");
-            
-            btn.innerText = "Inatuma...";
+        async function addProduct() {
+            const name = document.getElementById('p_name').value;
+            const price = document.getElementById('p_price').value;
+            if(!name || !price) return alert("Jaza vyote!");
+
             try {
                 await fetch(`${KOYEB_URL}/add_product_full`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({vendor: currentId, name, price})
                 });
-                location.reload();
+                alert("Imefanikiwa!");
+                handleAuth(); // Refresh list
             } catch(e) { alert("Imefeli!"); }
-        }
-
-        function copyLink() {
-            const link = `https://lexon-techsolution.github.io/shop.html?v=${currentStoreId}`;
-            navigator.clipboard.writeText(link).then(() => alert("Link imekopiwa!"));
         }
     </script>
 </body>
