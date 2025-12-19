@@ -1,186 +1,49 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon SaaS Admin | Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        input, textarea { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; }
-        .btn-gradient { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
-        .success-box { display: none; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; }
-    </style>
-</head>
-<body class="p-4 md:p-10">
+<script>
+    const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+    // HAPA: Badilisha iwe jina lako kamili la GitHub kama lilivyo (Case Sensitive)
+    const GITHUB_BASE = "https://Lexon-TechSolution.github.io"; 
 
-    <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-10">
-            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Lexon Business Hub</h1>
-            <div id="server-status" class="px-4 py-1 rounded-full bg-green-900/30 border border-green-500 text-green-400 text-xs italic">System Live</div>
-        </header>
+    // ... (toBase64 function ibaki ile ile)
 
-        <div id="successNotice" class="success-box p-6 rounded-2xl mb-8 text-center">
-            <h3 class="text-xl font-bold text-green-400">✅ Duka Limesajiliwa!</h3>
-            <p class="text-slate-300 mt-2">Duka lako sasa lipo hewani. Unaweza kuliona hapa:</p>
-            <a id="storeLink" href="#" target="_blank" class="text-blue-400 underline font-bold mt-2 block">Link ya Duka Lako</a>
-        </div>
+    async function saveFullVendor() {
+        const vId = document.getElementById('v_id').value.trim();
+        // ... (data preparation)
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass p-8 rounded-3xl">
-                <h2 class="text-xl font-bold mb-6 text-purple-400 flex items-center">
-                    <i class="fas fa-store mr-3"></i> Usajili wa Duka & Logo
-                </h2>
-                <div class="space-y-4">
-                    <input type="text" id="v_id" placeholder="ID ya Duka (mfano: duka01)" class="w-full p-4 rounded-xl outline-none">
-                    <input type="text" id="v_name" placeholder="Jina la Biashara" class="w-full p-4 rounded-xl outline-none">
-                    <input type="text" id="v_phone" placeholder="WhatsApp (255...)" class="w-full p-4 rounded-xl outline-none">
-                    <label class="block text-xs text-slate-400 mb-1">Pakia Logo ya Duka</label>
-                    <input type="file" id="v_logo" class="w-full text-sm text-slate-400">
-                    <button onclick="saveFullVendor()" id="vBtn" class="w-full btn-gradient py-4 rounded-xl font-bold shadow-lg transition transform hover:scale-[1.02]">
-                        SAJILI DUKA LIVE
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 gap-6">
-                <div class="glass p-8 rounded-3xl border-b-4 border-blue-500 text-center">
-                    <p class="text-slate-400 text-sm italic">Jumla ya Bidhaa</p>
-                    <h3 id="stat-count" class="text-5xl font-bold mt-2 text-white">0</h3>
-                </div>
-                <div class="glass p-8 rounded-3xl border-b-4 border-purple-500 text-center">
-                    <p class="text-slate-400 text-sm italic">Hali ya Server</p>
-                    <h3 class="text-2xl font-bold mt-2 text-green-400">ACTIVE</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass p-8 rounded-3xl mt-10">
-            <h2 class="text-xl font-bold mb-8 text-blue-400 flex items-center">
-                <i class="fas fa-cart-plus mr-3"></i> Pakia Bidhaa Mpya
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="space-y-4">
-                    <input type="text" id="p_vendor" placeholder="Duka ID (Inajijaza yenyewe)" class="w-full p-4 rounded-xl outline-none opacity-80" readonly>
-                    <input type="text" id="p_name" placeholder="Jina la Bidhaa" class="w-full p-4 rounded-xl outline-none">
-                    <input type="number" id="p_price" placeholder="Bei (Tsh)" class="w-full p-4 rounded-xl outline-none">
-                    <textarea id="p_desc" placeholder="Maelezo ya bidhaa..." class="w-full p-4 rounded-xl h-32 outline-none"></textarea>
-                </div>
-                <div class="space-y-4 text-center">
-                    <div class="space-y-4 bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
-                        <label class="block text-sm text-blue-300">Picha Kuu ya Bidhaa</label>
-                        <input type="file" id="img1" class="text-xs">
-                    </div>
-                    <button onclick="saveFullProduct()" id="pBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-5 rounded-2xl font-bold text-lg shadow-xl transition">
-                        PANDISHA BIDHAA
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-
-        const toBase64 = file => new Promise((resolve, reject) => {
-            if (!file) resolve(null);
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-
-        async function saveFullVendor() {
-            const btn = document.getElementById('vBtn');
-            const vId = document.getElementById('v_id').value.trim().toLowerCase();
-            if(!vId) return alert("Weka ID ya duka!");
-
-            btn.innerText = "Inasajili...";
-            btn.disabled = true;
-
-            const logoFile = document.getElementById('v_logo').files[0];
-            const logoBase64 = logoFile ? await toBase64(logoFile) : "";
-
-            const data = {
-                id: vId,
-                name: document.getElementById('v_name').value,
-                phone: document.getElementById('v_phone').value,
-                logo: logoBase64
-            };
-
-            try {
-                const res = await fetch(`${KOYEB_URL}/add_vendor_full`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
-                });
-                
-                if(res.ok) {
-                    // Onyesha Link ya Duka
-                    document.getElementById('successNotice').style.display = "block";
-                    const finalLink = `https://lexon-techsolution.github.io/shop.html?v=${vId}`;
-                    document.getElementById('storeLink').href = finalLink;
-                    document.getElementById('storeLink').innerText = finalLink;
-                    
-                    // Jaza ID kwenye sehemu ya bidhaa
-                    document.getElementById('p_vendor').value = vId;
-                    
-                    alert("Hongera! Duka limesajiliwa!");
-                } else {
-                    alert("Kosa: Server imekataa usajili.");
-                }
-            } catch(e) { 
-                alert("Server imelala! Iamshe kwa kufungua link ya Koyeb kwanza."); 
-            }
-            btn.innerText = "SAJILI DUKA LIVE";
-            btn.disabled = false;
-        }
-
-        async function saveFullProduct() {
-            const btn = document.getElementById('pBtn');
-            const vendor = document.getElementById('p_vendor').value;
+        try {
+            const res = await fetch(`${KOYEB_URL}/add_vendor_full`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
             
-            if(!vendor) return alert("Sajili duka kwanza!");
-
-            btn.innerText = "Inapakia Bidhaa...";
-            btn.disabled = true;
-
-            const imgFile = document.getElementById('img1').files[0];
-            const imgBase64 = imgFile ? await toBase64(imgFile) : "";
-
-            const data = {
-                vendor: vendor,
-                name: document.getElementById('p_name').value,
-                price: document.getElementById('p_price').value,
-                desc: document.getElementById('p_desc').value,
-                img1: imgBase64
-            };
-
-            try {
-                const res = await fetch(`${KOYEB_URL}/add_product_full`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(data)
-                });
-                if(res.ok) {
-                    alert("Bidhaa imewekwa sokoni!");
-                    loadStats(); // Update hesabu
-                }
-            } catch(e) { alert("Hitilafu imetokea!"); }
-            btn.innerText = "PANDISHA BIDHAA";
-            btn.disabled = false;
+            if(res.ok) {
+                document.getElementById('successNotice').style.display = "block";
+                // LINK SAHIHI: Tunatumia jina la GitHub tuliloweka juu
+                const finalLink = `${GITHUB_BASE}/shop.html?v=${vId}`;
+                document.getElementById('storeLink').href = finalLink;
+                document.getElementById('storeLink').innerText = finalLink;
+                document.getElementById('p_vendor').value = vId;
+            }
+        } catch(e) { 
+            alert("Inashindwa kuifikia server. Hakikisha Koyeb haijalala."); 
         }
+    }
 
-        async function loadStats() {
-            try {
-                const res = await fetch(`${KOYEB_URL}/get_stats`);
-                const s = await res.json();
-                document.getElementById('stat-count').innerText = s.total_items || 0;
-            } catch(e) {}
-        }
-        loadStats();
-    </script>
-</body>
-</html>
+    async function saveFullProduct() {
+        // ... (data preparation)
+        try {
+            const res = await fetch(`${KOYEB_URL}/add_product_full`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if(res.ok) {
+                alert("Bidhaa imepakiwa!");
+            } else {
+                // HAPA: Itakuambia kwanini imekataa (mfano: Picha ni kubwa sana)
+                alert("Kosa: " + result.message);
+            }
+        } catch(e) { alert("Hitilafu ya Mtandao!"); }
+    }
+</script>
