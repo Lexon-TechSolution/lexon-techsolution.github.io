@@ -3,168 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Motors | Global Marketplace</title>
+    <title>Lexon Motors | Premium Mall</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
-        :root { --ali-orange: #ff6a00; --bg: #f2f2f2; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); transition: 0.3s; }
-        .dark-mode { --bg: #000000; color: white; }
-        .dark-mode body { background: var(--bg); }
+        :root { --ali-orange: #FF6600; --ali-bg: #F2F2F2; }
+        body { background-color: var(--ali-bg); font-family: sans-serif; transition: 0.3s; }
+        .dark-mode { --ali-bg: #111111; color: #ffffff; }
+        .dark-mode body { background-color: var(--ali-bg); }
 
-        /* Navigation Style */
-        .top-nav { background: white; border-bottom: 1px solid #ddd; }
-        .dark-mode .top-nav { background: #1a1a1a; border-color: #333; }
+        .top-bar { background: white; padding: 10px 16px; border-bottom: 1px solid #e5e7eb; }
+        .dark-mode .top-bar { background: #1a1a1a; border-color: #333; }
         
-        /* Grid Layout */
-        .mall-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-        
-        /* Product Card */
-        .mall-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .dark-mode .mall-card { background: #222; }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; }
 
-        .price-tag { color: var(--ali-orange); font-weight: 800; font-size: 16px; }
-        .old-price { text-decoration: line-through; color: #999; font-size: 11px; margin-left: 5px; }
-        
-        .flash-deal-label {
-            position: absolute; top: 0; left: 0;
-            background: linear-gradient(90deg, #ff4b2b, #ff416c);
-            color: white; font-size: 10px; padding: 2px 8px;
-            border-bottom-right-radius: 10px; z-index: 10;
-        }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+        .dark-mode .product-card { background: #222; }
 
-        .btn-register {
-            background: var(--ali-orange);
-            color: white; padding: 4px 15px;
-            border-radius: 20px; font-weight: bold; font-size: 12px;
-        }
+        .image-container { width: 100%; padding-top: 75%; position: relative; background: #eee; }
+        .image-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
 
-        /* Swiper Fix */
-        .card-swiper { width: 100%; height: 160px; }
-        .card-swiper img { width: 100%; height: 100%; object-fit: cover; }
+        .price-text { color: var(--ali-orange); font-weight: bold; font-size: 15px; }
+        .flash-tag { background: linear-gradient(90deg, #ff4d00, #ff8c00); color: white; font-size: 9px; padding: 2px 6px; border-radius: 0 0 8px 0; position: absolute; top: 0; left: 0; z-index: 5; }
+
+        .btn-view { border: 1px solid var(--ali-orange); color: var(--ali-orange); font-size: 11px; font-weight: bold; padding: 6px; border-radius: 15px; text-align: center; width: 100%; margin-top: 8px; cursor: pointer; }
+        .btn-view:hover { background: var(--ali-orange); color: white; }
     </style>
 </head>
 <body id="mainBody">
 
-    <header class="top-nav sticky top-0 z-[100]">
-        <div class="px-4 py-2 flex justify-between items-center border-b border-gray-100 dark:border-gray-800 text-[11px] opacity-70">
-            <div class="flex gap-4">
-                <span>Ship to <img src="https://flagcdn.com/w20/tz.png" class="inline w-4"> TZ</span>
-                <span>Language: SW</span>
-            </div>
-            <div class="flex gap-4 items-center">
-                <button onclick="toggleMode()"><i id="modeIcon" class="fas fa-moon"></i></button>
-                <span>Help Center</span>
+    <header class="top-bar sticky top-0 z-50">
+        <div class="flex justify-between items-center mb-3">
+            <h1 id="shopName" class="font-black text-xl italic text-orange-600 cursor-pointer" onclick="location.reload()">LEXON MOTORS</h1>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMode()"><i id="modeIcon" class="fas fa-moon text-gray-500"></i></button>
+                <button onclick="registerUser()" class="bg-orange-600 text-white text-[10px] px-3 py-1.5 rounded-full font-bold">Register</button>
             </div>
         </div>
-        <div class="p-4 flex flex-col gap-3">
-            <div class="flex justify-between items-center">
-                <h1 id="shopName" class="font-bold text-xl text-orange-600">LEXON</h1>
-                <div class="flex gap-3 items-center">
-                    <i class="far fa-user text-lg"></i>
-                    <button class="btn-register">Register</button>
-                </div>
-            </div>
-            <div class="flex bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 items-center gap-3">
-                <i class="fas fa-search text-gray-400"></i>
-                <input type="text" placeholder="Iphone 15, Subaru, Watch..." class="bg-transparent outline-none w-full text-sm">
-                <i class="fas fa-camera text-gray-400"></i>
-            </div>
+        <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 gap-2 border focus-within:border-orange-500 transition">
+            <i class="fas fa-search text-gray-400 text-sm"></i>
+            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Tafuta gari (mf: Subaru)..." class="bg-transparent outline-none w-full text-sm">
         </div>
     </header>
 
     <section class="p-3">
-        <div class="swiper heroSwiper rounded-xl overflow-hidden h-32 shadow-sm">
-            <div class="swiper-wrapper" id="heroContent">
-                </div>
+        <div class="swiper heroSwiper rounded-2xl overflow-hidden h-36">
+            <div class="swiper-wrapper" id="bannerArea"></div>
+            <div class="swiper-pagination"></div>
         </div>
     </section>
 
-    <div class="flex overflow-x-auto gap-6 px-4 py-2 no-scrollbar text-[12px] font-medium opacity-80 border-b dark:border-gray-800">
-        <span class="text-orange-600 border-b-2 border-orange-600 pb-1">All</span>
-        <span>Featured</span>
-        <span>Flash Deals</span>
-        <span>Global Sources</span>
-    </div>
-
-    <main class="mall-grid" id="productGrid">
-        </main>
+    <main class="product-grid" id="productGrid">
+        <p class="col-span-2 text-center py-10 opacity-50">Inapakia bidhaa...</p>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         const urlParams = new URLSearchParams(window.location.search);
         const storeID = urlParams.get('v');
+        let allProducts = []; // Kuhifadhi bidhaa zote kwa ajili ya search
+        let vendorWA = "";
 
         function toggleMode() {
             document.getElementById('mainBody').classList.toggle('dark-mode');
             const icon = document.getElementById('modeIcon');
-            icon.classList.toggle('fa-sun');
-            icon.classList.toggle('fa-moon');
+            icon.className = document.getElementById('mainBody').classList.contains('dark-mode') ? 'fas fa-sun text-yellow-400' : 'fas fa-moon text-gray-500';
         }
 
-        async function loadStore() {
+        // Kitufe cha Register
+        function registerUser() {
+            const msg = encodeURIComponent("Habari Lexon Motors, nahitaji kujisajili kuwa mteja wenu.");
+            window.open(`https://wa.me/${vendorWA}?text=${msg}`, '_blank');
+        }
+
+        // KAZI YA SEARCH (Inatafuta unapoandika)
+        function searchProducts() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
+            renderGrid(filtered);
+        }
+
+        async function loadData() {
             try {
                 const res = await fetch(`${API}/api/products?v=${storeID}`);
                 const data = await res.json();
-                document.getElementById('shopName').innerText = data.vendor.name;
+                allProducts = data.products;
+                vendorWA = data.vendor.whatsapp;
+                document.getElementById('shopName').innerText = data.vendor.name.toUpperCase();
 
-                // Hero Slider
-                document.getElementById('heroContent').innerHTML = data.products.slice(0, 3).map(p => `
-                    <div class="swiper-slide"><img src="${p.img}" class="w-full h-full object-cover"></div>
-                `).join('');
-                new Swiper(".heroSwiper", { autoplay: true, loop: true });
-
-                // Product Grid
-                const grid = document.getElementById('productGrid');
-                grid.innerHTML = data.products.map((p, i) => `
-                    <div class="mall-card">
-                        <div class="flash-deal-label">Flash Deal</div>
-                        <div class="swiper cardSwiper-${i} card-swiper">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide"><img src="${p.img}"></div>
-                                <div class="swiper-slide"><img src="${p.img}"></div>
-                            </div>
-                        </div>
-                        <div class="p-2">
-                            <h3 class="text-[12px] line-clamp-2 leading-tight h-8 mb-1">${p.name}</h3>
-                            <div class="flex items-baseline">
-                                <span class="price-tag text-sm">Tsh ${p.price}</span>
-                            </div>
-                            <div class="flex items-center gap-1 mt-1">
-                                <div class="flex text-[8px] text-yellow-400">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                                <span class="text-[9px] opacity-50">(100+ sold)</span>
-                            </div>
-                            <button onclick="orderWA('${p.name}', '${data.vendor.whatsapp}')" class="w-full mt-2 border border-orange-500 text-orange-500 rounded-full py-1 text-[10px] font-bold hover:bg-orange-500 hover:text-white transition">
-                                VIEW DETAILS
-                            </button>
-                        </div>
+                // Banner
+                document.getElementById('bannerArea').innerHTML = data.products.slice(0, 3).map(p => `
+                    <div class="swiper-slide relative">
+                        <img src="${p.img}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black/40 flex items-center p-6 text-white font-bold text-lg">${p.name}</div>
                     </div>
                 `).join('');
+                new Swiper(".heroSwiper", { pagination: {el: ".swiper-pagination"}, autoplay: true });
 
-                // Init mini swipers
-                data.products.forEach((_, i) => {
-                    new Swiper(`.cardSwiper-${i}`, { nested: true });
-                });
+                renderGrid(allProducts);
 
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                document.getElementById('productGrid').innerHTML = "<p class='col-span-2 text-center text-red-500'>Duka halijapatikana.</p>";
+            }
         }
 
-        function orderWA(name, phone) {
-            window.open(`https://wa.me/${phone}?text=Habari, nahitaji bidhaa hii: ${name}`, '_blank');
+        function renderGrid(products) {
+            const grid = document.getElementById('productGrid');
+            if(products.length === 0) {
+                grid.innerHTML = "<p class='col-span-2 text-center py-10 opacity-50'>Hakuna bidhaa iliyopatikana.</p>";
+                return;
+            }
+            grid.innerHTML = products.map(p => `
+                <div class="product-card shadow-sm border border-gray-100 dark:border-gray-800">
+                    <div class="image-container">
+                        <div class="flash-tag">Flash Deal</div>
+                        <img src="${p.img}" alt="${p.name}">
+                    </div>
+                    <div class="p-3">
+                        <h3 class="text-[11px] font-medium line-clamp-2 h-8 leading-tight mb-1">${p.name}</h3>
+                        <div class="price-text">Tsh ${p.price}</div>
+                        <div class="flex items-center gap-1 mt-1">
+                            <div class="flex text-[8px] text-yellow-400">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-[9px] opacity-40">(99+ sold)</span>
+                        </div>
+                        <button onclick="orderWA('${p.name}', '${vendorWA}')" class="btn-view">
+                            VIEW DETAILS
+                        </button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        loadStore();
+        function orderWA(n, p) { 
+            const msg = encodeURIComponent(`Habari, nahitaji maelezo zaidi kuhusu gari hili: *${n}*`);
+            window.open(`https://wa.me/${p}?text=${msg}`, '_blank'); 
+        }
+        
+        loadData();
     </script>
 </body>
 </html>
