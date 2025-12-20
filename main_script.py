@@ -6,27 +6,36 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lexon_pro_v8.db'
+# Tunasajili Database (Toleo jipya kabisa v9)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lexon_final_v9.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# MUUNDO WA DATABASE
 class Merchant(db.Model):
     id = db.Column(db.String(50), primary_key=True)
     name = db.Column(db.String(100))
     whatsapp = db.Column(db.String(20))
-    logo = db.Column(db.String(500))
+    logo = db.Column(db.String(500), default="")
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     merchant_id = db.Column(db.String(50))
     name = db.Column(db.String(100))
     price = db.Column(db.String(50))
-    desc = db.Column(db.Text)
+    desc = db.Column(db.Text, default="")
     img1 = db.Column(db.String(500))
     is_sold_out = db.Column(db.Boolean, default=False)
 
 with app.app_context():
     db.create_all()
+
+# --- ROUTES (NJIA ZA MFUMO) ---
+
+# MUHIMU: Hii inazuia kosa la 404 kwenye Koyeb (Health Check)
+@app.route('/')
+def home():
+    return jsonify({"status": "Lexon Engine Online", "version": "9.0"}), 200
 
 @app.route('/api/auth', methods=['POST'])
 def auth():
@@ -34,7 +43,7 @@ def auth():
     s_id = data.get('id').lower()
     m = Merchant.query.get(s_id)
     if not m:
-        m = Merchant(id=s_id, name=data.get('name', s_id), whatsapp=data.get('whatsapp', '255'), logo="")
+        m = Merchant(id=s_id, name=data.get('name', s_id), whatsapp="255700000000")
         db.session.add(m)
         db.session.commit()
     return jsonify({"id": m.id, "name": m.name, "whatsapp": m.whatsapp, "logo": m.logo})
@@ -43,14 +52,20 @@ def auth():
 def handle_products():
     if request.method == 'POST':
         data = request.json
-        new_p = Product(merchant_id=data['id'], name=data['name'], price=data['price'], desc=data.get('desc',''), img1=data.get('img1'))
+        new_p = Product(
+            merchant_id=data['id'], 
+            name=data['name'], 
+            price=data['price'], 
+            desc=data.get('desc', ''), 
+            img1=data.get('img1')
+        )
         db.session.add(new_p)
         db.session.commit()
         return jsonify({"status": "success"})
     
-    s_id = request.args.get('v','').lower()
+    s_id = request.args.get('v', '').lower()
     m = Merchant.query.get(s_id)
-    if not m: return jsonify({"error": "Not found"}), 404
+    if not m: return jsonify({"error": "Store not found"}), 404
     items = Product.query.filter_by(merchant_id=s_id).all()
     return jsonify({
         "vendor": {"name": m.name, "whatsapp": m.whatsapp, "logo": m.logo},
@@ -63,7 +78,8 @@ def delete_p(pid):
     if p:
         db.session.delete(p)
         db.session.commit()
-    return jsonify({"status": "deleted"})
+        return jsonify({"status": "deleted"})
+    return jsonify({"status": "not found"}), 404
 
 @app.route('/api/products/soldout/<int:pid>', methods=['POST'])
 def sold_p(pid):
@@ -71,18 +87,20 @@ def sold_p(pid):
     if p:
         p.is_sold_out = not p.is_sold_out
         db.session.commit()
-    return jsonify({"status": "updated"})
+        return jsonify({"status": "updated", "sold": p.is_sold_out})
+    return jsonify({"status": "error"}), 404
 
 @app.route('/api/profile/update', methods=['POST'])
 def update_profile():
     data = request.json
     m = Merchant.query.get(data['id'].lower())
     if m:
-        m.name = data.get('name', m.name)
-        m.whatsapp = data.get('whatsapp', m.whatsapp)
-        m.logo = data.get('logo', m.logo)
+        if 'name' in data: m.name = data['name']
+        if 'whatsapp' in data: m.whatsapp = data['whatsapp']
+        if 'logo' in data: m.logo = data['logo']
         db.session.commit()
-    return jsonify({"status": "success"})
+        return jsonify({"status": "success"})
+    return jsonify({"status": "failed"}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
