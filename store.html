@@ -2,151 +2,175 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Motors | Mall</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lexon Motors | Ultra Mall</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
-        :root { --ali-orange: #FF6600; --ali-bg: #F4F4F4; }
-        body { background-color: var(--ali-bg); font-family: sans-serif; margin: 0; padding: 0; }
-        
-        /* HEADER - Inabaki ndogo isichukue nafasi */
-        .top-nav { background: white; padding: 8px 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        
-        /* GRID - Hapa ndipo tunafanya picha ziwe nyingi */
-        .mall-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); /* Inabaki 2 columns lakini kadi ni fupi zaidi */
-            gap: 6px; 
-            padding: 6px; 
+        :root { --brand: #ff4400; --bg: #f7f7f7; }
+        body { background-color: var(--bg); font-family: -apple-system, system-ui, sans-serif; }
+
+        /* HEADER: Compact & Professional */
+        .header-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 0.5px solid #e0e0e0;
         }
 
-        /* PRODUCT CARD - Tunapunguza urefu na upana */
-        .product-card { 
-            background: white; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            display: flex; 
+        /* GRID: 3 Columns for Maximum Density */
+        .mall-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Picha 3 kwenye mstari mmoja */
+            gap: 4px;
+            padding: 4px;
+        }
+
+        /* CARD: Small & Square */
+        .mini-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
             flex-direction: column;
-            border: 1px solid #eee;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
-        /* IMAGE SIZE - Hapa picha inakuwa ndogo (Square 1:1) */
-        .image-box {
+        /* SQUARE IMAGE: No Stretching */
+        .img-container {
             width: 100%;
-            padding-top: 100%; /* Inatengeneza Square kamilifu */
+            padding-top: 100%; /* Square 1:1 */
             position: relative;
-            background: #f9f9f9;
         }
-        .image-box img {
+        .img-container img {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
         }
 
-        /* MAANDISHI - Yanakuwa madogo sana ili yasijaze nafasi */
-        .info-box { padding: 6px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-title { 
-            font-size: 11px; 
-            line-height: 1.2; 
-            height: 2.4em; /* Mistari miwili tu */
-            overflow: hidden; 
+        /* TYPOGRAPHY: Small & Neat */
+        .p-title {
+            font-size: 9px;
+            line-height: 1.1;
+            height: 2.2em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            padding: 2px 4px;
             color: #333;
-            margin-bottom: 4px;
         }
-        .price-text { color: var(--ali-orange); font-weight: bold; font-size: 13px; }
-        .stats-text { font-size: 9px; color: #999; margin-top: 2px; }
-
-        .btn-view {
-            background: #fff5ef;
-            color: var(--ali-orange);
+        .p-price {
+            color: var(--brand);
+            font-weight: 800;
             font-size: 10px;
-            font-weight: bold;
-            padding: 4px;
-            border-radius: 4px;
-            text-align: center;
-            margin-top: 6px;
-            border: 1px solid #ffdab9;
+            padding: 0 4px 4px 4px;
         }
-        
-        /* SEARCH BAR NDOGO */
-        .search-mini {
-            background: #f0f0f0;
-            border-radius: 15px;
-            padding: 5px 12px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 5px;
-        }
+
+        /* SLIDER HEIGHT */
+        .hero-slider { height: 120px; border-radius: 8px; margin: 8px; overflow: hidden; }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <header class="top-nav">
-        <div class="flex justify-between items-center">
-            <h1 id="shopName" class="font-bold text-orange-600 text-sm italic">LEXON MALL</h1>
-            <button class="bg-orange-600 text-white text-[9px] px-2 py-1 rounded-full font-bold">Register</button>
+    <nav class="header-glass sticky top-0 z-[100] px-3 py-2">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-orange-600 font-black italic text-sm tracking-tighter uppercase" id="shopName">LEXON MOTORS</span>
+            <div class="flex gap-3 text-gray-500">
+                <i class="fas fa-camera text-sm"></i>
+                <i class="fas fa-shopping-cart text-sm"></i>
+            </div>
         </div>
-        <div class="search-mini">
-            <i class="fas fa-search text-gray-400 text-[10px]"></i>
-            <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Tafuta..." class="bg-transparent outline-none w-full text-[11px]">
+        <div class="bg-gray-100 rounded-full flex items-center px-3 py-1.5 gap-2 border border-gray-200">
+            <i class="fas fa-search text-gray-400 text-xs"></i>
+            <input type="text" id="searchInput" onkeyup="searchItems()" placeholder="Search smart..." class="bg-transparent text-xs outline-none w-full">
         </div>
-    </header>
+    </nav>
 
-    <main class="mall-grid" id="productGrid"></main>
+    <div class="swiper hero-slider shadow-lg">
+        <div class="swiper-wrapper" id="bannerContent">
+            </div>
+    </div>
 
+    <div class="flex gap-4 px-4 py-2 overflow-x-auto whitespace-nowrap text-[10px] font-bold text-gray-500">
+        <span class="text-orange-600 border-b-2 border-orange-600 pb-1">All Items</span>
+        <span>New Cars</span>
+        <span>Best Deals</span>
+        <span>Spare Parts</span>
+    </div>
+
+    <main class="mall-grid" id="productGrid">
+        </main>
+
+    <a id="waFab" href="#" class="fixed bottom-4 right-4 w-12 h-12 bg-green-500 text-white rounded-full shadow-2xl flex items-center justify-center text-xl z-[200]">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         const urlParams = new URLSearchParams(window.location.search);
         const storeID = urlParams.get('v');
-        let allProducts = [];
-        let vendorWA = "";
+        let productsDB = [];
+        let vendorPhone = "";
 
-        async function loadData() {
+        async function initStore() {
             try {
                 const res = await fetch(`${API}/api/products?v=${storeID}`);
                 const data = await res.json();
-                allProducts = data.products;
-                vendorWA = data.vendor.whatsapp;
-                document.getElementById('shopName').innerText = data.vendor.name.toUpperCase();
-                renderGrid(allProducts);
-            } catch (e) { console.error(e); }
+                productsDB = data.products;
+                vendorPhone = data.vendor.whatsapp;
+                
+                document.getElementById('shopName').innerText = data.vendor.name;
+                document.getElementById('waFab').href = `https://wa.me/${vendorPhone}`;
+
+                // Load Hero Slider (Slide za juu)
+                document.getElementById('bannerContent').innerHTML = data.products.slice(0, 4).map(p => `
+                    <div class="swiper-slide relative">
+                        <img src="${p.img}" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-2">
+                            <p class="text-white text-[10px] font-bold uppercase">${p.name}</p>
+                        </div>
+                    </div>
+                `).join('');
+                new Swiper(".hero-slider", { autoplay: { delay: 3000 }, loop: true });
+
+                renderUI(productsDB);
+            } catch (err) { console.error(err); }
         }
 
-        function renderGrid(products) {
+        function renderUI(items) {
             const grid = document.getElementById('productGrid');
-            grid.innerHTML = products.map(p => `
-                <div class="product-card">
-                    <div class="image-box">
+            grid.innerHTML = items.map(p => `
+                <div class="mini-card" onclick="openWA('${p.name}')">
+                    <div class="img-container">
                         <img src="${p.img}" alt="${p.name}">
                     </div>
-                    <div class="info-box">
-                        <h3 class="product-title">${p.name}</h3>
-                        <div>
-                            <div class="price-text">Tsh ${p.price}</div>
-                            <div class="stats-text">⭐ 5.0 | 100+ sold</div>
-                        </div>
-                        <button onclick="orderWA('${p.name}', '${vendorWA}')" class="btn-view">
-                            ANGALIA
-                        </button>
+                    <h3 class="p-title">${p.name}</h3>
+                    <div class="p-price">Tsh ${p.price}</div>
+                    <div class="px-1 pb-1 flex justify-between items-center opacity-40">
+                         <span class="text-[7px]">⭐ 5.0</span>
+                         <span class="text-[7px]">100+ Sold</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        function searchProducts() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allProducts.filter(p => p.name.toLowerCase().includes(term));
-            renderGrid(filtered);
+        function searchItems() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = productsDB.filter(x => x.name.toLowerCase().includes(val));
+            renderUI(filtered);
         }
 
-        function orderWA(n, p) { 
-            window.open(`https://wa.me/${p}?text=Nahitaji: ${n}`, '_blank'); 
+        function openWA(name) {
+            window.open(`https://wa.me/${vendorPhone}?text=Nahitaji: ${name}`, '_blank');
         }
-        
-        loadData();
+
+        initStore();
     </script>
 </body>
 </html>
