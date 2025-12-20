@@ -3,174 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lexon Motors | Ultra Mall</title>
+    <title>Lexon Motors | Smart Mall</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
-        :root { --brand: #ff4400; --bg: #f7f7f7; }
-        body { background-color: var(--bg); font-family: -apple-system, system-ui, sans-serif; }
-
-        /* HEADER: Compact & Professional */
-        .header-glass {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 0.5px solid #e0e0e0;
-        }
-
-        /* GRID: 3 Columns for Maximum Density */
-        .mall-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Picha 3 kwenye mstari mmoja */
-            gap: 4px;
-            padding: 4px;
-        }
-
-        /* CARD: Small & Square */
-        .mini-card {
-            background: white;
-            border-radius: 4px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        /* SQUARE IMAGE: No Stretching */
-        .img-container {
-            width: 100%;
-            padding-top: 100%; /* Square 1:1 */
-            position: relative;
-        }
-        .img-container img {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
-
-        /* TYPOGRAPHY: Small & Neat */
-        .p-title {
-            font-size: 9px;
-            line-height: 1.1;
-            height: 2.2em;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            padding: 2px 4px;
-            color: #333;
-        }
-        .p-price {
-            color: var(--brand);
-            font-weight: 800;
-            font-size: 10px;
-            padding: 0 4px 4px 4px;
-        }
-
-        /* SLIDER HEIGHT */
-        .hero-slider { height: 120px; border-radius: 8px; margin: 8px; overflow: hidden; }
-
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar { display: none; }
+        :root { --brand: #ff4400; --bg: #f2f2f2; }
+        body { background-color: var(--bg); font-family: -apple-system, system-ui, sans-serif; margin: 0; }
+        .glass-nav { background: white; border-bottom: 0.5px solid #ddd; position: sticky; top: 0; z-index: 1000; padding: 8px 12px; }
+        
+        /* High Density Grid - 3 per row */
+        .mall-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; }
+        
+        .p-card { background: white; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        
+        /* Square Image Box */
+        .img-box { width: 100%; padding-top: 100%; position: relative; background: #eee; }
+        .img-box img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        
+        .p-info { padding: 4px; flex-grow: 1; display: flex; flex-direction: column; }
+        .p-name { font-size: 9px; font-weight: 700; color: #111; line-height: 1.1; height: 2.2em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .p-desc { font-size: 7.5px; color: #777; margin: 2px 0; line-height: 1.1; height: 2.2em; overflow: hidden; }
+        .p-price { color: var(--brand); font-weight: 800; font-size: 10px; margin-top: auto; }
+        
+        .wa-tag { font-size: 7.5px; color: #25D366; font-weight: bold; border-top: 0.3px solid #eee; padding-top: 2px; margin-top: 2px; display: flex; align-items: center; gap: 2px; }
+        .hero-slider { height: 115px; border-radius: 6px; margin: 6px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <nav class="header-glass sticky top-0 z-[100] px-3 py-2">
+    <header class="glass-nav">
         <div class="flex justify-between items-center mb-2">
-            <span class="text-orange-600 font-black italic text-sm tracking-tighter uppercase" id="shopName">LEXON MOTORS</span>
-            <div class="flex gap-3 text-gray-500">
-                <i class="fas fa-camera text-sm"></i>
-                <i class="fas fa-shopping-cart text-sm"></i>
-            </div>
+            <h1 id="shopName" class="text-orange-600 font-black italic text-xs uppercase">LEXON MOTORS</h1>
+            <div class="flex gap-3"><i class="fas fa-search text-gray-400 text-xs"></i><i class="fas fa-bars text-gray-400 text-xs"></i></div>
         </div>
-        <div class="bg-gray-100 rounded-full flex items-center px-3 py-1.5 gap-2 border border-gray-200">
-            <i class="fas fa-search text-gray-400 text-xs"></i>
-            <input type="text" id="searchInput" onkeyup="searchItems()" placeholder="Search smart..." class="bg-transparent text-xs outline-none w-full">
+        <div class="bg-gray-100 rounded px-2 py-1 flex items-center gap-2">
+            <input type="text" id="searchInput" onkeyup="search()" placeholder="Tafuta..." class="bg-transparent text-[10px] outline-none w-full">
         </div>
-    </nav>
+    </header>
 
-    <div class="swiper hero-slider shadow-lg">
-        <div class="swiper-wrapper" id="bannerContent">
-            </div>
-    </div>
+    <div class="swiper hero-slider shadow-sm"><div class="swiper-wrapper" id="bannerArea"></div></div>
 
-    <div class="flex gap-4 px-4 py-2 overflow-x-auto whitespace-nowrap text-[10px] font-bold text-gray-500">
-        <span class="text-orange-600 border-b-2 border-orange-600 pb-1">All Items</span>
-        <span>New Cars</span>
-        <span>Best Deals</span>
-        <span>Spare Parts</span>
-    </div>
-
-    <main class="mall-grid" id="productGrid">
-        </main>
-
-    <a id="waFab" href="#" class="fixed bottom-4 right-4 w-12 h-12 bg-green-500 text-white rounded-full shadow-2xl flex items-center justify-center text-xl z-[200]">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <main class="mall-grid" id="productGrid"></main>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        const urlParams = new URLSearchParams(window.location.search);
-        const storeID = urlParams.get('v');
-        let productsDB = [];
-        let vendorPhone = "";
+        const storeID = new URLSearchParams(window.location.search).get('v');
+        let products = [], wa = "";
 
-        async function initStore() {
+        async function init() {
             try {
                 const res = await fetch(`${API}/api/products?v=${storeID}`);
                 const data = await res.json();
-                productsDB = data.products;
-                vendorPhone = data.vendor.whatsapp;
-                
+                products = data.products;
+                wa = data.vendor.whatsapp;
                 document.getElementById('shopName').innerText = data.vendor.name;
-                document.getElementById('waFab').href = `https://wa.me/${vendorPhone}`;
-
-                // Load Hero Slider (Slide za juu)
-                document.getElementById('bannerContent').innerHTML = data.products.slice(0, 4).map(p => `
-                    <div class="swiper-slide relative">
-                        <img src="${p.img}" class="w-full h-full object-cover">
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 p-2">
-                            <p class="text-white text-[10px] font-bold uppercase">${p.name}</p>
-                        </div>
-                    </div>
+                
+                document.getElementById('bannerArea').innerHTML = products.slice(0, 3).map(p => `
+                    <div class="swiper-slide"><img src="${p.img}" class="w-full h-full object-cover"></div>
                 `).join('');
-                new Swiper(".hero-slider", { autoplay: { delay: 3000 }, loop: true });
-
-                renderUI(productsDB);
-            } catch (err) { console.error(err); }
+                new Swiper(".hero-slider", { autoplay: true, loop: true });
+                
+                render(products);
+            } catch (e) { console.error(e); }
         }
 
-        function renderUI(items) {
+        function render(list) {
             const grid = document.getElementById('productGrid');
-            grid.innerHTML = items.map(p => `
-                <div class="mini-card" onclick="openWA('${p.name}')">
-                    <div class="img-container">
-                        <img src="${p.img}" alt="${p.name}">
-                    </div>
-                    <h3 class="p-title">${p.name}</h3>
-                    <div class="p-price">Tsh ${p.price}</div>
-                    <div class="px-1 pb-1 flex justify-between items-center opacity-40">
-                         <span class="text-[7px]">⭐ 5.0</span>
-                         <span class="text-[7px]">100+ Sold</span>
+            grid.innerHTML = list.map(p => `
+                <div class="p-card" onclick="window.open('https://wa.me/${wa}?text=Nahitaji: ${p.name}')">
+                    <div class="img-box"><img src="${p.img}"></div>
+                    <div class="p-info">
+                        <div class="p-name">${p.name}</div>
+                        <div class="p-desc">${p.description || 'Gari safi, piga simu sasa kwa maelezo zaidi.'}</div>
+                        <div class="p-price">Tsh ${p.price}</div>
+                        <div class="wa-tag"><i class="fab fa-whatsapp"></i> <span>${wa}</span></div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function searchItems() {
+        function search() {
             const val = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = productsDB.filter(x => x.name.toLowerCase().includes(val));
-            renderUI(filtered);
+            render(products.filter(p => p.name.toLowerCase().includes(val)));
         }
-
-        function openWA(name) {
-            window.open(`https://wa.me/${vendorPhone}?text=Nahitaji: ${name}`, '_blank');
-        }
-
-        initStore();
+        init();
     </script>
 </body>
 </html>
