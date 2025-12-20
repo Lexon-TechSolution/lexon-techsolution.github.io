@@ -1,4 +1,5 @@
 flask
 flask-cors
-pg8000
+flask-sqlalchemy
 sendgrid
+gunicorn
