@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Church | Enterprise ERP v5.0</title>
+    <title>Lexon Church | Enterprise ERP v6.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -11,105 +11,123 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: #f8fafc; }
         .hidden { display: none; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 2rem; }
-        .btn-blue { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); transition: 0.3s; }
+        .btn-blue { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); transition: 0.3s; padding: 16px; border-radius: 16px; font-weight: 800; color: white; width: 100%; text-align: center; display: block; }
         input, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 16px; color: white; width: 100%; outline: none; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
-<div class="max-w-[480px] mx-auto min-h-screen relative p-4">
+<div class="max-w-[480px] mx-auto min-h-screen relative p-4 pb-20">
 
     <section id="login-page" class="flex flex-col justify-center min-h-[90vh]">
         <div class="text-center mb-10">
-            <h1 class="text-4xl font-black italic text-blue-500 tracking-tighter">GRACE AND GROLY ERP</h1>
-            <p class="text-slate-500 text-sm font-bold uppercase tracking-widest">Digital Church Office</p>
+            <div id="login-logo-preview" class="w-20 h-20 glass mx-auto flex items-center justify-center mb-4 overflow-hidden">
+                <i class="fas fa-church text-3xl text-blue-500"></i>
+            </div>
+            <h1 class="text-3xl font-black italic text-blue-500">LEXON ERP</h1>
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Mfumo wa Kanisa Digital</p>
         </div>
-        <div class="glass p-8 space-y-4">
-            <input type="text" id="admin-user" placeholder="Username (admin)">
-            <input type="password" id="admin-pass" placeholder="Password (1234)">
-            <button onclick="handleLogin()" class="btn-blue w-full py-4 rounded-2xl font-black shadow-lg shadow-blue-500/20">INGIA KWENYE MFUMO</button>
-            <button onclick="showPage('user-form-page')" class="w-full text-blue-400 text-xs font-bold mt-4 uppercase underline">Fomu ya Usajili Washirika</button>
+        <div class="glass p-8 space-y-2">
+            <input type="text" id="admin-user" placeholder="Jina la Mtumiaji (admin)">
+            <input type="password" id="admin-pass" placeholder="Nenosiri (1234)">
+            <button onclick="handleLogin()" class="btn-blue">INGIA KWENYE MFUMO</button>
+            <button onclick="showPage('user-form-page')" class="w-full text-blue-400 text-xs font-bold mt-4 uppercase underline text-center">Fomu ya Usajili Washirika</button>
         </div>
     </section>
 
     <section id="admin-dash" class="hidden">
-        <header class="py-8 text-center glass mb-6 rounded-b-[3rem]">
-            <h2 id="display-church-name" class="text-2xl font-black text-blue-500 uppercase">CHURCH NAME</h2>
-            <div class="flex justify-center gap-6 mt-4">
-                <div class="text-center">
-                    <p class="text-[10px] text-slate-500 font-bold uppercase">Washirika</p>
-                    <p id="count-total" class="text-xl font-black text-white">0</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-[10px] text-slate-500 font-bold uppercase">Viongozi</p>
-                    <p id="count-leaders" class="text-xl font-black text-purple-400">0</p>
-                </div>
+        <header class="py-8 text-center glass mb-6">
+            <div id="dash-logo-preview" class="w-16 h-16 glass mx-auto flex items-center justify-center mb-3 overflow-hidden rounded-2xl">
+                 <i class="fas fa-church text-2xl text-blue-500"></i>
+            </div>
+            <h2 id="display-church-name" class="text-xl font-black text-blue-500 uppercase italic">CHURCH NAME</h2>
+            <div class="flex justify-center gap-6 mt-4 border-t border-white/5 pt-4">
+                <div><p class="text-[10px] text-slate-500 font-bold uppercase">Washirika</p><p id="count-total" class="text-xl font-black">0</p></div>
+                <div><p class="text-[10px] text-slate-500 font-bold uppercase">Viongozi</p><p id="count-leaders" class="text-xl font-black text-purple-400">0</p></div>
             </div>
         </header>
 
         <div class="grid grid-cols-2 gap-4">
             <button onclick="showPage('list-page')" class="glass p-6 text-left hover:bg-white/5">
                 <i class="fas fa-users text-blue-500 mb-2"></i>
-                <p class="font-bold text-sm">Washirika</p>
+                <p class="font-bold text-sm">Orodha</p>
             </button>
             <button onclick="showPage('leaders-page')" class="glass p-6 text-left hover:bg-white/5">
                 <i class="fas fa-user-tie text-purple-400 mb-2"></i>
                 <p class="font-bold text-sm">Viongozi</p>
             </button>
-            <button onclick="showPage('finance-list-page')" class="glass p-6 text-left hover:bg-white/5">
-                <i class="fas fa-money-bill-wave text-emerald-400 mb-2"></i>
-                <p class="font-bold text-sm">Zaka & Maombi</p>
-            </button>
             <button onclick="showPage('settings-page')" class="glass p-6 text-left hover:bg-white/5">
                 <i class="fas fa-cog text-slate-500 mb-2"></i>
                 <p class="font-bold text-sm">Mipangilio</p>
             </button>
+            <button onclick="location.reload()" class="glass p-6 text-left hover:bg-red-500/10">
+                <i class="fas fa-power-off text-red-500 mb-2"></i>
+                <p class="font-bold text-sm">Logout</p>
+            </button>
         </div>
-        <button onclick="location.reload()" class="w-full mt-10 text-red-500 text-[10px] font-black uppercase tracking-widest">Logout</button>
+    </section>
+
+    <section id="leaders-page" class="hidden py-4">
+        <button onclick="showPage('admin-dash')" class="mb-6 text-slate-500"><i class="fas fa-arrow-left"></i> Rudi</button>
+        <h2 class="text-xl font-black mb-4 italic text-purple-400 underline">Sajili Kiongozi Mpya</h2>
+        <div class="glass p-6 mb-6">
+            <input type="text" id="l-name" placeholder="Jina la Kiongozi">
+            <input type="text" id="l-rank" placeholder="Cheo (mf: Shemasi, Mwalimu)">
+            <button onclick="saveLeader()" class="w-full bg-purple-600 p-4 rounded-xl font-bold">HIFADHI KIONGOZI</button>
+        </div>
+        <div id="leader-items" class="space-y-2"></div>
+    </section>
+
+    <section id="settings-page" class="hidden py-4">
+        <button onclick="showPage('admin-dash')" class="mb-6 text-slate-500"><i class="fas fa-arrow-left"></i> Rudi</button>
+        <h2 class="text-xl font-black mb-4 italic">Mipangilio ya Mfumo</h2>
+        <div class="glass p-6 space-y-4">
+            <div>
+                <label class="text-[10px] font-bold uppercase text-slate-500 ml-1">Logo ya Kanisa</label>
+                <input type="file" id="logo-input" accept="image/*" onchange="processLogo(this)">
+            </div>
+            <input type="text" id="set-name" placeholder="Jina la Kanisa">
+            <input type="text" id="set-pastor" placeholder="Jina la Mchungaji">
+            <button onclick="saveSettings()" class="btn-blue">HIFADHI MABADILIKO</button>
+        </div>
     </section>
 
     <section id="user-form-page" class="hidden py-6">
         <div class="glass p-8">
-            <h2 class="text-center text-xl font-black text-blue-500 mb-6 uppercase italic">Sajili Muumini</h2>
+            <h2 class="text-center text-xl font-black text-blue-500 mb-6 uppercase">USAJILI WA WASHIRIKA</h2>
             <input type="text" id="u-name" placeholder="Jina Kamili">
             <input type="email" id="u-email" placeholder="Email Address">
             <input type="tel" id="u-phone" placeholder="Namba ya Simu">
             <select id="u-type">
                 <option value="Mshirika">Mshirika</option>
-                <option value="Mgeni">Mgeni</option>
+                <option value="Mgeni">Mgeni Leo</option>
             </select>
-            <button id="submit-btn" onclick="registerMember()" class="btn-blue w-full py-4 rounded-2xl font-black shadow-xl">
-                KAMILISHA USAJILI
-            </button>
-            
-            <div id="loading-area" class="mt-6 hidden text-center">
-                <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full mb-2"></div>
-                <p class="text-[10px] text-blue-400 font-bold uppercase italic">Inatuma Auto-Welcome Email & SMS...</p>
+            <button id="submit-btn" onclick="registerMember()" class="btn-blue">KAMILISHA USAJILI</button>
+            <div id="loader" class="hidden text-center mt-4">
+                <p class="text-xs text-blue-400 italic animate-pulse">Inatuma Automation Email...</p>
             </div>
-
-            <button onclick="location.reload()" class="w-full text-slate-500 text-xs mt-6">Rudi Nyuma</button>
+            <button onclick="location.reload()" class="w-full text-slate-500 text-xs mt-6 text-center block">Rudi Nyuma</button>
         </div>
     </section>
 
-    <section id="list-page" class="hidden py-6">
-        <button onclick="showPage('admin-dash')" class="mb-4 text-slate-400"><i class="fas fa-arrow-left"></i> Rudi</button>
-        <h2 class="text-2xl font-black mb-6">Database Washirika</h2>
-        <div id="member-items" class="space-y-3"></div>
+    <section id="list-page" class="hidden py-4">
+        <button onclick="showPage('admin-dash')" class="mb-6 text-slate-500"><i class="fas fa-arrow-left"></i> Rudi</button>
+        <h2 class="text-xl font-black mb-4 italic">Orodha ya Washirika</h2>
+        <div id="member-items" class="space-y-2"></div>
     </section>
 
 </div>
 
 <script>
-    // --- DATABASE MOCKUP ---
-    let dbMembers = JSON.parse(localStorage.getItem('lex_erp_members')) || [];
-    let dbLeaders = JSON.parse(localStorage.getItem('lex_erp_leaders')) || [];
-    let config = JSON.parse(localStorage.getItem('lex_erp_config')) || {
+    let dbMembers = JSON.parse(localStorage.getItem('lex_v6_members')) || [];
+    let dbLeaders = JSON.parse(localStorage.getItem('lex_v6_leaders')) || [];
+    let config = JSON.parse(localStorage.getItem('lex_v6_config')) || {
         name: "LEXON TECH CHURCH",
-        pass: "1234",
-        senderEmail: "admin@lexon.com" // Lazima iwe verified kwenye SendGrid
+        pastor: "Admin",
+        logo: "",
+        pass: "1234"
     };
 
-    // --- NAVIGATION ---
     function showPage(id) {
         document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
@@ -118,79 +136,100 @@
     function handleLogin() {
         const u = document.getElementById('admin-user').value;
         const p = document.getElementById('admin-pass').value;
-        if(u === "admin" && p === config.pass) {
-            showPage('admin-dash');
-            updateDashboard();
-        } else { alert("Login Error!"); }
+        if(u === "admin" && p === config.pass) { showPage('admin-dash'); initUI(); }
+        else { alert("Login Error! Tumia admin / 1234"); }
     }
 
-    // --- AUTOMATION: EMAIL & SMS ---
-    async function triggerAutomation(email, phone, name) {
-        // 1. SENDGRID EMAIL LOGIC
-        const sgKey = "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";
-        const emailBody = {
-            personalizations: [{ to: [{ email: email }] }],
-            from: { email: config.senderEmail },
-            subject: "Karibu Sana " + config.name,
-            content: [{ type: "text/plain", value: `Habari ${name},\n\nKaribu sana katika familia ya ${config.name}. Mungu akubariki sana!` }]
-        };
+    function processLogo(input) {
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => { 
+                config.logo = e.target.result;
+                alert("Logo imepokelewa!");
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 
-        try {
-            await fetch("https://api.sendgrid.com/v3/mail/send", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${sgKey}`, "Content-Type": "application/json" },
-                body: JSON.stringify(emailBody)
-            });
-        } catch(e) { console.log("Email bypass"); }
+    function saveSettings() {
+        config.name = document.getElementById('set-name').value || config.name;
+        config.pastor = document.getElementById('set-pastor').value || config.pastor;
+        localStorage.setItem('lex_v6_config', JSON.stringify(config));
+        alert("Mipangilio Imehifadhiwa!");
+        initUI();
+        showPage('admin-dash');
+    }
 
-        // 2. SMS SIMULATION (Waambie wateja hii inaunganishwa na Beem API)
-        console.log(`SMS Simulated to ${phone}`);
+    function saveLeader() {
+        const l = { name: document.getElementById('l-name').value, rank: document.getElementById('l-rank').value, id: Date.now() };
+        if(!l.name) return alert("Jaza Jina!");
+        dbLeaders.unshift(l);
+        localStorage.setItem('lex_v6_leaders', JSON.stringify(dbLeaders));
+        document.getElementById('l-name').value = '';
+        document.getElementById('l-rank').value = '';
+        initUI();
     }
 
     async function registerMember() {
-        const m = {
-            name: document.getElementById('u-name').value,
-            email: document.getElementById('u-email').value,
-            phone: document.getElementById('u-phone').value,
-            type: document.getElementById('u-type').value,
-            id: Date.now()
-        };
+        const m = { name: document.getElementById('u-name').value, email: document.getElementById('u-email').value, phone: document.getElementById('u-phone').value, type: document.getElementById('u-type').value, id: Date.now() };
+        if(!m.name || !m.email) return alert("Jaza kila kitu!");
 
-        if(!m.name || !m.email) return alert("Tafadhali jaza Jina na Email!");
-
-        // UI Loading State
         document.getElementById('submit-btn').classList.add('hidden');
-        document.getElementById('loading-area').classList.remove('hidden');
+        document.getElementById('loader').classList.remove('hidden');
 
-        // Save to DB
         dbMembers.unshift(m);
-        localStorage.setItem('lex_erp_members', JSON.stringify(dbMembers));
+        localStorage.setItem('lex_v6_members', JSON.stringify(dbMembers));
 
-        // Trigger SendGrid & SMS
-        await triggerAutomation(m.email, m.phone, m.name);
+        // SendGrid Logic (Simplified for Demo)
+        try {
+            const sgKey = "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";
+            await fetch("https://api.sendgrid.com/v3/mail/send", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${sgKey}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    personalizations: [{ to: [{ email: m.email }] }],
+                    from: { email: "admin@lexontech.com" }, // Badilisha na verified email yako
+                    subject: "Karibu " + config.name,
+                    content: [{ type: "text/plain", value: `Habari ${m.name}, Karibu sana kanisani kwetu!` }]
+                })
+            });
+        } catch(e) {}
 
-        alert(`Usajili Umekamilika!\n\n1. Welcome Email Imetumwa kwa: ${m.email}\n2. Welcome SMS Imetumwa kwa: ${m.phone}`);
+        alert("Usajili Umekamilika!");
         location.reload();
     }
 
-    function updateDashboard() {
+    function initUI() {
         document.getElementById('display-church-name').innerText = config.name;
         document.getElementById('count-total').innerText = dbMembers.length;
         document.getElementById('count-leaders').innerText = dbLeaders.length;
 
+        // Render Logos
+        if(config.logo) {
+            const img = `<img src="${config.logo}" class="w-full h-full object-cover">`;
+            document.getElementById('login-logo-preview').innerHTML = img;
+            document.getElementById('dash-logo-preview').innerHTML = img;
+        }
+
+        // Render Members
         document.getElementById('member-items').innerHTML = dbMembers.map(m => `
-            <div class="glass p-5 flex justify-between items-center border-l-4 border-blue-500 mb-2">
-                <div>
-                    <p class="font-bold text-white text-sm">${m.name}</p>
-                    <p class="text-[9px] text-blue-400 font-bold uppercase">${m.type} | ${m.email}</p>
-                </div>
-                <a href="tel:${m.phone}" class="w-10 h-10 bg-blue-500/10 text-blue-500 rounded-full flex items-center justify-center"><i class="fas fa-phone-alt text-xs"></i></a>
+            <div class="glass p-4 flex justify-between items-center mb-2">
+                <div><p class="font-bold text-sm text-white">${m.name}</p><p class="text-[9px] text-blue-400 font-bold uppercase">${m.type}</p></div>
+                <a href="tel:${m.phone}" class="text-blue-500"><i class="fas fa-phone"></i></a>
+            </div>
+        `).join('');
+
+        // Render Leaders
+        document.getElementById('leader-items').innerHTML = dbLeaders.map(l => `
+            <div class="glass p-4 flex justify-between items-center border-l-4 border-purple-500 mb-2">
+                <div><p class="font-bold text-sm text-white">${l.name}</p><p class="text-[9px] text-purple-400 font-black uppercase">${l.rank}</p></div>
+                <button onclick="dbLeaders = dbLeaders.filter(x => x.id !== ${l.id}); localStorage.setItem('lex_v6_leaders', JSON.stringify(dbLeaders)); initUI();" class="text-red-900"><i class="fas fa-trash"></i></button>
             </div>
         `).join('');
     }
 
-    // Auto-init if needed
-    window.onload = () => { if(dbMembers.length > 0) updateDashboard(); };
+    // Load initial branding
+    window.onload = () => { if(config.logo) initUI(); };
 </script>
 
 </body>
