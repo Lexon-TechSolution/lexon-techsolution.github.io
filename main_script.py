@@ -4,14 +4,14 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-CORS(app)
+# Tumeongeza maboresho ya CORS hapa ili kuzuia kosa la "Imeshindwa kusoma bidhaa"
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-# Tunasajili Database (Toleo jipya kabisa v9)
+# Tunabaki na Database yako v9 kama ulivyoelekeza
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///lexon_final_v9.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# MUUNDO WA DATABASE
 class Merchant(db.Model):
     id = db.Column(db.String(50), primary_key=True)
     name = db.Column(db.String(100))
@@ -30,9 +30,6 @@ class Product(db.Model):
 with app.app_context():
     db.create_all()
 
-# --- ROUTES (NJIA ZA MFUMO) ---
-
-# MUHIMU: Hii inazuia kosa la 404 kwenye Koyeb (Health Check)
 @app.route('/')
 def home():
     return jsonify({"status": "Lexon Engine Online", "version": "9.0"}), 200
@@ -40,7 +37,8 @@ def home():
 @app.route('/api/auth', methods=['POST'])
 def auth():
     data = request.json
-    s_id = data.get('id').lower()
+    # .strip() inahakikisha hata mteja akibonyeza "space" kwa bahati mbaya ID inasomeka
+    s_id = data.get('id').lower().strip()
     m = Merchant.query.get(s_id)
     if not m:
         m = Merchant(id=s_id, name=data.get('name', s_id), whatsapp="255700000000")
@@ -53,7 +51,7 @@ def handle_products():
     if request.method == 'POST':
         data = request.json
         new_p = Product(
-            merchant_id=data['id'], 
+            merchant_id=data['id'].lower().strip(), 
             name=data['name'], 
             price=data['price'], 
             desc=data.get('desc', ''), 
@@ -63,7 +61,7 @@ def handle_products():
         db.session.commit()
         return jsonify({"status": "success"})
     
-    s_id = request.args.get('v', '').lower()
+    s_id = request.args.get('v', '').lower().strip()
     m = Merchant.query.get(s_id)
     if not m: return jsonify({"error": "Store not found"}), 404
     items = Product.query.filter_by(merchant_id=s_id).all()
@@ -93,7 +91,7 @@ def sold_p(pid):
 @app.route('/api/profile/update', methods=['POST'])
 def update_profile():
     data = request.json
-    m = Merchant.query.get(data['id'].lower())
+    m = Merchant.query.get(data['id'].lower().strip())
     if m:
         if 'name' in data: m.name = data['name']
         if 'whatsapp' in data: m.whatsapp = data['whatsapp']
