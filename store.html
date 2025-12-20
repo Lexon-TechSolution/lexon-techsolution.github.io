@@ -3,167 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Store | Shopping</title>
+    <title>Lexon Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body { background: #fdfdfd; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .product-card { background: white; border-radius: 2rem; transition: 0.4s; border: 1px solid #f0f0f0; overflow: hidden; }
-        .product-card:hover { transform: translateY(-8px); box-shadow: 0 30px 50px -10px rgba(0,0,0,0.08); }
-        .cart-badge { background: #6366f1; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; position: absolute; -top: 5px; -right: 5px; }
-        .category-chip { background: #f1f5f9; padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-        .category-chip.active { background: #6366f1; color: white; }
-    </style>
 </head>
-<body class="pb-24">
-
-    <nav class="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-black italic">L</div>
-            <h1 id="shopName" class="font-black text-gray-900 tracking-tighter uppercase">...</h1>
-        </div>
-        <div class="relative bg-gray-100 p-3 rounded-xl cursor-pointer" onclick="toggleCart()">
-            <i class="fas fa-shopping-bag text-gray-700"></i>
-            <span id="cartCount" class="cart-badge">0</span>
-        </div>
+<body class="bg-gray-50 pb-20">
+    <nav class="bg-white border-b p-6 sticky top-0 z-50 flex justify-between items-center">
+        <h1 id="shopName" class="font-black text-indigo-600 uppercase">...</h1>
+        <div class="bg-gray-100 p-3 rounded-xl"><i class="fas fa-shopping-bag"></i></div>
     </nav>
 
-    <header class="px-6 py-8">
-        <div class="bg-indigo-600 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
-            <div class="relative z-10">
-                <h2 class="text-3xl font-black mb-2 leading-tight">Gundua Bidhaa <br>Bora Kwetu.</h2>
-                <p class="text-indigo-100 text-sm opacity-80">Karibu kwenye duka letu la kisasa.</p>
-            </div>
-            <i class="fas fa-bolt absolute -right-4 -bottom-4 text-9xl text-white/10 rotate-12"></i>
+    <div id="productGrid" class="p-6 grid grid-cols-2 gap-6">
         </div>
-    </header>
-
-    <div class="px-6 mb-8 flex gap-3 overflow-x-auto no-scrollbar">
-        <div class="category-chip active">Zote</div>
-        <div class="category-chip">Mpya</div>
-        <div class="category-chip">Inapendwa</div>
-    </div>
-
-    <main class="px-6">
-        <div id="productGrid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="animate-pulse bg-gray-200 h-64 rounded-3xl"></div>
-            <div class="animate-pulse bg-gray-200 h-64 rounded-3xl"></div>
-        </div>
-    </main>
-
-    <div id="cartDrawer" class="fixed bottom-0 left-0 right-0 bg-white border-t rounded-t-[2.5rem] p-8 translate-y-full transition-transform z-[100] shadow-2xl">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold">Orodha ya Agizo</h3>
-            <button onclick="toggleCart()" class="text-gray-400"><i class="fas fa-times text-xl"></i></button>
-        </div>
-        <div id="cartItems" class="space-y-4 mb-8 max-h-60 overflow-y-auto">
-            </div>
-        <div class="flex justify-between items-center mb-6 pt-4 border-t">
-            <span class="text-gray-500 font-bold uppercase text-xs tracking-widest">Jumla</span>
-            <span id="totalPrice" class="text-2xl font-black text-indigo-600">Tsh 0</span>
-        </div>
-        <button onclick="checkoutWhatsApp()" class="w-full bg-green-500 text-white p-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3">
-            <i class="fab fa-whatsapp"></i> KAMLISHA AGIZO
-        </button>
-    </div>
 
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         const urlParams = new URLSearchParams(window.location.search);
         const storeID = urlParams.get('v');
-        let cart = [];
-        let merchantWA = "";
-
-        if (!storeID) {
-            document.body.innerHTML = "<div class='p-20 text-center font-bold'>Duka halikutambuliwa. Tumia link sahihi.</div>";
-        } else {
-            loadStore();
-        }
 
         async function loadStore() {
-            try {
-                const res = await fetch(`${API}/api/products?v=${storeID}`);
-                const data = await res.json();
-                
-                document.getElementById('shopName').innerText = data.vendor_name;
-                merchantWA = data.whatsapp || "255712345678"; // Namba ikikosekana
-                
-                const grid = document.getElementById('productGrid');
-                if (data.products.length === 0) {
-                    grid.innerHTML = "<p class='col-span-2 text-center text-gray-400 py-20'>Bado hakuna bidhaa.</p>";
-                    return;
-                }
-
-                grid.innerHTML = data.products.map((p, index) => `
-                    <div class="product-card">
-                        <div class="relative">
-                            <img src="${p.img1}" class="w-full h-48 object-cover">
-                            <button onclick="addToCart('${p.name}', '${p.price}')" class="absolute bottom-4 right-4 bg-white/90 backdrop-blur w-12 h-12 rounded-2xl shadow-xl flex items-center justify-center text-indigo-600">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                        <div class="p-5">
-                            <h4 class="font-bold text-gray-800 text-sm mb-1">${p.name}</h4>
-                            <p class="text-indigo-600 font-black text-md">Tsh ${p.price}</p>
-                        </div>
+            const res = await fetch(`${API}/api/products?v=${storeID}`);
+            const data = await res.json();
+            document.getElementById('shopName').innerText = data.vendor_name;
+            document.getElementById('productGrid').innerHTML = data.products.map(p => `
+                <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100">
+                    <img src="${p.img1}" class="w-full h-40 object-cover">
+                    <div class="p-4">
+                        <h4 class="font-bold text-sm mb-1">${p.name}</h4>
+                        <p class="text-indigo-600 font-black text-xs mb-4">Tsh ${p.price}</p>
+                        <button onclick="orderWA('${p.name}', '${p.price}', '${data.whatsapp}')" class="w-full bg-green-500 text-white p-3 rounded-xl text-[10px] font-bold">AGIZA WHATSAPP</button>
                     </div>
-                `).join('');
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        }
-
-        function addToCart(name, price) {
-            cart.push({name, price});
-            updateCartUI();
-            // Optional: Shake cart icon
-        }
-
-        function updateCartUI() {
-            document.getElementById('cartCount').innerText = cart.length;
-            const cartItems = document.getElementById('cartItems');
-            cartItems.innerHTML = cart.map((item, idx) => `
-                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl">
-                    <div>
-                        <p class="font-bold text-sm">${item.name}</p>
-                        <p class="text-indigo-500 font-black text-xs">Tsh ${item.price}</p>
-                    </div>
-                    <button onclick="removeFromCart(${idx})" class="text-red-400 p-2"><i class="fas fa-trash"></i></button>
                 </div>
             `).join('');
-
-            const total = cart.reduce((sum, item) => sum + parseInt(item.price.replace(/,/g, '')), 0);
-            document.getElementById('totalPrice').innerText = "Tsh " + total.toLocaleString();
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartUI();
+        function orderWA(name, price, phone) {
+            const msg = `Habari, nahitaji agizo:\n*Bidhaa:* ${name}\n*Bei:* Tsh ${price}`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
-
-        function toggleCart() {
-            const drawer = document.getElementById('cartDrawer');
-            if (drawer.style.transform === "translateY(0%)") {
-                drawer.style.transform = "translateY(100%)";
-            } else {
-                drawer.style.transform = "translateY(0%)";
-            }
-        }
-
-        function checkoutWhatsApp() {
-            if (cart.length === 0) return alert("Kapu ni tupu!");
-            
-            let message = `*AGIZO JIPYA - ${document.getElementById('shopName').innerText}*\n\n`;
-            cart.forEach((item, i) => {
-                message += `${i+1}. ${item.name} - Tsh ${item.price}\n`;
-            });
-            
-            const total = document.getElementById('totalPrice').innerText;
-            message += `\n*JUMLA: ${total}*\n\nNitumie maelekezo ya malipo tafadhali.`;
-            
-            const cleanPhone = merchantWA.replace('+', '');
-            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
-        }
+        loadStore();
     </script>
 </body>
 </html>
