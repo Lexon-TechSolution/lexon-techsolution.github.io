@@ -3,93 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Store</title>
+    <title>Lexon Motors | Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
-        .product-card { transition: transform 0.2s; }
-        .product-card:hover { transform: translateY(-5px); }
+        :root { --accent: #4f46e5; --dark-bg: #0f172a; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; transition: 0.3s; }
+        .dark-mode { background-color: var(--dark-bg); color: white; }
+        
+        .car-card {
+            border-radius: 28px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .dark-mode .car-card { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); }
+
+        /* Muundo wa picha tatu kuteleza */
+        .card-swiper { width: 100%; height: 240px; border-radius: 24px 24px 0 0; }
+        .card-swiper img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .buy-btn {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+        }
     </style>
 </head>
-<body class="bg-gray-50 pb-20">
+<body id="mainBody" class="pb-10">
 
-    <nav class="bg-white border-b p-4 sticky top-0 z-50 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-2">
-            <img id="storeLogo" class="w-8 h-8 rounded-full hidden border">
-            <h1 id="shopName" class="font-bold text-gray-800 uppercase text-sm">Pakia...</h1>
+    <nav class="sticky top-0 z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-gray-100 dark:border-gray-800">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white">
+                <i class="fas fa-car"></i>
+            </div>
+            <h1 id="shopName" class="font-black text-lg uppercase tracking-tight">Lexon Motors</h1>
         </div>
-        <i class="fas fa-shopping-cart text-gray-400"></i>
+        <button onclick="toggleMode()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
+            <i id="modeIcon" class="fas fa-moon text-indigo-500"></i>
+        </button>
     </nav>
 
-    <div id="productGrid" class="p-4 grid grid-cols-2 gap-4">
-        <div class="col-span-2 text-center py-20 text-gray-400">
-            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-            <p>Tunafungua duka...</p>
-        </div>
-    </div>
+    <main class="p-5 grid grid-cols-1 gap-8" id="productGrid">
+        </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         const urlParams = new URLSearchParams(window.location.search);
         const storeID = urlParams.get('v');
 
-        if (!storeID) {
-            document.getElementById('productGrid').innerHTML = "<p class='text-center col-span-2 text-red-500'>Kosa: Link haina Store ID (?v=...)</p>";
+        function toggleMode() {
+            document.getElementById('mainBody').classList.toggle('dark-mode');
+            const icon = document.getElementById('modeIcon');
+            icon.classList.toggle('fa-sun');
+            icon.classList.toggle('fa-moon');
         }
 
         async function loadStore() {
             try {
-                console.log("Inajaribu kuunganisha na API...");
                 const res = await fetch(`${API}/api/products?v=${storeID}`);
-                
-                if (!res.ok) throw new Error("Duka halijapatikana");
-                
                 const data = await res.json();
-                console.log("Data imepokelewa:", data);
+                document.getElementById('shopName').innerText = data.vendor.name;
 
-                // Update Header
-                document.getElementById('shopName').innerText = data.vendor.name || "Duka Letu";
-                if(data.vendor.logo) {
-                    const logo = document.getElementById('storeLogo');
-                    logo.src = data.vendor.logo;
-                    logo.classList.remove('hidden');
-                }
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = data.products.map((p, index) => {
+                    // Tunatengeneza list ya picha (kama zipo tatu, vinginevyo tunarudia moja)
+                    const images = [p.img, p.img, p.img]; // Hapa unaweza kuongeza img2, img3 kwenye database baadae
 
-                // Update Products
-                if (data.products.length === 0) {
-                    document.getElementById('productGrid').innerHTML = "<p class='text-center col-span-2 py-20 text-gray-500'>Duka liko tupu kwa sasa.</p>";
-                    return;
-                }
+                    return `
+                    <div class="car-card overflow-hidden">
+                        <div class="swiper cardSwiper-${index} card-swiper">
+                            <div class="swiper-wrapper">
+                                ${images.map(img => `<div class="swiper-slide"><img src="${img}"></div>`).join('')}
+                            </div>
+                            <div class="swiper-pagination"></div>
+                        </div>
 
-                document.getElementById('productGrid').innerHTML = data.products.map(p => `
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 product-card">
-                        <img src="${p.img || 'https://via.placeholder.com/150'}" class="w-full h-40 object-cover">
-                        <div class="p-3">
-                            <h4 class="font-bold text-xs text-gray-800 truncate">${p.name}</h4>
-                            <p class="text-indigo-600 font-black text-xs my-2">Tsh ${p.price}</p>
-                            <button onclick="orderWA('${p.name}', '${data.vendor.whatsapp}')" 
-                                class="w-full bg-green-500 text-white py-2 rounded-lg text-[10px] font-bold uppercase">
-                                Agiza WhatsApp
-                            </button>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-black tracking-tight">${p.name}</h3>
+                                <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 px-3 py-1 rounded-lg text-sm font-bold">
+                                    Tsh ${p.price}
+                                </span>
+                            </div>
+                            
+                            <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                                ${p.desc || 'Hakuna maelezo ya ziada kwa gari hili.'}
+                            </p>
+
+                            <div class="flex gap-3">
+                                <button onclick="buyNow('${p.name}', '${data.vendor.whatsapp}')" class="buy-btn flex-1 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2">
+                                    BUY NOW <i class="fab fa-whatsapp"></i>
+                                </button>
+                                <button class="w-14 bg-gray-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-gray-400">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                `).join('');
+                    `;
+                }).join('');
 
-            } catch (error) {
-                console.error("Tatizo:", error);
-                document.getElementById('productGrid').innerHTML = `
-                    <div class="col-span-2 text-center py-20">
-                        <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-2"></i>
-                        <p class="text-gray-600">Samahani! Imeshindwa kusoma bidhaa.</p>
-                        <button onclick="location.reload()" class="mt-4 text-indigo-500 font-bold">Jaribu Tena</button>
-                    </div>
-                `;
-            }
+                // Washa Swiper kwa kila kadi
+                data.products.forEach((_, index) => {
+                    new Swiper(`.cardSwiper-${index}`, {
+                        pagination: { el: ".swiper-pagination", dynamicBullets: true },
+                        loop: true
+                    });
+                });
+
+            } catch (e) { console.error(e); }
         }
 
-        function orderWA(name, phone) {
-            const cleanPhone = phone.replace('+', '');
-            window.open(`https://wa.me/${cleanPhone}?text=Habari, nahitaji bidhaa hii: ${name}`, '_blank');
+        function buyNow(name, phone) {
+            window.open(`https://wa.me/${phone}?text=Habari, nahitaji gari hili: ${name}`, '_blank');
         }
 
         loadStore();
