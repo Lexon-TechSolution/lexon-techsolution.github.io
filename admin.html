@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Pro Admin | Final Fix</title>
+    <title>Lexon Pro Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
     <style>
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
-        .upload-card { border: 2px dashed rgba(99, 102, 241, 0.5); cursor: pointer; }
-        .img-pre { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 2px solid #6366f1; }
     </style>
 </head>
 <body class="bg-[#020203] text-gray-200">
 
     <div id="authView" class="max-w-md mx-auto pt-20 px-6">
         <div class="glass p-10 rounded-[2.5rem] text-center border border-indigo-500/20">
-            <h1 class="text-3xl font-black mb-10">LEXON <span class="text-indigo-500">PRO</span></h1>
-            <input id="storeID" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-4 outline-none" placeholder="Store ID">
-            <input id="storeName" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-8 outline-none" placeholder="Business Name">
+            <h1 class="text-3xl font-black mb-8">LEXON <span class="text-indigo-500">PRO</span></h1>
+            <input id="storeID" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-4" placeholder="Store ID (Mfano: duka1)">
+            <input id="storeName" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-4" placeholder="Jina la Duka">
+            <input id="storeWA" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-8" placeholder="WhatsApp (255...)">
             <button onclick="login()" class="w-full bg-indigo-600 p-5 rounded-2xl font-bold">INGIA DASHBOARD</button>
         </div>
     </div>
@@ -27,7 +26,10 @@
     <div id="dashView" class="hidden">
         <nav class="border-b border-white/5 px-8 py-6 flex justify-between items-center glass sticky top-0 z-50">
             <h2 id="dispName" class="font-bold text-white italic">...</h2>
-            <button onclick="location.reload()" class="p-3 bg-red-500/10 text-red-500 rounded-xl"><i class="fas fa-power-off"></i></button>
+            <div class="flex gap-4">
+                <button onclick="openShare()" class="p-3 bg-indigo-500/10 text-indigo-500 rounded-xl"><i class="fas fa-share-alt"></i></button>
+                <button onclick="location.reload()" class="p-3 bg-red-500/10 text-red-500 rounded-xl"><i class="fas fa-power-off"></i></button>
+            </div>
         </nav>
 
         <div class="max-w-6xl mx-auto p-6">
@@ -36,24 +38,32 @@
                     <div class="glass p-6 rounded-[2rem]">
                         <h3 class="text-xs font-bold text-gray-500 uppercase mb-6">Ongeza Bidhaa</h3>
                         <div class="space-y-4">
-                            <input id="pName" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none" placeholder="Jina">
-                            <input id="pPrice" type="number" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none" placeholder="Bei">
-                            
-                            <div onclick="openWidget()" class="upload-card p-6 rounded-2xl text-center bg-indigo-500/5">
-                                <i class="fas fa-image text-xl text-indigo-500 mb-2"></i>
-                                <p class="text-[10px] font-bold opacity-50">GUSA KUPAKIA PICHA</p>
+                            <input id="pName" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl" placeholder="Jina la Bidhaa">
+                            <input id="pPrice" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl" placeholder="Bei (Tsh)">
+                            <div onclick="openWidget()" class="border-2 border-dashed border-indigo-500/30 p-6 rounded-2xl text-center cursor-pointer bg-indigo-500/5">
+                                <i class="fas fa-camera text-xl text-indigo-500 mb-2"></i>
+                                <p class="text-[10px] font-bold">GUSA KUPAKIA PICHA</p>
                                 <div id="previewContainer" class="flex flex-wrap gap-2 mt-4 justify-center"></div>
                             </div>
-
                             <button id="saveBtn" onclick="saveProduct()" class="w-full bg-indigo-600 p-4 rounded-xl font-black">WEKA LIVE</button>
                         </div>
                     </div>
                 </div>
-
                 <div class="lg:col-span-2">
                     <div id="list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="shareModal" class="hidden fixed inset-0 bg-black/90 z-[200] flex items-center justify-center p-6">
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm text-center">
+            <h3 class="font-bold mb-6">Share Store</h3>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <button onclick="shareWA()" class="bg-green-600 p-6 rounded-2xl"><i class="fab fa-whatsapp text-2xl"></i></button>
+                <button onclick="shareFB()" class="bg-blue-600 p-6 rounded-2xl"><i class="fab fa-facebook text-2xl"></i></button>
+            </div>
+            <button onclick="closeShare()" class="text-gray-500 font-bold">GHAFIRI</button>
         </div>
     </div>
 
@@ -64,76 +74,48 @@
 
         const myWidget = cloudinary.createUploadWidget({
             cloudName: 'diyjrtki1', 
-            uploadPreset: 'ml_default',
-            multiple: true,
-            maxFiles: 3
+            uploadPreset: 'ml_default'
         }, (error, result) => { 
             if (!error && result && result.event === "success") { 
-                console.log("Picha imepakiwa:", result.info.secure_url);
                 images.push(result.info.secure_url);
-                renderPreviews();
+                document.getElementById('previewContainer').innerHTML = images.map(url => `<img src="${url}" class="w-12 h-12 rounded object-cover border-2 border-indigo-500">`).join('');
             }
         });
 
         function openWidget() { myWidget.open(); }
-
-        function renderPreviews() {
-            document.getElementById('previewContainer').innerHTML = images.map(url => `<img src="${url}" class="img-pre">`).join('');
-        }
+        function openShare() { document.getElementById('shareModal').classList.remove('hidden'); }
+        function closeShare() { document.getElementById('shareModal').classList.add('hidden'); }
 
         async function login() {
             const id = document.getElementById('storeID').value.trim().toLowerCase();
             const name = document.getElementById('storeName').value;
+            const wa = document.getElementById('storeWA').value;
             if(!id) return alert("Weka ID");
-            try {
-                const res = await fetch(`${API}/api/auth`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({id, name})
-                });
-                const data = await res.json();
-                currentID = id;
-                document.getElementById('authView').classList.add('hidden');
-                document.getElementById('dashView').classList.remove('hidden');
-                document.getElementById('dispName').innerText = data.name;
-                loadItems();
-            } catch(e) { alert("Server Error!"); }
+            const res = await fetch(`${API}/api/auth`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id, name, whatsapp: wa})
+            });
+            const data = await res.json();
+            currentID = id;
+            document.getElementById('authView').classList.add('hidden');
+            document.getElementById('dashView').classList.remove('hidden');
+            document.getElementById('dispName').innerText = data.name;
+            loadItems();
         }
 
         async function saveProduct() {
-            const name = document.getElementById('pName').value;
-            const price = document.getElementById('pPrice').value;
-
-            // HAPA NDIPO KUREKEBISHA:
-            if(!name || !price || images.length === 0) {
-                console.log("Data inakosekana:", {name, price, imagesCount: images.length});
-                return alert("Jaza vyote na hakikisha picha imepakiwa (Subiri ionekane hapo chini)!");
-            }
-
-            const btn = document.getElementById('saveBtn');
-            btn.innerText = "Hifadhi...";
-            btn.disabled = true;
-
-            try {
-                await fetch(`${API}/api/products`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        id: currentID, name, price, 
-                        img1: images[0], img2: images[1] || "", img3: images[2] || ""
-                    })
-                });
-                
-                images = [];
-                document.getElementById('pName').value = "";
-                document.getElementById('pPrice').value = "";
-                document.getElementById('previewContainer').innerHTML = "";
-                alert("Imefanikiwa!");
-                loadItems();
-            } catch(e) { alert("Hitilafu imetokea!"); }
-            
-            btn.innerText = "WEKA LIVE";
-            btn.disabled = false;
+            if(images.length === 0) return alert("Pakia picha kwanza!");
+            await fetch(`${API}/api/products`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    id: currentID, name: document.getElementById('pName').value, 
+                    price: document.getElementById('pPrice').value, img1: images[0]
+                })
+            });
+            images = []; document.getElementById('previewContainer').innerHTML = "";
+            loadItems();
         }
 
         async function loadItems() {
@@ -148,6 +130,15 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function shareWA() {
+            const url = `https://lexon-techsolution.github.io/store.html?v=${currentID}`;
+            window.open(`https://wa.me/?text=Karibu kwenye duka langu: ${url}`, '_blank');
+        }
+        function shareFB() {
+            const url = `https://lexon-techsolution.github.io/store.html?v=${currentID}`;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
         }
     </script>
 </body>
