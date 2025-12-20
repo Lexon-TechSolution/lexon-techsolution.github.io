@@ -3,49 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Motors | Premium</title>
+    <title>Lexon Motors | Global Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
-        :root { --accent: #4f46e5; --dark-bg: #0f172a; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; transition: 0.3s; }
-        .dark-mode { background-color: var(--dark-bg); color: white; }
-        
-        .car-card {
-            border-radius: 28px;
-            background: white;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            transition: 0.3s;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .dark-mode .car-card { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); }
+        :root { --ali-orange: #ff6a00; --bg: #f2f2f2; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); transition: 0.3s; }
+        .dark-mode { --bg: #000000; color: white; }
+        .dark-mode body { background: var(--bg); }
 
-        /* Muundo wa picha tatu kuteleza */
-        .card-swiper { width: 100%; height: 240px; border-radius: 24px 24px 0 0; }
-        .card-swiper img { width: 100%; height: 100%; object-fit: cover; }
+        /* Navigation Style */
+        .top-nav { background: white; border-bottom: 1px solid #ddd; }
+        .dark-mode .top-nav { background: #1a1a1a; border-color: #333; }
         
-        .buy-btn {
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+        /* Grid Layout */
+        .mall-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        
+        /* Product Card */
+        .mall-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
+        .dark-mode .mall-card { background: #222; }
+
+        .price-tag { color: var(--ali-orange); font-weight: 800; font-size: 16px; }
+        .old-price { text-decoration: line-through; color: #999; font-size: 11px; margin-left: 5px; }
+        
+        .flash-deal-label {
+            position: absolute; top: 0; left: 0;
+            background: linear-gradient(90deg, #ff4b2b, #ff416c);
+            color: white; font-size: 10px; padding: 2px 8px;
+            border-bottom-right-radius: 10px; z-index: 10;
+        }
+
+        .btn-register {
+            background: var(--ali-orange);
+            color: white; padding: 4px 15px;
+            border-radius: 20px; font-weight: bold; font-size: 12px;
+        }
+
+        /* Swiper Fix */
+        .card-swiper { width: 100%; height: 160px; }
+        .card-swiper img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
-<body id="mainBody" class="pb-10">
+<body id="mainBody">
 
-    <nav class="sticky top-0 z-[100] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-gray-100 dark:border-gray-800">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white">
-                <i class="fas fa-car"></i>
+    <header class="top-nav sticky top-0 z-[100]">
+        <div class="px-4 py-2 flex justify-between items-center border-b border-gray-100 dark:border-gray-800 text-[11px] opacity-70">
+            <div class="flex gap-4">
+                <span>Ship to <img src="https://flagcdn.com/w20/tz.png" class="inline w-4"> TZ</span>
+                <span>Language: SW</span>
             </div>
-            <h1 id="shopName" class="font-black text-lg uppercase tracking-tight">Lexon Motors</h1>
+            <div class="flex gap-4 items-center">
+                <button onclick="toggleMode()"><i id="modeIcon" class="fas fa-moon"></i></button>
+                <span>Help Center</span>
+            </div>
         </div>
-        <button onclick="toggleMode()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
-            <i id="modeIcon" class="fas fa-moon text-indigo-500"></i>
-        </button>
-    </nav>
+        <div class="p-4 flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <h1 id="shopName" class="font-bold text-xl text-orange-600">LEXON</h1>
+                <div class="flex gap-3 items-center">
+                    <i class="far fa-user text-lg"></i>
+                    <button class="btn-register">Register</button>
+                </div>
+            </div>
+            <div class="flex bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 items-center gap-3">
+                <i class="fas fa-search text-gray-400"></i>
+                <input type="text" placeholder="Iphone 15, Subaru, Watch..." class="bg-transparent outline-none w-full text-sm">
+                <i class="fas fa-camera text-gray-400"></i>
+            </div>
+        </div>
+    </header>
 
-    <main class="p-5 grid grid-cols-1 gap-8" id="productGrid">
+    <section class="p-3">
+        <div class="swiper heroSwiper rounded-xl overflow-hidden h-32 shadow-sm">
+            <div class="swiper-wrapper" id="heroContent">
+                </div>
+        </div>
+    </section>
+
+    <div class="flex overflow-x-auto gap-6 px-4 py-2 no-scrollbar text-[12px] font-medium opacity-80 border-b dark:border-gray-800">
+        <span class="text-orange-600 border-b-2 border-orange-600 pb-1">All</span>
+        <span>Featured</span>
+        <span>Flash Deals</span>
+        <span>Global Sources</span>
+    </div>
+
+    <main class="mall-grid" id="productGrid">
         </main>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
@@ -67,58 +117,51 @@
                 const data = await res.json();
                 document.getElementById('shopName').innerText = data.vendor.name;
 
+                // Hero Slider
+                document.getElementById('heroContent').innerHTML = data.products.slice(0, 3).map(p => `
+                    <div class="swiper-slide"><img src="${p.img}" class="w-full h-full object-cover"></div>
+                `).join('');
+                new Swiper(".heroSwiper", { autoplay: true, loop: true });
+
+                // Product Grid
                 const grid = document.getElementById('productGrid');
-                grid.innerHTML = data.products.map((p, index) => {
-                    // Tunatengeneza list ya picha (kama zipo tatu, vinginevyo tunarudia moja)
-                    const images = [p.img, p.img, p.img]; // Hapa unaweza kuongeza img2, img3 kwenye database baadae
-
-                    return `
-                    <div class="car-card overflow-hidden">
-                        <div class="swiper cardSwiper-${index} card-swiper">
+                grid.innerHTML = data.products.map((p, i) => `
+                    <div class="mall-card">
+                        <div class="flash-deal-label">Flash Deal</div>
+                        <div class="swiper cardSwiper-${i} card-swiper">
                             <div class="swiper-wrapper">
-                                ${images.map(img => `<div class="swiper-slide"><img src="${img}"></div>`).join('')}
+                                <div class="swiper-slide"><img src="${p.img}"></div>
+                                <div class="swiper-slide"><img src="${p.img}"></div>
                             </div>
-                            <div class="swiper-pagination"></div>
                         </div>
-
-                        <div class="p-6">
-                            <div class="flex justify-between items-start mb-2">
-                                <h3 class="text-xl font-black tracking-tight">${p.name}</h3>
-                                <span class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 px-3 py-1 rounded-lg text-sm font-bold">
-                                    Tsh ${p.price}
-                                </span>
+                        <div class="p-2">
+                            <h3 class="text-[12px] line-clamp-2 leading-tight h-8 mb-1">${p.name}</h3>
+                            <div class="flex items-baseline">
+                                <span class="price-tag text-sm">Tsh ${p.price}</span>
                             </div>
-                            
-                            <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
-                                ${p.desc || 'Hakuna maelezo ya ziada kwa gari hili.'}
-                            </p>
-
-                            <div class="flex gap-3">
-                                <button onclick="buyNow('${p.name}', '${data.vendor.whatsapp}')" class="buy-btn flex-1 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2">
-                                    BUY NOW <i class="fab fa-whatsapp"></i>
-                                </button>
-                                <button class="w-14 bg-gray-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-gray-400">
-                                    <i class="far fa-heart"></i>
-                                </button>
+                            <div class="flex items-center gap-1 mt-1">
+                                <div class="flex text-[8px] text-yellow-400">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-[9px] opacity-50">(100+ sold)</span>
                             </div>
+                            <button onclick="orderWA('${p.name}', '${data.vendor.whatsapp}')" class="w-full mt-2 border border-orange-500 text-orange-500 rounded-full py-1 text-[10px] font-bold hover:bg-orange-500 hover:text-white transition">
+                                VIEW DETAILS
+                            </button>
                         </div>
                     </div>
-                    `;
-                }).join('');
+                `).join('');
 
-                // Washa Swiper kwa kila kadi
-                data.products.forEach((_, index) => {
-                    new Swiper(`.cardSwiper-${index}`, {
-                        pagination: { el: ".swiper-pagination", dynamicBullets: true },
-                        loop: true
-                    });
+                // Init mini swipers
+                data.products.forEach((_, i) => {
+                    new Swiper(`.cardSwiper-${i}`, { nested: true });
                 });
 
             } catch (e) { console.error(e); }
         }
 
-        function buyNow(name, phone) {
-            window.open(`https://wa.me/${phone}?text=Habari, nahitaji gari hili: ${name}`, '_blank');
+        function orderWA(name, phone) {
+            window.open(`https://wa.me/${phone}?text=Habari, nahitaji bidhaa hii: ${name}`, '_blank');
         }
 
         loadStore();
