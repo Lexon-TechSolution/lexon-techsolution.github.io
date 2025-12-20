@@ -8,14 +8,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        :root { --primary: #0f172a; --accent: #2563eb; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
         .hidden { display: none; }
-        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
         .gradient-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
-        input, select { border: 1.5px solid #e2e8f0; padding: 14px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; font-size: 14px; background: white; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-        .btn-primary { background: var(--primary); color: white; padding: 16px; border-radius: 14px; font-weight: 700; width: 100%; transition: 0.3s; }
+        input, select { border: 1.5px solid #e2e8f0; padding: 14px; border-radius: 12px; width: 100%; outline: none; margin-bottom: 12px; font-size: 14px; }
+        .btn-primary { background: #0f172a; color: white; padding: 16px; border-radius: 14px; font-weight: 700; width: 100%; transition: 0.3s; }
         .btn-primary:active { transform: scale(0.97); }
     </style>
 </head>
@@ -24,160 +21,130 @@
 <div class="max-w-[480px] mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col">
 
     <section id="login-page" class="p-8 flex flex-col justify-center min-h-screen">
-        <div class="text-center mb-12">
-            <div id="login-logo-placeholder" class="w-24 h-24 bg-slate-900 rounded-[2rem] mx-auto flex items-center justify-center text-white text-4xl mb-6 shadow-2xl">
+        <div class="text-center mb-10">
+            <div id="login-logo-placeholder" class="w-20 h-20 bg-slate-900 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl mb-4 shadow-xl overflow-hidden">
                 <i class="fas fa-church"></i>
             </div>
             <h1 class="text-3xl font-black tracking-tighter uppercase">Lexon Church</h1>
-            <p class="text-slate-500 font-medium">Mfumo wa Usimamizi Kamili</p>
+            <p class="text-slate-500 font-medium text-sm">Mfumo wa Usimamizi Kamili</p>
         </div>
         
-        <div class="space-y-4">
-            <div class="relative">
-                <i class="fas fa-user absolute left-4 top-4 text-slate-400"></i>
-                <input type="text" id="admin-user" placeholder="Jina la Mtumiaji" class="pl-12">
-            </div>
-            <div class="relative">
-                <i class="fas fa-lock absolute left-4 top-4 text-slate-400"></i>
-                <input type="password" id="admin-pass" placeholder="Nenosiri" class="pl-12">
-            </div>
-            <button onclick="handleLogin()" class="btn-primary shadow-xl shadow-blue-100">INGIA KWENYE MFUMO</button>
-            <div class="flex justify-between px-2 mt-4">
-                <button onclick="showUserForm()" class="text-xs text-blue-600 font-bold underline">Form ya Usajili</button>
-                <button onclick="alert('Password ni 1234')" class="text-xs text-slate-400">Msaada?</button>
+        <div class="space-y-2">
+            <input type="text" id="admin-user" placeholder="Jina la Mtumiaji (admin)">
+            <input type="password" id="admin-pass" placeholder="Nenosiri (1234)">
+            <button onclick="handleLogin()" class="btn-primary shadow-xl">INGIA KWENYE MFUMO</button>
+            <div class="flex justify-between px-2 mt-6">
+                <button onclick="showPage('user-form-page')" class="text-xs text-blue-600 font-bold underline">Form ya Usajili</button>
+                <button onclick="alert('Username: admin \nPassword: 1234')" class="text-xs text-slate-400 font-medium">Msaada?</button>
             </div>
         </div>
     </section>
 
     <section id="admin-dash" class="hidden flex-1 overflow-y-auto pb-24">
-        <header class="gradient-header p-8 text-white rounded-b-[3rem] shadow-xl relative">
+        <header class="gradient-header p-8 text-white rounded-b-[3rem] shadow-xl">
             <div class="flex justify-between items-center mb-10">
                 <div class="flex items-center gap-4">
-                    <div id="dash-logo" class="w-14 h-14 rounded-2xl border border-white/20 bg-slate-800 flex items-center justify-center overflow-hidden">
-                        <i class="fas fa-church text-2xl"></i>
+                    <div id="dash-logo" class="w-12 h-12 rounded-2xl border border-white/20 bg-slate-800 flex items-center justify-center overflow-hidden text-xl">
+                        <i class="fas fa-church"></i>
                     </div>
                     <div>
-                        <h2 id="display-church-name" class="font-black text-xl leading-tight">CHURCH NAME</h2>
-                        <p id="display-pastor" class="text-[10px] text-blue-400 font-bold uppercase tracking-[0.2em]">Mch. Loading...</p>
+                        <h2 id="display-church-name" class="font-black text-lg leading-tight">CHURCH NAME</h2>
+                        <p id="display-pastor" class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">MCHUNGAJI</p>
                     </div>
                 </div>
-                <button onclick="location.reload()" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center"><i class="fas fa-sign-out-alt"></i></button>
+                <button onclick="location.reload()" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center"><i class="fas fa-power-off"></i></button>
             </div>
 
             <div class="grid grid-cols-3 gap-3">
-                <div class="bg-white/10 p-4 rounded-2xl text-center backdrop-blur-md">
+                <div class="bg-white/10 p-4 rounded-2xl text-center backdrop-blur-sm">
                     <p class="text-[9px] uppercase font-bold text-slate-400 mb-1">Wanaume</p>
-                    <p id="count-male" class="text-2xl font-black">0</p>
+                    <p id="count-male" class="text-xl font-black">0</p>
                 </div>
-                <div class="bg-white/10 p-4 rounded-2xl text-center backdrop-blur-md">
+                <div class="bg-white/10 p-4 rounded-2xl text-center backdrop-blur-sm">
                     <p class="text-[9px] uppercase font-bold text-slate-400 mb-1">Wanawake</p>
-                    <p id="count-female" class="text-2xl font-black">0</p>
+                    <p id="count-female" class="text-xl font-black">0</p>
                 </div>
-                <div class="bg-white/10 p-4 rounded-2xl text-center backdrop-blur-md">
+                <div class="bg-white/10 p-4 rounded-2xl text-center backdrop-blur-sm">
                     <p class="text-[9px] uppercase font-bold text-slate-400 mb-1">Watoto</p>
-                    <p id="count-kids" class="text-2xl font-black">0</p>
+                    <p id="count-kids" class="text-xl font-black">0</p>
                 </div>
             </div>
         </header>
 
-        <div class="p-6 space-y-8">
-            <div>
-                <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Usimamizi Mkuu</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="showPage('list-page')" class="bg-white p-6 rounded-[2rem] border border-slate-100 card-shadow text-left">
-                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4"><i class="fas fa-users-viewfinder"></i></div>
-                        <p class="font-black text-sm">Orodha ya Washirika</p>
-                    </button>
-                    <button onclick="showPage('settings-page')" class="bg-white p-6 rounded-[2rem] border border-slate-100 card-shadow text-left">
-                        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4"><i class="fas fa-fingerprint"></i></div>
-                        <p class="font-black text-sm">Usalama & Logo</p>
-                    </div>
-                </div>
+        <main class="p-6">
+            <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Usimamizi</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="showPage('list-page')" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm text-left">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-3"><i class="fas fa-users"></i></div>
+                    <p class="font-bold text-sm">Washirika</p>
+                </button>
+                <button onclick="showPage('settings-page')" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm text-left">
+                    <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-3"><i class="fas fa-cog"></i></div>
+                    <p class="font-bold text-sm">Mipangilio</p>
+                </button>
             </div>
-
-            <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
-                <div class="relative z-10">
-                    <h4 class="font-black text-lg mb-2 italic">Report Generator</h4>
-                    <p class="text-slate-400 text-xs mb-6">Tengeneza ripoti kamili ya washirika na viongozi kwa ajili ya ofisi.</p>
-                    <button onclick="alert('Ripoti inaandaliwa...')" class="bg-blue-600 px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-widest">Toa Ripoti (Excel)</button>
-                </div>
-                <i class="fas fa-briefcase absolute -right-6 -bottom-6 text-9xl opacity-10"></i>
-            </div>
-        </div>
+        </main>
     </section>
 
     <section id="list-page" class="hidden flex-1 overflow-y-auto p-6 pb-24">
-        <header class="flex items-center justify-between mb-8">
-            <button onclick="showPage('admin-dash')" class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center"><i class="fas fa-arrow-left"></i></button>
-            <h2 class="text-xl font-black">Washirika Wote</h2>
-            <div class="w-12"></div>
-        </header>
-        <div id="full-member-list" class="space-y-4 text-sm">
-            </div>
+        <button onclick="showPage('admin-dash')" class="mb-6 text-slate-400"><i class="fas fa-arrow-left"></i> Rudi</button>
+        <h2 class="text-xl font-black mb-6">Orodha ya Washirika</h2>
+        <div id="full-member-list" class="space-y-3"></div>
     </section>
 
     <section id="settings-page" class="hidden flex-1 p-8">
-        <button onclick="showPage('admin-dash')" class="mb-8 text-slate-400"><i class="fas fa-arrow-left"></i> Rudi Nyuma</button>
-        <h2 class="text-2xl font-black mb-10">Administration</h2>
-        
-        <div class="space-y-6">
-            <div class="p-6 bg-slate-50 rounded-3xl border border-dashed border-slate-300 text-center">
-                <p class="text-[10px] font-black uppercase text-slate-400 mb-4">Badilisha Logo ya Kanisa</p>
+        <button onclick="showPage('admin-dash')" class="mb-8 text-slate-400"><i class="fas fa-arrow-left"></i> Rudi</button>
+        <h2 class="text-xl font-black mb-6">Mipangilio & Usalama</h2>
+        <div class="space-y-4">
+            <div class="p-4 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 text-center">
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Logo ya Kanisa</p>
                 <input type="file" id="logo-input" accept="image/*" onchange="processLogo(this)" class="text-xs">
             </div>
-
-            <div class="space-y-4">
-                <input type="text" id="set-name" placeholder="Jina la Kanisa">
-                <input type="text" id="set-pastor" placeholder="Jina la Mchungaji">
-                <div class="pt-6 border-t border-slate-100">
-                    <p class="text-[10px] font-black uppercase text-slate-400 mb-3 block">Security Center</p>
-                    <input type="password" id="set-pass" placeholder="Nenosiri Mpya">
-                </div>
-                <button onclick="updateSystem()" class="btn-primary mt-4">HIFADHI MABADILIKO</button>
-            </div>
+            <input type="text" id="set-name" placeholder="Jina la Kanisa">
+            <input type="text" id="set-pastor" placeholder="Jina la Mchungaji">
+            <input type="password" id="set-pass" placeholder="Nenosiri Mpya">
+            <button onclick="updateSystem()" class="btn-primary mt-4">HIFADHI MABADILIKO</button>
         </div>
     </section>
 
-    <section id="user-form-page" class="hidden min-h-screen bg-slate-50 p-8 flex flex-col justify-center">
-        <div class="text-center mb-10">
-            <h2 id="public-church-title" class="text-3xl font-black italic text-slate-900 uppercase tracking-tighter">CHURCH NAME</h2>
-            <p class="text-slate-400 text-sm font-medium">Usajili wa Washirika & Wageni</p>
-        </div>
+    <section id="user-form-page" class="hidden min-h-screen p-8 flex flex-col justify-center bg-slate-900">
+        <h2 id="public-church-title" class="text-2xl font-black text-white text-center mb-8 italic uppercase">CHURCH NAME</h2>
         <div class="bg-white p-8 rounded-[3rem] shadow-2xl space-y-4">
             <input type="text" id="u-name" placeholder="Jina Kamili">
             <input type="tel" id="u-phone" placeholder="Namba ya Simu">
             <input type="text" id="u-mtaa" placeholder="Mtaa/Kanda">
             <select id="u-gender">
-                <option value="">Chagua Jinsia/Kundi</option>
+                <option value="">Chagua Jinsia</option>
                 <option value="Male">Mwanaume</option>
                 <option value="Female">Mwanamke</option>
-                <option value="Child">Mtoto (Chini ya 13)</option>
+                <option value="Child">Mtoto</option>
             </select>
-            <button onclick="registerMember()" class="btn-primary shadow-blue-200 shadow-xl">TUMA TAARIFA</button>
-            <button onclick="location.reload()" class="w-full text-slate-400 text-[10px] font-bold uppercase mt-4">Rudi Nyuma</button>
+            <button onclick="registerMember()" class="btn-primary">TUMA TAARIFA</button>
+            <button onclick="location.reload()" class="w-full text-slate-400 text-xs mt-4">Rudi Nyuma</button>
         </div>
     </section>
 
 </div>
 
 <script>
-    // --- DATABASE ENGINE ---
+    // --- DATABASE INITIALIZATION ---
     let dbMembers = JSON.parse(localStorage.getItem('lex_church_members')) || [];
     let sysConfig = JSON.parse(localStorage.getItem('lex_church_config')) || {
-        name: "LEXON TECH CHURCH",
+        name: "LEXON CHURCH",
         pastor: "Mch. Kapiga",
         pass: "1234",
         logo: ""
     };
 
-    // --- SECURITY & LOGIN ---
+    // --- LOGIN FUNCTION ---
     function handleLogin() {
-        const u = document.getElementById('admin-user').value.trim();
-        const p = document.getElementById('admin-pass').value.trim();
+        const uInput = document.getElementById('admin-user').value.trim();
+        const pInput = document.getElementById('admin-pass').value.trim();
 
-        if(u === "admin" && p === sysConfig.pass) {
+        // Check against the config
+        if (uInput === "admin" && pInput === sysConfig.pass) {
             showPage('admin-dash');
-            initSystem();
+            loadData();
         } else {
             alert("Kosa: Username au Password si sahihi!");
         }
@@ -189,33 +156,30 @@
             document.getElementById(p).classList.add('hidden');
         });
         document.getElementById(id).classList.remove('hidden');
+        if(id === 'user-form-page') document.getElementById('public-church-title').innerText = sysConfig.name;
     }
 
-    function showUserForm() {
-        showPage('user-form-page');
-        document.getElementById('public-church-title').innerText = sysConfig.name;
-    }
-
-    // --- SETTINGS & LOGO ---
+    // --- LOGO PROCESSING ---
     function processLogo(input) {
         if (input.files && input.files[0]) {
             let reader = new FileReader();
             reader.onload = function(e) {
                 sysConfig.logo = e.target.result;
-                renderLogo();
+                renderLogoOnly();
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    function renderLogo() {
+    function renderLogoOnly() {
         if(sysConfig.logo) {
-            const img = `<img src="${sysConfig.logo}" class="w-full h-full object-cover">`;
-            document.getElementById('dash-logo').innerHTML = img;
-            document.getElementById('login-logo-placeholder').innerHTML = img;
+            const imgTag = `<img src="${sysConfig.logo}" class="w-full h-full object-cover">`;
+            document.getElementById('dash-logo').innerHTML = imgTag;
+            document.getElementById('login-logo-placeholder').innerHTML = imgTag;
         }
     }
 
+    // --- SETTINGS UPDATE ---
     function updateSystem() {
         sysConfig.name = document.getElementById('set-name').value || sysConfig.name;
         sysConfig.pastor = document.getElementById('set-pastor').value || sysConfig.pastor;
@@ -223,39 +187,62 @@
         if(newP) sysConfig.pass = newP;
 
         localStorage.setItem('lex_church_config', JSON.stringify(sysConfig));
-        alert("Mfumo umesasishwa kikamilifu!");
-        initSystem();
+        alert("Imehifadhiwa!");
+        loadData();
         showPage('admin-dash');
     }
 
-    // --- DATA MANAGEMENT ---
+    // --- MEMBER REGISTRATION ---
     function registerMember() {
-        const member = {
+        const m = {
             name: document.getElementById('u-name').value,
             phone: document.getElementById('u-phone').value,
             mtaa: document.getElementById('u-mtaa').value,
             gender: document.getElementById('u-gender').value,
             id: Date.now()
         };
-
-        if(!member.name || !member.gender) return alert("Jaza Jina na uchague kundi!");
-
-        dbMembers.unshift(member);
+        if(!m.name || !m.gender) return alert("Jaza Jina na Jinsia!");
+        dbMembers.unshift(m);
         localStorage.setItem('lex_church_members', JSON.stringify(dbMembers));
-        alert("Umefanikiwa kujisajili!");
+        alert("Asante! Umesajiliwa.");
         location.reload();
     }
 
-    function initSystem() {
+    // --- LOAD DATA TO UI ---
+    function loadData() {
         document.getElementById('display-church-name').innerText = sysConfig.name;
-        document.getElementById('display-pastor').innerText = "MCH. " + sysConfig.pastor.toUpperCase();
-        renderLogo();
+        document.getElementById('display-pastor').innerText = "Mch. " + sysConfig.pastor;
+        renderLogoOnly();
 
-        // Stats Logic
+        // Stats
         document.getElementById('count-male').innerText = dbMembers.filter(m => m.gender === 'Male').length;
         document.getElementById('count-female').innerText = dbMembers.filter(m => m.gender === 'Female').length;
         document.getElementById('count-kids').innerText = dbMembers.filter(m => m.gender === 'Child').length;
 
-        // Render List
-        const listContainer = document.getElementById('full-member-list');
+        // List
+        const listDiv = document.getElementById('full-member-list');
         if(dbMembers.length === 0) {
+            listDiv.innerHTML = `<p class="text-center py-20 text-slate-400 italic">Hakuna washirika bado</p>`;
+        } else {
+            listDiv.innerHTML = dbMembers.map(m => `
+                <div class="bg-white p-5 rounded-3xl border border-slate-100 flex justify-between items-center shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-bold text-slate-400 text-xs">${m.name.substring(0,2).toUpperCase()}</div>
+                        <div>
+                            <p class="font-bold text-sm text-slate-800">${m.name}</p>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase">${m.gender} | ${m.mtaa}</p>
+                        </div>
+                    </div>
+                    <a href="tel:${m.phone}" class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center"><i class="fas fa-phone-alt text-xs"></i></a>
+                </div>
+            `).join('');
+        }
+    }
+
+    // --- INITIAL RENDER ---
+    window.onload = function() {
+        renderLogoOnly();
+    };
+</script>
+</body>
+</html>
