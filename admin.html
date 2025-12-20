@@ -3,65 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Pro Admin | Cloudinary Live</title>
+    <title>Lexon Pro Admin | Final Fix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://widget.cloudinary.com/v2.0/global/all.js" type="text/javascript"></script>
     <style>
         .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
-        .upload-card { border: 2px dashed rgba(99, 102, 241, 0.3); transition: 0.3s; }
-        .upload-card:hover { border-color: #6366f1; background: rgba(99, 102, 241, 0.05); }
-        .img-preview { width: 80px; height: 80px; border-radius: 12px; object-cover: cover; border: 2px solid #6366f1; }
+        .upload-card { border: 2px dashed rgba(99, 102, 241, 0.5); cursor: pointer; }
+        .img-pre { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 2px solid #6366f1; }
     </style>
 </head>
-<body class="bg-[#020203] text-gray-200 min-h-screen">
+<body class="bg-[#020203] text-gray-200">
 
     <div id="authView" class="max-w-md mx-auto pt-20 px-6">
         <div class="glass p-10 rounded-[2.5rem] text-center border border-indigo-500/20">
-            <h1 class="text-4xl font-black text-white mb-2">LEXON <span class="text-indigo-500">PRO</span></h1>
-            <p class="text-gray-500 text-xs mb-10 tracking-widest uppercase">Cloud Managed SaaS</p>
-            <input id="storeID" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-4 focus:border-indigo-500 outline-none" placeholder="Store ID">
-            <input id="storeName" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-8 focus:border-indigo-500 outline-none" placeholder="Business Name">
-            <button onclick="login()" class="w-full bg-indigo-600 hover:bg-indigo-700 p-5 rounded-2xl font-bold shadow-lg transition-all">FUNGUA DASHBOARD</button>
+            <h1 class="text-3xl font-black mb-10">LEXON <span class="text-indigo-500">PRO</span></h1>
+            <input id="storeID" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-4 outline-none" placeholder="Store ID">
+            <input id="storeName" class="w-full bg-black/50 border border-white/10 p-4 rounded-2xl mb-8 outline-none" placeholder="Business Name">
+            <button onclick="login()" class="w-full bg-indigo-600 p-5 rounded-2xl font-bold">INGIA DASHBOARD</button>
         </div>
     </div>
 
     <div id="dashView" class="hidden">
         <nav class="border-b border-white/5 px-8 py-6 flex justify-between items-center glass sticky top-0 z-50">
-            <h2 id="dispName" class="text-xl font-bold text-white tracking-tighter italic">...</h2>
-            <div class="flex gap-3">
-                <button onclick="shareStore()" class="p-3 bg-indigo-500/10 text-indigo-500 rounded-xl hover:bg-indigo-500 hover:text-white transition-all"><i class="fas fa-link"></i></button>
-                <button onclick="location.reload()" class="p-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-600 hover:text-white transition-all"><i class="fas fa-power-off"></i></button>
-            </div>
+            <h2 id="dispName" class="font-bold text-white italic">...</h2>
+            <button onclick="location.reload()" class="p-3 bg-red-500/10 text-red-500 rounded-xl"><i class="fas fa-power-off"></i></button>
         </nav>
 
-        <div class="max-w-6xl mx-auto p-6 md:p-10">
-            <div class="grid lg:grid-cols-3 gap-10">
+        <div class="max-w-6xl mx-auto p-6">
+            <div class="grid lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-1">
-                    <div class="glass p-8 rounded-[2rem] border border-white/5">
-                        <h3 class="font-bold mb-6 text-gray-400 uppercase text-xs tracking-widest italic">Ongeza Bidhaa</h3>
+                    <div class="glass p-6 rounded-[2rem]">
+                        <h3 class="text-xs font-bold text-gray-500 uppercase mb-6">Ongeza Bidhaa</h3>
                         <div class="space-y-4">
-                            <input id="pName" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl focus:border-indigo-500 outline-none" placeholder="Jina la Bidhaa">
-                            <input id="pPrice" type="number" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl focus:border-indigo-500 outline-none" placeholder="Bei (Tsh)">
+                            <input id="pName" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none" placeholder="Jina">
+                            <input id="pPrice" type="number" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none" placeholder="Bei">
                             
-                            <div onclick="openWidget()" class="upload-card p-6 rounded-2xl text-center cursor-pointer">
-                                <i class="fas fa-camera text-2xl text-indigo-500 mb-2"></i>
-                                <p class="text-[10px] text-gray-500 uppercase font-bold">Gusa Kupakia Picha</p>
+                            <div onclick="openWidget()" class="upload-card p-6 rounded-2xl text-center bg-indigo-500/5">
+                                <i class="fas fa-image text-xl text-indigo-500 mb-2"></i>
+                                <p class="text-[10px] font-bold opacity-50">GUSA KUPAKIA PICHA</p>
                                 <div id="previewContainer" class="flex flex-wrap gap-2 mt-4 justify-center"></div>
                             </div>
 
-                            <button id="saveBtn" onclick="saveProduct()" class="w-full bg-indigo-600 hover:bg-indigo-700 p-4 rounded-xl font-black mt-4 shadow-indigo-500/20 shadow-lg">WEKA LIVE</button>
+                            <button id="saveBtn" onclick="saveProduct()" class="w-full bg-indigo-600 p-4 rounded-xl font-black">WEKA LIVE</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="lg:col-span-2">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-gray-400 uppercase text-xs tracking-widest italic">Live Inventory</h3>
-                        <span id="pCount" class="bg-indigo-500 text-white text-[10px] px-3 py-1 rounded-full font-bold">0 ITEMS</span>
-                    </div>
-                    <div id="list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        </div>
+                    <div id="list" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
             </div>
         </div>
@@ -72,14 +62,14 @@
         let currentID = "";
         let images = [];
 
-        // CLOUDINARY CONFIGURATION
         const myWidget = cloudinary.createUploadWidget({
             cloudName: 'diyjrtki1', 
             uploadPreset: 'ml_default',
-            multiple: true,  // Inaruhusu kupakia picha nyingi
-            maxFiles: 3      // Kikomo cha picha 3
+            multiple: true,
+            maxFiles: 3
         }, (error, result) => { 
             if (!error && result && result.event === "success") { 
+                console.log("Picha imepakiwa:", result.info.secure_url);
                 images.push(result.info.secure_url);
                 renderPreviews();
             }
@@ -88,15 +78,13 @@
         function openWidget() { myWidget.open(); }
 
         function renderPreviews() {
-            const container = document.getElementById('previewContainer');
-            container.innerHTML = images.map(url => `<img src="${url}" class="img-preview shadow-lg">`).join('');
+            document.getElementById('previewContainer').innerHTML = images.map(url => `<img src="${url}" class="img-pre">`).join('');
         }
 
         async function login() {
             const id = document.getElementById('storeID').value.trim().toLowerCase();
             const name = document.getElementById('storeName').value;
-            if(!id) return alert("Weka Store ID");
-
+            if(!id) return alert("Weka ID");
             try {
                 const res = await fetch(`${API}/api/auth`, {
                     method: 'POST',
@@ -109,60 +97,57 @@
                 document.getElementById('dashView').classList.remove('hidden');
                 document.getElementById('dispName').innerText = data.name;
                 loadItems();
-            } catch(e) { alert("Server Error. Hakikisha Koyeb ipo Online."); }
+            } catch(e) { alert("Server Error!"); }
         }
 
         async function saveProduct() {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
-            if(!name || !price || images.length === 0) return alert("Jaza vyote na pakia picha!");
+
+            // HAPA NDIPO KUREKEBISHA:
+            if(!name || !price || images.length === 0) {
+                console.log("Data inakosekana:", {name, price, imagesCount: images.length});
+                return alert("Jaza vyote na hakikisha picha imepakiwa (Subiri ionekane hapo chini)!");
+            }
 
             const btn = document.getElementById('saveBtn');
-            btn.innerText = "Processing...";
+            btn.innerText = "Hifadhi...";
             btn.disabled = true;
 
-            await fetch(`${API}/api/products`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    id: currentID, 
-                    name, 
-                    price, 
-                    img1: images[0],
-                    img2: images[1] || "",
-                    img3: images[2] || ""
-                })
-            });
-
-            images = [];
-            document.getElementById('pName').value = "";
-            document.getElementById('pPrice').value = "";
-            document.getElementById('previewContainer').innerHTML = "";
+            try {
+                await fetch(`${API}/api/products`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id: currentID, name, price, 
+                        img1: images[0], img2: images[1] || "", img3: images[2] || ""
+                    })
+                });
+                
+                images = [];
+                document.getElementById('pName').value = "";
+                document.getElementById('pPrice').value = "";
+                document.getElementById('previewContainer').innerHTML = "";
+                alert("Imefanikiwa!");
+                loadItems();
+            } catch(e) { alert("Hitilafu imetokea!"); }
+            
             btn.innerText = "WEKA LIVE";
             btn.disabled = false;
-            loadItems();
         }
 
         async function loadItems() {
             const res = await fetch(`${API}/api/products?v=${currentID}`);
             const data = await res.json();
-            document.getElementById('pCount').innerText = `${data.products.length} ITEMS`;
             document.getElementById('list').innerHTML = data.products.map(i => `
-                <div class="glass p-4 rounded-2xl flex items-center gap-4 border border-white/5">
-                    <img src="${i.img1}" class="w-16 h-16 rounded-xl object-cover bg-black">
+                <div class="glass p-4 rounded-2xl flex items-center gap-4">
+                    <img src="${i.img1}" class="w-14 h-14 rounded-lg object-cover">
                     <div class="flex-1">
-                        <h4 class="font-bold text-sm text-white">${i.name}</h4>
-                        <p class="text-indigo-400 font-black text-xs italic">Tsh ${i.price}</p>
+                        <h4 class="font-bold text-sm">${i.name}</h4>
+                        <p class="text-indigo-400 font-bold text-xs">Tsh ${i.price}</p>
                     </div>
-                    <button class="text-gray-600 hover:text-red-500 transition-colors"><i class="fas fa-trash-can text-xs"></i></button>
                 </div>
             `).join('');
-        }
-
-        function shareStore() {
-            const url = `https://lexon-techsolution.github.io/store.html?v=${currentID}`;
-            navigator.clipboard.writeText(url);
-            alert("Link ya duka imekopiwa!");
         }
     </script>
 </body>
