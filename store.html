@@ -3,87 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Elite Store</title>
+    <title>Lexon Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
-        :root { --primary: #6366f1; --bg: #f9fafb; --card: #ffffff; --text: #111827; }
-        .dark { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
-        body { background: var(--bg); color: var(--text); transition: 0.3s; font-family: 'Inter', sans-serif; }
-        .glass-nav { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
-        .dark .glass-nav { background: rgba(15, 23, 42, 0.8); }
-        .product-img { height: 220px; width: 100%; object-fit: cover; }
-        .swiper { width: 100%; height: 250px; border-radius: 1.5rem; }
-        .category-chip { white-space: nowrap; padding: 8px 16px; border-radius: 50px; background: var(--card); border: 1px solid rgba(0,0,0,0.05); font-size: 12px; font-weight: 600; }
+        .product-card { transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-5px); }
     </style>
 </head>
-<body class="pb-20">
+<body class="bg-gray-50 pb-20">
 
-    <nav class="glass-nav sticky top-0 z-[100] px-6 py-4 flex justify-between items-center border-b border-gray-200/10">
-        <div class="flex items-center gap-3">
-            <img id="storeLogo" class="w-10 h-10 rounded-2xl shadow-lg border-2 border-indigo-500 hidden">
-            <h1 id="shopName" class="font-black tracking-tighter uppercase text-sm">...</h1>
+    <nav class="bg-white border-b p-4 sticky top-0 z-50 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-2">
+            <img id="storeLogo" class="w-8 h-8 rounded-full hidden border">
+            <h1 id="shopName" class="font-bold text-gray-800 uppercase text-sm">Pakia...</h1>
         </div>
-        <div class="flex items-center gap-4">
-            <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
-                <i id="themeIcon" class="fas fa-moon text-indigo-500"></i>
-            </button>
-            <div class="relative"><i class="fas fa-shopping-bag text-xl opacity-50"></i></div>
-        </div>
+        <i class="fas fa-shopping-cart text-gray-400"></i>
     </nav>
 
-    <section class="px-6 py-6">
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper" id="sliderContent">
-                </div>
-            <div class="swiper-pagination"></div>
+    <div id="productGrid" class="p-4 grid grid-cols-2 gap-4">
+        <div class="col-span-2 text-center py-20 text-gray-400">
+            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+            <p>Tunafungua duka...</p>
         </div>
-    </section>
-
-    <div class="px-6 mb-6 flex gap-3 overflow-x-auto no-scrollbar">
-        <div class="category-chip bg-indigo-600 !text-white">Zote</div>
-        <div class="category-chip">Mpya</div>
-        <div class="category-chip">Ofa Kabambe</div>
-        <div class="category-chip">Inapendwa</div>
     </div>
 
-    <main class="px-6">
-        <div id="productGrid" class="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div class="h-64 bg-gray-200 animate-pulse rounded-3xl"></div>
-            <div class="h-64 bg-gray-200 animate-pulse rounded-3xl"></div>
-        </div>
-    </main>
-
-    <footer class="p-8 text-center opacity-50 text-[10px] uppercase tracking-[3px]">
-        Powered by Lexon Tech Solution
-    </footer>
-
-    <a id="waFab" href="#" target="_blank" class="fixed bottom-6 right-6 w-16 h-16 bg-green-500 text-white rounded-full shadow-2xl flex items-center justify-center text-3xl z-[200] animate-bounce">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         const urlParams = new URLSearchParams(window.location.search);
         const storeID = urlParams.get('v');
 
+        if (!storeID) {
+            document.getElementById('productGrid').innerHTML = "<p class='text-center col-span-2 text-red-500'>Kosa: Link haina Store ID (?v=...)</p>";
+        }
+
         async function loadStore() {
             try {
+                console.log("Inajaribu kuunganisha na API...");
                 const res = await fetch(`${API}/api/products?v=${storeID}`);
+                
+                if (!res.ok) throw new Error("Duka halijapatikana");
+                
                 const data = await res.json();
-                
-                document.getElementById('shopName').innerText = data.vendor.name;
-                document.getElementById('waFab').href = `https://wa.me/${data.vendor.whatsapp}`;
-                
+                console.log("Data imepokelewa:", data);
+
+                // Update Header
+                document.getElementById('shopName').innerText = data.vendor.name || "Duka Letu";
                 if(data.vendor.logo) {
                     const logo = document.getElementById('storeLogo');
                     logo.src = data.vendor.logo;
                     logo.classList.remove('hidden');
                 }
 
-                // Fill Slider with first 3 products
-                const slider = document.getElementById('sliderContent');
-                slider.innerHTML = data.products.slice(0, 3).map(p => `
-                    <div class="swiper-wrapper swiper-slide relative
+                // Update Products
+                if (data.products.length === 0) {
+                    document.getElementById('productGrid').innerHTML = "<p class='text-center col-span-2 py-20 text-gray-500'>Duka liko tupu kwa sasa.</p>";
+                    return;
+                }
+
+                document.getElementById('productGrid').innerHTML = data.products.map(p => `
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 product-card">
+                        <img src="${p.img || 'https://via.placeholder.com/150'}" class="w-full h-40 object-cover">
+                        <div class="p-3">
+                            <h4 class="font-bold text-xs text-gray-800 truncate">${p.name}</h4>
+                            <p class="text-indigo-600 font-black text-xs my-2">Tsh ${p.price}</p>
+                            <button onclick="orderWA('${p.name}', '${data.vendor.whatsapp}')" 
+                                class="w-full bg-green-500 text-white py-2 rounded-lg text-[10px] font-bold uppercase">
+                                Agiza WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error("Tatizo:", error);
+                document.getElementById('productGrid').innerHTML = `
+                    <div class="col-span-2 text-center py-20">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-2"></i>
+                        <p class="text-gray-600">Samahani! Imeshindwa kusoma bidhaa.</p>
+                        <button onclick="location.reload()" class="mt-4 text-indigo-500 font-bold">Jaribu Tena</button>
+                    </div>
+                `;
+            }
+        }
+
+        function orderWA(name, phone) {
+            const cleanPhone = phone.replace('+', '');
+            window.open(`https://wa.me/${cleanPhone}?text=Habari, nahitaji bidhaa hii: ${name}`, '_blank');
+        }
+
+        loadStore();
+    </script>
+</body>
+</html>
