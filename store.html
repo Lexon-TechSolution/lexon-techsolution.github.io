@@ -3,18 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexon Store</title>
+    <title>Store | Lexon Client</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style> body { background: #f9fafb; font-family: sans-serif; } </style>
 </head>
-<body class="bg-gray-50 pb-20">
-    <nav class="bg-white border-b p-6 sticky top-0 z-50 flex justify-between items-center">
-        <h1 id="shopName" class="font-black text-indigo-600 uppercase">...</h1>
-        <div class="bg-gray-100 p-3 rounded-xl"><i class="fas fa-shopping-bag"></i></div>
+<body class="pb-24">
+
+    <nav class="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img id="storeLogo" class="w-10 h-10 rounded-full border border-gray-100 hidden">
+            <h1 id="shopName" class="font-black text-gray-900 tracking-tighter uppercase text-sm">...</h1>
+        </div>
+        <div class="flex gap-4">
+            <i class="fas fa-shopping-bag text-gray-400"></i>
+        </div>
     </nav>
 
     <div id="productGrid" class="p-6 grid grid-cols-2 gap-6">
         </div>
+
+    <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+        <button id="fbChat" class="bg-blue-600 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-xl"><i class="fab fa-facebook-messenger"></i></button>
+        <button id="waChat" class="bg-green-500 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-xl"><i class="fab fa-whatsapp"></i></button>
+    </div>
 
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
@@ -22,24 +34,37 @@
         const storeID = urlParams.get('v');
 
         async function loadStore() {
-            const res = await fetch(`${API}/api/products?v=${storeID}`);
-            const data = await res.json();
-            document.getElementById('shopName').innerText = data.vendor_name;
-            document.getElementById('productGrid').innerHTML = data.products.map(p => `
-                <div class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100">
-                    <img src="${p.img1}" class="w-full h-40 object-cover">
-                    <div class="p-4">
-                        <h4 class="font-bold text-sm mb-1">${p.name}</h4>
-                        <p class="text-indigo-600 font-black text-xs mb-4">Tsh ${p.price}</p>
-                        <button onclick="orderWA('${p.name}', '${p.price}', '${data.whatsapp}')" class="w-full bg-green-500 text-white p-3 rounded-xl text-[10px] font-bold">AGIZA WHATSAPP</button>
+            try {
+                const res = await fetch(`${API}/api/products?v=${storeID}`);
+                const data = await res.json();
+                
+                document.getElementById('shopName').innerText = data.vendor.name;
+                if(data.vendor.logo) {
+                    document.getElementById('storeLogo').src = data.vendor.logo;
+                    document.getElementById('storeLogo').classList.remove('hidden');
+                }
+
+                // Chat Buttons
+                document.getElementById('waChat').onclick = () => window.open(`https://wa.me/${data.vendor.whatsapp}`, '_blank');
+                document.getElementById('fbChat').onclick = () => window.open(`https://m.me/lexontechsolution`, '_blank');
+
+                document.getElementById('productGrid').innerHTML = data.products.map(p => `
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 relative ${p.sold ? 'opacity-60' : ''}">
+                        ${p.sold ? '<span class="absolute top-2 left-2 bg-black text-white text-[8px] font-bold px-2 py-1 rounded-full z-10">SOLD OUT</span>' : ''}
+                        <img src="${p.img}" class="w-full h-40 object-cover ${p.sold ? 'grayscale' : ''}">
+                        <div class="p-4">
+                            <h4 class="font-bold text-xs mb-1 truncate">${p.name}</h4>
+                            <p class="text-indigo-600 font-black text-xs mb-2 italic">Tsh ${p.price}</p>
+                            <p class="text-[10px] text-gray-500 mb-4 line-clamp-2">${p.desc}</p>
+                            <button onclick="orderWA('${p.name}', '${data.vendor.whatsapp}')" ${p.sold ? 'disabled' : ''} class="w-full ${p.sold ? 'bg-gray-300' : 'bg-green-500'} text-white py-2 rounded-xl text-[10px] font-bold">AGIZA SASA</button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (e) { console.log(e); }
         }
 
-        function orderWA(name, price, phone) {
-            const msg = `Habari, nahitaji agizo:\n*Bidhaa:* ${name}\n*Bei:* Tsh ${price}`;
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        function orderWA(name, phone) {
+            window.open(`https://wa.me/${phone}?text=Habari, nahitaji bidhaa hii: ${name}`, '_blank');
         }
         loadStore();
     </script>
