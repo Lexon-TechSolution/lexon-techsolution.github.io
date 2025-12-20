@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Church Automation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background: #fff; position: relative; overflow-x: hidden; }
+        .gradient-blue { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .hidden { display: none; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 10px; z-index: 100; }
+        input, select { border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; outline: none; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div id="loginScreen" class="p-8 flex flex-col justify-center min-h-screen">
+        <div class="text-center mb-10">
+            <div class="w-20 h-20 gradient-blue rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-lg">
+                <i class="fas fa-church"></i>
+            </div>
+            <h1 class="text-2xl font-black text-gray-800 tracking-tighter">CHURCH ADMIN</h1>
+            <p class="text-gray-500 text-sm">Ingia kusimamia mfumo</p>
+        </div>
+        <div class="space-y-4">
+            <input type="email" id="adminEmail" placeholder="Barua Pepe (Email)">
+            <input type="password" id="adminPass" placeholder="Nenosiri (Password)">
+            <button onclick="handleLogin()" class="w-full gradient-blue text-white py-4 rounded-xl font-bold shadow-lg hover:opacity-90 transition">INGIA KWENYE MFUMO</button>
+            <p class="text-center text-xs text-blue-600 font-medium">Umesahau Nenosiri?</p>
+        </div>
+    </div>
+
+    <div id="mainDashboard" class="hidden">
+        <div class="gradient-blue p-6 text-white rounded-b-[40px] shadow-xl">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <p class="text-blue-100 text-xs">Karibu Tena,</p>
+                    <h2 class="text-xl font-bold italic uppercase" id="churchTitle">Kwaya Kuu Church</h2>
+                </div>
+                <button onclick="location.reload()" class="text-white/80"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-md border border-white/20">
+                    <p class="text-[10px] uppercase tracking-widest opacity-70">Waumini</p>
+                    <p class="text-2xl font-black" id="memberCount">1,402</p>
+                </div>
+                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-md border border-white/20">
+                    <p class="text-[10px] uppercase tracking-widest opacity-70">Sadaka Leo</p>
+                    <p class="text-2xl font-black">Tsh 850k</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <h3 class="font-bold text-gray-800 mb-4">Usimamizi wa Haraka</h3>
+            <div class="grid grid-cols-4 gap-4 text-center mb-8">
+                <button onclick="showPage('register')" class="flex flex-col items-center">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-user-plus"></i></div>
+                    <span class="text-[10px] font-bold">Sajili</span>
+                </button>
+                <button onclick="showPage('finance')" class="flex flex-col items-center">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-coins"></i></div>
+                    <span class="text-[10px] font-bold">Fedha</span>
+                </button>
+                <button onclick="showPage('viewData')" class="flex flex-col items-center">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-database"></i></div>
+                    <span class="text-[10px] font-bold">Data</span>
+                </button>
+                <button class="flex flex-col items-center">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-broadcast-tower"></i></div>
+                    <span class="text-[10px] font-bold">SMS</span>
+                </button>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-sm">Waumini wa Karibuni</h3>
+                    <i class="fas fa-ellipsis-h text-gray-400"></i>
+                </div>
+                <div id="membersList" class="space-y-4">
+                    </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <i class="fas fa-th-large text-blue-600 text-xl"></i>
+            <i class="fas fa-users text-gray-300 text-xl"></i>
+            <i class="fas fa-chart-line text-gray-300 text-xl"></i>
+            <i class="fas fa-cog text-gray-300 text-xl"></i>
+        </div>
+    </div>
+
+    <div id="viewDataPage" class="hidden p-6">
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="showPage('dashboard')" class="text-xl text-gray-800"><i class="fas fa-arrow-left"></i></button>
+            <h2 class="text-xl font-bold">Kumbukumbu ya Data</h2>
+        </div>
+        <div class="space-y-3" id="fullDataTable">
+            </div>
+    </div>
+
+    <div id="registerPage" class="hidden p-6">
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="showPage('dashboard')" class="text-xl text-gray-800"><i class="fas fa-arrow-left"></i></button>
+            <h2 class="text-xl font-bold">Sajili Muumini Mpya</h2>
+        </div>
+        <div class="space-y-4 bg-white p-4 rounded-2xl shadow-sm">
+            <input type="text" id="mName" placeholder="Jina Kamili">
+            <input type="tel" id="mPhone" placeholder="Namba ya Simu">
+            <select id="mKanda">
+                <option value="">Chagua Kanda/Mtaa</option>
+                <option>Yeriko</option>
+                <option>Galilaya</option>
+                <option>Betheli</option>
+            </select>
+            <button onclick="saveMember()" class="w-full gradient-blue text-white py-4 rounded-xl font-bold">HIFADHI TAARIFA</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Data Storage (Hii ndio Engine yako ya muda)
+    let churchMembers = [
+        {name: "James Kapiga", phone: "0712345678", kanda: "Yeriko"},
+        {name: "Sarah Mushi", phone: "0655443322", kanda: "Betheli"}
+    ];
+
+    function handleLogin() {
+        // Hapa utaweka utaratibu wa siri wa Admin
+        const email = document.getElementById('adminEmail').value;
+        const pass = document.getElementById('adminPass').value;
+
+        if(email !== "" && pass !== "") {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            renderMembers();
+        } else {
+            alert("Tafadhali jaza Email na Password!");
+        }
+    }
+
+    function showPage(page) {
+        document.getElementById('mainDashboard').classList.add('hidden');
+        document.getElementById('registerPage').classList.add('hidden');
+        document.getElementById('viewDataPage').classList.add('hidden');
+
+        if(page === 'dashboard') document.getElementById('mainDashboard').classList.remove('hidden');
+        if(page === 'register') document.getElementById('registerPage').classList.remove('hidden');
+        if(page === 'viewData') {
+            document.getElementById('viewDataPage').classList.remove('hidden');
+            renderFullData();
+        }
+    }
+
+    function saveMember() {
+        const name = document.getElementById('mName').value;
+        const phone = document.getElementById('mPhone').value;
+        const kanda = document.getElementById('mKanda').value;
+
+        if(name && phone) {
+            churchMembers.unshift({name, phone, kanda});
+            alert("Muumini amesajiliwa kikamilifu!");
+            showPage('dashboard');
+            renderMembers();
+        }
+    }
+
+    function renderMembers() {
+        const list = document.getElementById('membersList');
+        list.innerHTML = churchMembers.slice(0, 3).map(m => `
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold text-xs">${m.name.substring(0,2)}</div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-gray-800">${m.name}</p>
+                    <p class="text-[10px] text-gray-500">${m.kanda} | ${m.phone}</p>
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('memberCount').innerText = churchMembers.length;
+    }
+
+    function renderFullData() {
+        const table = document.getElementById('fullDataTable');
+        table.innerHTML = churchMembers.map(m => `
+            <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center border border-gray-100">
+                <div>
+                    <p class="font-bold text-sm">${m.name}</p>
+                    <p class="text-[10px] text-gray-500 italic">${m.kanda}</p>
+                </div>
+                <div class="text-right text-xs font-medium text-blue-600">${m.phone}</div>
+            </div>
+        `).join('');
+    }
+</script>
+
+</body>
+</html>
