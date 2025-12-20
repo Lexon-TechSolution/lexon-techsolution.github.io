@@ -2,328 +2,167 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lexon Church | Enterprise ERP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f8fafc; overflow-x: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: #f8fafc; }
         .hidden { display: none; }
-        
-        /* Slide Background Effect */
-        .bg-slideshow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)), 
-                        url('https://images.unsplash.com/photo-1438032005730-c779502df39b?auto=format&fit=crop&q=80');
-            background-size: cover; background-position: center;
-            animation: pulseBg 15s infinite alternate;
-        }
-        @keyframes pulseBg { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
-        .glass-dark { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
-        
-        input, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 16px; color: white; width: 100%; outline: none; transition: 0.3s; }
-        input:focus { border-color: #3b82f6; background: rgba(255,255,255,0.1); }
-        input::placeholder { color: rgba(255,255,255,0.4); }
-
-        .btn-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 16px; border-radius: 16px; font-weight: 800; width: 100%; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); }
-        .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 2rem; }
+        .btn-gradient { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); transition: all 0.3s ease; }
+        input, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 18px; border-radius: 14px; color: white; width: 100%; outline: none; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
-<div class="bg-slideshow"></div>
+<div class="max-w-[480px] mx-auto min-h-screen relative flex flex-col p-4">
 
-<div class="max-w-[480px] mx-auto min-h-screen relative flex flex-col">
-
-    <section id="login-page" class="p-8 flex flex-col justify-center min-h-screen">
+    <section id="login-page" class="flex flex-col justify-center min-h-[90vh]">
         <div class="text-center mb-10">
-            <div id="app-logo-box" class="w-24 h-24 glass rounded-[2.5rem] mx-auto flex items-center justify-center mb-6 shadow-2xl overflow-hidden ring-2 ring-blue-500/30">
-                <i class="fas fa-cross text-blue-500 text-4xl"></i>
-            </div>
-            <h1 class="text-4xl font-black tracking-tighter text-white">LEXON ERP</h1>
-            <p class="text-slate-400 font-medium">Usimamizi wa Kanisa Kidijitali</p>
+            <h1 class="text-3xl font-black uppercase italic text-blue-500">LEXON ERP</h1>
+            <p class="text-slate-500 text-sm">Automation & Management</p>
         </div>
-        
-        <div class="space-y-4">
+        <div class="glass-card p-8 space-y-4">
             <input type="text" id="admin-user" placeholder="Username">
             <input type="password" id="admin-pass" placeholder="Password">
-            <button onclick="handleLogin()" class="btn-blue active:scale-95 transition">INGIA SASA</button>
-            <div class="flex justify-between px-2 text-xs">
-                <button onclick="showPage('user-form-page')" class="text-blue-400 font-bold">Usajili Muumini</button>
-                <button onclick="showPage('finance-form-page')" class="text-emerald-400 font-bold">Ofisi ya Fedha</button>
-            </div>
+            <button onclick="handleLogin()" class="btn-gradient w-full py-4 rounded-2xl font-bold">INGIA ADMIN</button>
+            <button onclick="showPage('user-form-page')" class="w-full text-blue-400 text-xs font-bold uppercase mt-4">Fomu ya Washirika</button>
         </div>
     </section>
 
-    <section id="admin-dash" class="hidden flex-1 pb-24 overflow-y-auto">
-        <header class="p-8 pt-12 glass-dark rounded-b-[3rem] sticky top-0 z-10 border-b border-white/5">
-            <div class="flex justify-between items-center mb-8">
-                <div class="flex items-center gap-4">
-                    <div id="dash-logo" class="w-12 h-12 rounded-2xl glass flex items-center justify-center overflow-hidden">
-                        <i class="fas fa-church text-blue-500"></i>
-                    </div>
-                    <div>
-                        <h2 id="display-church-name" class="font-black text-xl text-white italic">LEXON CHURCH</h2>
-                        <p id="display-pastor" class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">MCH: LOADING...</p>
-                    </div>
-                </div>
-                <button onclick="location.reload()" class="w-10 h-10 glass rounded-full flex items-center justify-center"><i class="fas fa-power-off text-red-400"></i></button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <div class="glass p-4 rounded-3xl">
-                    <p class="text-[9px] font-black text-slate-400 uppercase">Jumla Washirika</p>
-                    <p id="count-total" class="text-3xl font-black text-white">0</p>
-                </div>
-                <div class="glass p-4 rounded-3xl border-l-4 border-blue-500">
-                    <p class="text-[9px] font-black text-slate-400 uppercase">Wageni Leo</p>
-                    <p id="count-visitors" class="text-3xl font-black text-white">0</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2">
-                <div class="text-center glass p-2 rounded-xl">
-                    <p class="text-[8px] font-bold text-slate-500">WANAUME</p>
-                    <p id="count-male" class="text-sm font-black">0</p>
-                </div>
-                <div class="text-center glass p-2 rounded-xl">
-                    <p class="text-[8px] font-bold text-slate-500">WANAWAKE</p>
-                    <p id="count-female" class="text-sm font-black">0</p>
-                </div>
-                <div class="text-center glass p-2 rounded-xl">
-                    <p class="text-[8px] font-bold text-slate-500">WATOTO</p>
-                    <p id="count-kids" class="text-sm font-black">0</p>
-                </div>
-            </div>
+    <section id="admin-dash" class="hidden">
+        <header class="py-8 text-center">
+            <h2 id="display-church-name" class="text-2xl font-black text-blue-500">CHURCH NAME</h2>
+            <p id="count-total" class="text-slate-400">Washirika: 0</p>
         </header>
-
-        <main class="p-6 space-y-6">
-            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500">HUDUMA ZA KIUTAWALA</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="showPage('list-page')" class="glass p-6 rounded-[2.5rem] text-left">
-                    <i class="fas fa-address-book text-blue-500 mb-4 text-2xl"></i>
-                    <p class="font-bold text-sm">Orodha & Email</p>
-                </button>
-                <button onclick="showPage('finance-list-page')" class="glass p-6 rounded-[2.5rem] text-left">
-                    <i class="fas fa-hand-holding-heart text-emerald-500 mb-4 text-2xl"></i>
-                    <p class="font-bold text-sm">Zaka & Maombi</p>
-                </button>
-            </div>
-
-            <button onclick="showPage('settings-page')" class="w-full glass p-6 rounded-[2.5rem] flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <i class="fas fa-user-gear text-orange-500 text-xl"></i>
-                    <span class="font-bold text-sm">Mipangilio & Logo</span>
-                </div>
-                <i class="fas fa-chevron-right text-slate-600"></i>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <button onclick="showPage('list-page')" class="glass-card p-6 text-left">
+                <i class="fas fa-users text-blue-500 mb-2"></i>
+                <p class="font-bold">Orodha</p>
             </button>
-        </main>
+            <button onclick="showPage('settings-page')" class="glass-card p-6 text-left">
+                <i class="fas fa-cog text-slate-500 mb-2"></i>
+                <p class="font-bold">Settings</p>
+            </button>
+        </div>
+        <button onclick="location.reload()" class="w-full text-red-500 text-xs font-bold uppercase">Log Out</button>
     </section>
 
-    <section id="finance-list-page" class="hidden p-6 pb-24 overflow-y-auto">
-        <button onclick="showPage('admin-dash')" class="mb-6 text-slate-400"><i class="fas fa-arrow-left"></i> Rudi</button>
-        <h2 class="text-2xl font-black mb-6">Watoa Zaka & Fungu la 10</h2>
-        <p class="text-xs text-slate-500 mb-6">Orodha hii ni maalum kwa Mchungaji kufanya maombi ya Baraka.</p>
-        <div id="finance-items" class="space-y-3"></div>
-    </section>
-
-    <section id="list-page" class="hidden p-6 pb-24 overflow-y-auto">
-        <button onclick="showPage('admin-dash')" class="mb-6 text-slate-400"><i class="fas fa-arrow-left"></i> Rudi</button>
-        <h2 class="text-2xl font-black mb-6">Washirika & Emails</h2>
-        <div id="member-items" class="space-y-3"></div>
-    </section>
-
-    <section id="user-form-page" class="hidden p-8 flex flex-col justify-center min-h-screen">
-        <h2 id="pub-church-name" class="text-2xl font-black text-center mb-8 text-blue-500 uppercase italic">CHURCH NAME</h2>
-        <div class="glass p-8 rounded-[3rem] space-y-4">
+    <section id="user-form-page" class="hidden py-10">
+        <div class="glass-card p-8">
+            <h2 class="text-center text-xl font-black text-blue-500 mb-6 uppercase">Sajili Taarifa</h2>
             <input type="text" id="u-name" placeholder="Jina Kamili">
             <input type="email" id="u-email" placeholder="Barua Pepe (Email)">
             <input type="tel" id="u-phone" placeholder="Namba ya Simu">
             <select id="u-type">
-                <option value="Mshirika">Aina: Mshirika</option>
-                <option value="Mgeni">Aina: Mgeni</option>
+                <option value="Mshirika">Mshirika</option>
+                <option value="Mgeni">Mgeni</option>
             </select>
-            <select id="u-gender">
-                <option value="Male">Mwanaume</option>
-                <option value="Female">Mwanamke</option>
-                <option value="Child">Mtoto</option>
-            </select>
-            <button onclick="saveUser()" class="btn-blue mt-4">SAJILI TAARIFA</button>
-            <button onclick="location.reload()" class="w-full text-slate-500 text-[10px] font-bold uppercase mt-4">Rudi Nyuma</button>
+            <button id="submit-btn" onclick="registerMember()" class="btn-gradient w-full py-4 rounded-2xl font-bold">
+                JIUNGE SASA
+            </button>
+            <p id="status-msg" class="text-[10px] text-center mt-4 text-emerald-400 font-bold hidden italic">Inatuma Email ya Karibu...</p>
+            <button onclick="location.reload()" class="w-full text-slate-500 text-xs mt-6">Rudi</button>
         </div>
     </section>
 
-    <section id="finance-form-page" class="hidden p-8 flex flex-col justify-center min-h-screen">
-        <div class="text-center mb-8 italic">
-            <h2 class="text-xl font-black text-emerald-500">OFISI YA MUHASIBU</h2>
-            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Ingiza Data za Zaka/Fungu la 10</p>
-        </div>
-        <div class="glass p-8 rounded-[3rem] space-y-4">
-            <input type="text" id="f-name" placeholder="Jina la Mtoaji">
-            <input type="number" id="f-amount" placeholder="Kiasi (Tsh)">
-            <select id="f-type">
-                <option value="Zaka">Zaka</option>
-                <option value="Fungu la 10">Fungu la 10</option>
-                <option value="Shukrani">Sadaka ya Shukrani</option>
-            </select>
-            <button onclick="saveFinance()" class="w-full bg-emerald-600 text-white p-4 rounded-2xl font-bold shadow-lg shadow-emerald-900/40">HIFADHI DATA</button>
-            <button onclick="location.reload()" class="w-full text-slate-500 text-[10px] font-bold uppercase mt-4 text-center">Rudi Nyuma</button>
-        </div>
-    </section>
-
-    <section id="settings-page" class="hidden p-8 overflow-y-auto pb-24">
-        <button onclick="showPage('admin-dash')" class="mb-8 text-slate-400"><i class="fas fa-arrow-left"></i> Rudi</button>
-        <h2 class="text-2xl font-black mb-8">Mipangilio ya Mfumo</h2>
-        <div class="space-y-6">
-            <div class="p-6 glass rounded-3xl text-center">
-                <p class="text-[10px] font-bold text-slate-500 uppercase mb-4">Logo ya Kanisa</p>
-                <input type="file" id="logo-in" accept="image/*" onchange="processLogo(this)">
-            </div>
-            <input type="text" id="set-name" placeholder="Jina la Kanisa">
-            <input type="text" id="set-pastor" placeholder="Jina la Mchungaji">
-            <input type="password" id="set-pass" placeholder="Password ya Admin">
-            <button onclick="saveSettings()" class="btn-blue">HIFADHI MABADILIKO</button>
-        </div>
+    <section id="list-page" class="hidden py-6">
+        <button onclick="showPage('admin-dash')" class="mb-6 text-slate-500"><i class="fas fa-arrow-left"></i> Rudi</button>
+        <h2 class="text-2xl font-black mb-6">Database</h2>
+        <div id="member-items" class="space-y-3"></div>
     </section>
 
 </div>
 
 <script>
-    // --- DATABASE ---
-    let users = JSON.parse(localStorage.getItem('lex_users')) || [];
-    let finances = JSON.parse(localStorage.getItem('lex_finances')) || [];
-    let config = JSON.parse(localStorage.getItem('lex_config')) || {
+    let dbMembers = JSON.parse(localStorage.getItem('lex_v4_members')) || [];
+    let config = JSON.parse(localStorage.getItem('lex_v4_config')) || {
         name: "LEXON TECH CHURCH",
-        pastor: "Kapiga James",
-        pass: "1234",
-        logo: ""
+        pass: "1234"
     };
 
-    // --- CORE FUNCTIONS ---
     function handleLogin() {
         const u = document.getElementById('admin-user').value;
         const p = document.getElementById('admin-pass').value;
-        if(u === "admin" && p === config.pass) {
-            showPage('admin-dash');
-            initApp();
-        } else { alert("Login Error!"); }
+        if(u === "admin" && p === config.pass) { showPage('admin-dash'); initV4(); }
+        else { alert("Kosa!"); }
     }
 
     function showPage(id) {
-        const sections = ['login-page', 'admin-dash', 'list-page', 'settings-page', 'user-form-page', 'finance-form-page', 'finance-list-page'];
-        sections.forEach(s => document.getElementById(s).classList.add('hidden'));
+        document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
-        if(id === 'user-form-page') document.getElementById('pub-church-name').innerText = config.name;
     }
 
-    function processLogo(input) {
-        if (input.files && input.files[0]) {
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                config.logo = e.target.result;
-                renderBranding();
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
+    // --- SENDGRID EMAIL LOGIC ---
+    async function sendWelcomeEmail(targetEmail, targetName) {
+        const apiKey = "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";
+        const url = "https://api.sendgrid.com/v3/mail/send";
+
+        const emailData = {
+            personalizations: [{
+                to: [{ email: targetEmail }]
+            }],
+            from: { email: "Weka_Email_Yako_Hapa@gmail.com" }, // <--- WEKA EMAIL YAKO ILIYO VERIFIED SENDGRID
+            subject: "Karibu Sana " + config.name,
+            content: [{
+                type: "text/plain",
+                value: `Habari ${targetName},\n\nKaribu sana katika kanisa la ${config.name}. Tunafurahi kuwa nawe. Mungu akubariki!`
+            }]
+        };
+
+        try {
+            await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(emailData)
+            });
+        } catch (e) { console.error("Email failed but data saved locally."); }
     }
 
-    function renderBranding() {
-        if(config.logo) {
-            const img = `<img src="${config.logo}" class="w-full h-full object-cover">`;
-            document.getElementById('dash-logo').innerHTML = img;
-            document.getElementById('app-logo-box').innerHTML = img;
-        }
-    }
-
-    function saveSettings() {
-        config.name = document.getElementById('set-name').value || config.name;
-        config.pastor = document.getElementById('set-pastor').value || config.pastor;
-        const p = document.getElementById('set-pass').value;
-        if(p) config.pass = p;
-        localStorage.setItem('lex_config', JSON.stringify(config));
-        alert("Mipangilio Imehifadhiwa!");
-        initApp();
-        showPage('admin-dash');
-    }
-
-    function saveUser() {
-        const u = {
+    async function registerMember() {
+        const m = {
             name: document.getElementById('u-name').value,
             email: document.getElementById('u-email').value,
             phone: document.getElementById('u-phone').value,
             type: document.getElementById('u-type').value,
-            gender: document.getElementById('u-gender').value,
-            date: new Date().toLocaleDateString()
+            id: Date.now()
         };
-        if(!u.name || !u.email) return alert("Jina na Email ni Lazima!");
-        users.unshift(u);
-        localStorage.setItem('lex_users', JSON.stringify(users));
-        alert("Usajili Umekamilika!");
+
+        if(!m.name || !m.email) return alert("Jaza Jina na Email!");
+
+        // 1. Zima kitufe kuzuia kubonyeza mara mbili
+        const btn = document.getElementById('submit-btn');
+        const status = document.getElementById('status-msg');
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        status.classList.remove('hidden');
+
+        // 2. Hifadhi kwenye Database ya simu
+        dbMembers.unshift(m);
+        localStorage.setItem('lex_v4_members', JSON.stringify(dbMembers));
+
+        // 3. Tuma Email Halisi kupitia SendGrid
+        await sendWelcomeEmail(m.email, m.name);
+
+        alert("Usajili Umekamilika! Email ya Karibu imetumwa.");
         location.reload();
     }
 
-    function saveFinance() {
-        const f = {
-            name: document.getElementById('f-name').value,
-            amount: document.getElementById('f-amount').value,
-            type: document.getElementById('f-type').value,
-            date: new Date().toLocaleDateString()
-        };
-        if(!f.name || !f.amount) return alert("Jaza jina na kiasi!");
-        finances.unshift(f);
-        localStorage.setItem('lex_finances', JSON.stringify(finances));
-        alert("Data ya Fedha imehifadhiwa!");
-        location.reload();
-    }
-
-    function initApp() {
+    function initV4() {
         document.getElementById('display-church-name').innerText = config.name;
-        document.getElementById('display-pastor').innerText = "MCH. " + config.pastor.toUpperCase();
-        renderBranding();
-
-        // Stats
-        document.getElementById('count-total').innerText = users.length;
-        document.getElementById('count-visitors').innerText = users.filter(u => u.type === 'Mgeni').length;
-        document.getElementById('count-male').innerText = users.filter(u => u.gender === 'Male').length;
-        document.getElementById('count-female').innerText = users.filter(u => u.gender === 'Female').length;
-        document.getElementById('count-kids').innerText = users.filter(u => u.gender === 'Child').length;
-
-        // Render Member List
-        document.getElementById('member-items').innerHTML = users.map(u => `
-            <div class="glass p-5 rounded-3xl flex justify-between items-center">
-                <div>
-                    <p class="font-bold text-sm text-white">${u.name}</p>
-                    <p class="text-[9px] text-blue-400 font-bold uppercase tracking-widest">${u.type} | ${u.email}</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-[10px] font-black text-white">${u.phone}</p>
-                    <p class="text-[8px] text-slate-500">${u.date}</p>
-                </div>
-            </div>
-        `).join('');
-
-        // Render Finance List (Kwa Mchungaji)
-        document.getElementById('finance-items').innerHTML = finances.map(f => `
-            <div class="glass p-5 rounded-3xl border-l-4 border-emerald-500 flex justify-between items-center">
-                <div>
-                    <p class="font-bold text-white text-sm">${f.name}</p>
-                    <p class="text-[10px] text-emerald-400 font-bold uppercase">${f.type}</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-xs font-black text-white">Tsh ${f.amount}</p>
-                    <p class="text-[8px] text-slate-500">${f.date}</p>
-                </div>
+        document.getElementById('count-total').innerText = "Washirika: " + dbMembers.length;
+        document.getElementById('member-items').innerHTML = dbMembers.map(m => `
+            <div class="glass-card p-4 flex justify-between items-center mb-2">
+                <div><p class="font-bold text-white text-sm">${m.name}</p><p class="text-[9px] text-blue-400">${m.email}</p></div>
+                <a href="tel:${m.phone}" class="text-blue-500"><i class="fas fa-phone"></i></a>
             </div>
         `).join('');
     }
-
-    // Auto branding on start
-    window.onload = renderBranding;
 </script>
-
 </body>
 </html>
