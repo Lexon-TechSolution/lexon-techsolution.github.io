@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/"
+  to = "/church.html"
+  status = 200
