@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grace & Glory Church | Final Master Cloud v20.0</title>
+    <title>Grace & Glory Church | Ultra Cloud v21.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -14,14 +14,11 @@
         :root { --bg: #020617; --glass: rgba(255,255,255,0.03); --text: #f8fafc; }
         .light-mode { --bg: #f8fafc; --glass: rgba(0,0,0,0.05); --text: #0f172a; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); transition: 0.5s; overflow-x: hidden; margin: 0; }
-
         .neon-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; pointer-events: none; }
         .floating-text { position: absolute; font-weight: 900; text-transform: uppercase; white-space: nowrap; opacity: 0.12; animation: float 25s linear infinite; text-shadow: 0 0 10px currentColor; }
         @keyframes float { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
-
         .video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; object-fit: cover; opacity: 0.25; filter: blur(4px); }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -4; background: radial-gradient(circle, rgba(2,6,23,0.7) 0%, rgba(2,6,23,1) 100%); }
-        
         .neon-glow { color: #3b82f6; text-shadow: 0 0 15px #3b82f6, 0 0 30px #2563eb; font-weight: 900; text-align: center; display: block; letter-spacing: 2px; }
         .glass { background: var(--glass); backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; }
         .btn-action { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 15px; border-radius: 14px; font-weight: 800; color: white; width: 100%; border: none; cursor: pointer; }
@@ -35,7 +32,7 @@
 
     <div class="max-w-[480px] mx-auto min-h-screen p-4 flex flex-col relative z-10">
         <div class="py-4 flex justify-between items-center">
-            <span class="text-[10px] font-black opacity-40 tracking-widest uppercase">Lexon Master ERP v20.0 Cloud</span>
+            <span class="text-[10px] font-black opacity-40 tracking-widest uppercase">Lexon v21.0 Cloud</span>
             <button onclick="toggleTheme()" class="w-10 h-10 glass rounded-full flex items-center justify-center"><i id="theme-icon" class="fas fa-moon text-blue-400"></i></button>
         </div>
 
@@ -107,12 +104,22 @@
             <button onclick="location.reload()" class="w-full text-red-500 text-[10px] font-bold uppercase">Exit Office</button>
         </section>
 
-        <section id="fin-pass-page" class="hidden flex-1 flex flex-col justify-center">
-            <div class="glass p-8 space-y-4">
-                <h2 class="text-center font-black text-emerald-400 text-xs uppercase">New Office Password</h2>
-                <input type="password" id="new-fin-p" placeholder="Enter New Password">
-                <button onclick="changeFinPass()" class="btn-action">Update Password</button>
-                <button onclick="showPage('fin-dash')" class="w-full text-xs opacity-40 text-center font-bold">CANCEL</button>
+        <section id="db-page" class="hidden py-4">
+            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="flex gap-2 mb-4">
+                <button id="btn-w" onclick="renderDbView('Mshirika')" class="flex-1 glass p-2 text-[10px] font-black uppercase bg-blue-600">Washirika</button>
+                <button id="btn-g" onclick="renderDbView('Mgeni')" class="flex-1 glass p-2 text-[10px] font-black uppercase">Wageni</button>
+            </div>
+            <div id="db-list" class="space-y-2"></div>
+        </section>
+
+        <section id="settings-page" class="hidden py-4">
+            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
+            <div class="glass p-6 space-y-4">
+                <input type="file" accept="image/*" onchange="uploadLogo(this)">
+                <input type="text" id="set-church" placeholder="Church Name">
+                <input type="text" id="set-pastor" placeholder="Pastor Name">
+                <button onclick="saveSettings()" class="btn-action">SAVE CHANGES</button>
             </div>
         </section>
 
@@ -127,91 +134,74 @@
                 <button onclick="location.reload()" class="w-full text-xs opacity-40 text-center font-bold mt-4 uppercase">Back</button>
             </div>
         </section>
-
-        <section id="db-page" class="hidden py-4">
-            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
-            <div id="db-list" class="space-y-2"></div>
-        </section>
-
+        
         <section id="fin-report" class="hidden py-4">
             <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
-            <div class="glass p-4 mb-4 border-l-4 border-yellow-500">
-                <h3 class="text-[10px] font-black uppercase text-yellow-500 mb-2">Tithe Report (Zaka)</h3>
-                <div id="adm-tithe-list" class="space-y-2"></div>
-            </div>
-            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2">General Cashflow</h3>
             <div id="fin-list-adm" class="space-y-2"></div>
-        </section>
-
-        <section id="settings-page" class="hidden py-4">
-            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
-            <div class="glass p-6 space-y-4">
-                <h3 class="text-[10px] font-black uppercase opacity-40">Admin Configuration</h3>
-                <input type="file" accept="image/*" onchange="uploadLogo(this)">
-                <input type="text" id="set-church" placeholder="Church Name">
-                <input type="text" id="set-pastor" placeholder="Pastor Name">
-                <input type="password" id="set-adm-p" placeholder="New Admin Password">
-                <button onclick="saveSettings()" class="btn-action">SAVE CHANGES</button>
-            </div>
         </section>
     </div>
 
     <script>
-        // --- FIREBASE CONFIG ---
         const firebaseConfig = { databaseURL: "https://graceandglory-65dce-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Local Config for UI
-        let config = JSON.parse(localStorage.getItem('lex_v20_c')) || { 
-            church: "GRACE & GLORY CHURCH", pastor: "PASTOR JAMES", 
+        let config = JSON.parse(localStorage.getItem('lex_v21_c')) || { 
+            church: "GRACE & GLORY CHURCH", pastor: "PASTOR", 
             adm_u: "admin", adm_p: "1234", fin_u: "mhasibu", fin_p: "1234", logo: "" 
         };
 
         function showPage(id) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
+            if(id === 'db-page') renderDbView('Mshirika');
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+
+        function doRegister() {
+            const m = { 
+                name: document.getElementById('u-name').value, 
+                email: document.getElementById('u-email').value, 
+                phone: document.getElementById('u-phone').value, 
+                type: document.getElementById('u-type').value,
+                timestamp: Date.now()
+            };
+            if(!m.name || !m.phone) return alert("Jaza Jina na Simu!");
+            database.ref('members').push(m).then(() => {
+                alert(`USAJILI UMESHAINGIZWA!\nEmail na SMS zimetumwa kwa ${m.name}`);
+                location.reload();
+            });
         }
 
         function saveFin() {
             const f = { cat: document.getElementById('f-cat').value, amt: document.getElementById('f-amt').value, who: document.getElementById('f-who').value, date: new Date().toLocaleDateString(), timestamp: Date.now() };
             if(!f.amt || !f.who) return alert("Jaza taarifa!");
-            database.ref('finance').push(f);
-            alert("Saved to Cloud!");
-            document.getElementById('f-amt').value = ""; document.getElementById('f-who').value = "";
+            database.ref('finance').push(f).then(() => { alert("Saved to Cloud!"); initUI(); });
         }
 
-        function doRegister() {
-            const m = { name: document.getElementById('u-name').value, email: document.getElementById('u-email').value, phone: document.getElementById('u-phone').value, type: document.getElementById('u-type').value };
-            if(!m.name || !m.phone) return alert("Jaza Jina na Simu!");
-            database.ref('members').push(m);
-            alert(`Sajili imekamilika kwa ${m.name}`);
-            location.reload();
-        }
-
-        function changeFinPass() {
-            const p = document.getElementById('new-fin-p').value;
-            if(p) { config.fin_p = p; localStorage.setItem('lex_v20_c', JSON.stringify(config)); alert("Mhasibu Pass Updated!"); showPage('fin-dash'); }
-        }
-
-        function saveSettings() {
-            config.church = document.getElementById('set-church').value || config.church;
-            config.pastor = document.getElementById('set-pastor').value || config.pastor;
-            if(document.getElementById('set-adm-p').value) config.adm_p = document.getElementById('set-adm-p').value;
-            localStorage.setItem('lex_v20_c', JSON.stringify(config));
-            alert("Settings Updated!"); initUI();
-        }
-
-        function uploadLogo(input) {
-            if (input.files && input.files[0]) {
-                let r = new FileReader();
-                r.onload = (e) => { config.logo = e.target.result; localStorage.setItem('lex_v20_c', JSON.stringify(config)); alert("Logo Updated!"); initUI(); };
-                r.readAsDataURL(input.files[0]);
-            }
+        function renderDbView(type) {
+            document.getElementById('btn-w').className = `flex-1 glass p-2 text-[10px] font-black uppercase ${type === 'Mshirika' ? 'bg-blue-600' : ''}`;
+            document.getElementById('btn-g').className = `flex-1 glass p-2 text-[10px] font-black uppercase ${type === 'Mgeni' ? 'bg-orange-600' : ''}`;
+            
+            database.ref('members').once('value', (snap) => {
+                const data = snap.val();
+                let html = "";
+                for(let id in data) {
+                    const m = data[id];
+                    if(m.type === type) {
+                        html += `<div class="glass p-4 border-l-4 ${type==='Mgeni'?'border-orange-500':'border-blue-500'} mb-2 flex justify-between items-center">
+                            <div>
+                                <p class="font-bold text-sm uppercase text-white">${m.name}</p>
+                                <p class="text-[10px] text-blue-400 font-bold">${m.phone}</p>
+                                <p class="text-[9px] opacity-60 italic text-slate-300">${m.email || 'No Email'}</p>
+                            </div>
+                            <button onclick="delCloud('members','${id}')" class="text-red-900"><i class="fas fa-trash-alt"></i></button>
+                        </div>`;
+                    }
+                }
+                document.getElementById('db-list').innerHTML = html || `<p class="text-center text-[10px] opacity-40">Hakuna kumbukumbu...</p>`;
+            });
         }
 
         function initUI() {
@@ -222,44 +212,27 @@
                 document.getElementById('main-logo-box').innerHTML = img;
                 document.getElementById('adm-logo-box').innerHTML = img;
             }
-
-            // Realtime Sync: Finance
+            
             database.ref('finance').on('value', (snap) => {
                 const data = snap.val();
-                let titheHtml = ""; let otherHtml = ""; let inc = 0; let exp = 0;
+                let html = ""; let inc = 0; let exp = 0;
                 for(let id in data) {
                     const f = data[id];
                     if(f.cat === 'In' || f.cat === 'Tithe') inc += parseInt(f.amt); else exp += parseInt(f.amt);
-                    const card = `<div class="glass p-3 border-l-4 ${f.cat==='Out'?'border-red-500':f.cat==='Tithe'?'border-yellow-500':'border-emerald-500'} mb-2 flex justify-between items-center">
+                    html += `<div class="glass p-3 border-l-4 ${f.cat==='Out'?'border-red-500':'border-emerald-500'} mb-2 flex justify-between items-center">
                         <div><p class="text-[8px] font-black uppercase">${f.cat}</p><p class="text-xs font-bold">${f.who}</p></div>
-                        <div class="flex items-center gap-2"><p class="text-xs font-black">${parseInt(f.amt).toLocaleString()}</p><button onclick="delCloud('finance','${id}')" class="text-red-900 text-[10px]"><i class="fas fa-trash"></i></button></div>
+                        <p class="text-xs font-black">${parseInt(f.amt).toLocaleString()}</p>
                     </div>`;
-                    if(f.cat === 'Tithe') titheHtml += card; else otherHtml += card;
                 }
-                document.getElementById('fin-list-office').innerHTML = titheHtml + otherHtml;
-                document.getElementById('fin-list-adm').innerHTML = otherHtml;
-                document.getElementById('adm-tithe-list').innerHTML = titheHtml;
                 document.getElementById('c-in').innerText = inc.toLocaleString();
                 document.getElementById('c-out').innerText = exp.toLocaleString();
                 document.getElementById('c-bal').innerText = (inc - exp).toLocaleString();
-            });
-
-            // Realtime Sync: Members
-            database.ref('members').on('value', (snap) => {
-                const data = snap.val();
-                let html = "";
-                for(let id in data) {
-                    const m = data[id];
-                    html += `<div class="glass p-4 border-l-4 border-blue-500 mb-2 flex justify-between items-center">
-                        <div><p class="font-bold text-sm uppercase">${m.name}</p><p class="text-[10px] text-blue-400 font-bold">${m.phone}</p><p class="text-[9px] opacity-60 italic">${m.email}</p></div>
-                        <button onclick="delCloud('members','${id}')" class="text-red-900"><i class="fas fa-trash-alt"></i></button>
-                    </div>`;
-                }
-                document.getElementById('db-list').innerHTML = html;
+                document.getElementById('fin-list-office').innerHTML = html;
+                document.getElementById('fin-list-adm').innerHTML = html;
             });
         }
 
-        function delCloud(path, id) { if(confirm("Futa kabisa kwenye Cloud?")) database.ref(path).child(id).remove(); }
+        function delCloud(path, id) { if(confirm("Futa kabisa?")) database.ref(path).child(id).remove().then(() => renderDbView('Mshirika')); }
 
         function doLogin(type) {
             if(type === 'admin') {
@@ -271,21 +244,22 @@
             }
         }
 
-        function createNeonBackground() {
-            const container = document.getElementById('neon-container');
-            const colors = ['#3b82f6', '#10b981', '#a855f7', '#f59e0b'];
-            for(let i=0; i<12; i++) {
-                const span = document.createElement('span');
-                span.className = 'floating-text';
-                span.innerText = "GRACE & GLORY CHURCH";
-                span.style.top = Math.random() * 100 + 'vh';
-                span.style.color = colors[Math.floor(Math.random() * colors.length)];
-                span.style.animationDuration = (Math.random() * 20 + 15) + 's';
-                container.appendChild(span);
+        function saveSettings() {
+            config.church = document.getElementById('set-church').value || config.church;
+            config.pastor = document.getElementById('set-pastor').value || config.pastor;
+            localStorage.setItem('lex_v21_c', JSON.stringify(config));
+            alert("Settings Updated!"); initUI();
+        }
+
+        function uploadLogo(input) {
+            if (input.files && input.files[0]) {
+                let r = new FileReader();
+                r.onload = (e) => { config.logo = e.target.result; localStorage.setItem('lex_v21_c', JSON.stringify(config)); initUI(); };
+                r.readAsDataURL(input.files[0]);
             }
         }
 
-        window.onload = () => { createNeonBackground(); };
+        window.onload = () => { initUI(); };
     </script>
 </body>
 </html>
