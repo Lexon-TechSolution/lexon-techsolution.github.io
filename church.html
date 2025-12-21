@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grace & Glory Church | Master ERP v18.0</title>
+    <meta name="description" content="Grace & Glory Church - Official Church Management Portal. Manage Tithes, Members, and Church Finance.">
+    <title>Grace & Glory Church | Cloud ERP v19.0</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
         :root { --bg: #020617; --glass: rgba(255,255,255,0.03); --text: #f8fafc; }
         .light-mode { --bg: #f8fafc; --glass: rgba(0,0,0,0.05); --text: #0f172a; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); transition: 0.5s; overflow-x: hidden; margin: 0; }
 
-        /* NEON BACKGROUND ANIMATION */
+        /* NEON BACKGROUND */
         .neon-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; pointer-events: none; }
         .floating-text { position: absolute; font-weight: 900; text-transform: uppercase; white-space: nowrap; opacity: 0.12; animation: float 22s linear infinite; text-shadow: 0 0 10px currentColor; }
         @keyframes float { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
@@ -33,7 +38,7 @@
 
     <div class="max-w-[480px] mx-auto min-h-screen p-4 flex flex-col relative z-10">
         <div class="py-4 flex justify-between items-center">
-            <span class="text-[10px] font-black opacity-40 tracking-widest uppercase">Lexon Systems v18.0</span>
+            <span class="text-[10px] font-black opacity-40 tracking-widest uppercase">Grace & Glory Cloud v19.0</span>
             <button onclick="toggleTheme()" class="w-10 h-10 glass rounded-full flex items-center justify-center"><i id="theme-icon" class="fas fa-moon text-blue-400"></i></button>
         </div>
 
@@ -89,7 +94,7 @@
 
         <section id="fin-dash" class="hidden py-4">
             <div class="glass p-6 mb-4">
-                <h2 class="text-center font-black text-emerald-400 text-xs mb-4 uppercase">Financial Entry</h2>
+                <h2 class="text-center font-black text-emerald-400 text-xs mb-4 uppercase">Ingiza Muamala (Cloud Sync)</h2>
                 <select id="f-cat">
                     <option value="In">Mapato Ya Kawaida</option>
                     <option value="Tithe">ZAKA / FUNGU LA KUMI</option>
@@ -97,74 +102,54 @@
                 </select>
                 <input type="text" id="f-who" placeholder="Jina la Mhusika">
                 <input type="number" id="f-amt" placeholder="Kiasi (Tsh)">
-                <button onclick="saveFin()" class="w-full bg-emerald-600 p-4 rounded-xl font-bold uppercase text-xs text-white mb-4">SAVE RECORD</button>
-                <button onclick="showPage('fin-pass-page')" class="w-full glass p-3 text-[10px] font-black uppercase text-slate-400">Change Office Password</button>
+                <button onclick="saveFin()" class="w-full bg-emerald-600 p-4 rounded-xl font-bold uppercase text-xs text-white mb-4">SAVE TO CLOUD</button>
             </div>
-            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2 px-4">Tithe & Income List</h3>
+            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2 px-4">Live Transactions</h3>
             <div id="fin-list-office" class="space-y-2 mb-4"></div>
             <button onclick="location.reload()" class="w-full text-red-500 text-[10px] font-bold uppercase">Exit Office</button>
         </section>
 
-        <section id="fin-pass-page" class="hidden flex-1 flex flex-col justify-center">
-            <div class="glass p-8 space-y-4">
-                <h2 class="text-center font-black text-emerald-400 text-xs uppercase">New Office Password</h2>
-                <input type="password" id="new-fin-p" placeholder="Enter New Password">
-                <button onclick="changeFinPass()" class="btn-action">UPDATE PASSWORD</button>
-                <button onclick="showPage('fin-dash')" class="w-full text-xs opacity-40 text-center uppercase font-bold">Cancel</button>
-            </div>
-        </section>
-
         <section id="reg-page" class="hidden py-6">
             <div class="glass p-8 space-y-3">
-                <h2 class="neon-glow text-sm mb-6 uppercase">Church Registration</h2>
+                <h2 class="neon-glow text-sm mb-6 uppercase">Registration Portal</h2>
                 <input type="text" id="u-name" placeholder="Full Name">
                 <input type="email" id="u-email" placeholder="Email Address">
                 <input type="tel" id="u-phone" placeholder="Phone Number">
                 <select id="u-type"><option value="Mshirika">Mshirika</option><option value="Mgeni">Mgeni</option></select>
-                <button onclick="doRegister()" class="btn-action">REGISTER</button>
+                <button onclick="doRegister()" class="btn-action">SUBMIT</button>
                 <button onclick="location.reload()" class="w-full text-xs opacity-40 text-center font-bold mt-4 uppercase">Back</button>
             </div>
         </section>
 
         <section id="db-page" class="hidden py-4">
             <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
-            <div class="flex gap-2 mb-4">
-                <button id="btn-w" onclick="renderDb('Mshirika')" class="flex-1 glass p-2 text-[10px] font-black uppercase bg-blue-600">Members</button>
-                <button id="btn-g" onclick="renderDb('Mgeni')" class="flex-1 glass p-2 text-[10px] font-black uppercase">Guests</button>
-            </div>
             <div id="db-list" class="space-y-2"></div>
         </section>
 
         <section id="fin-report" class="hidden py-4">
             <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
-            <div class="glass p-4 mb-4 border-l-4 border-yellow-500">
-                <h3 class="text-[10px] font-black uppercase text-yellow-500 mb-2">TITHE REPORT (ZAKA)</h3>
-                <div id="adm-tithe-list" class="space-y-2"></div>
-            </div>
-            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2">GENERAL CASHFLOW</h3>
             <div id="fin-list-adm" class="space-y-2"></div>
         </section>
 
         <section id="settings-page" class="hidden py-4">
             <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="glass p-6 space-y-4">
-                <h3 class="text-[10px] font-black uppercase opacity-40 uppercase">Admin Config</h3>
-                <input type="file" accept="image/*" onchange="uploadLogo(this)">
                 <input type="text" id="set-church" placeholder="Church Name">
-                <input type="text" id="set-pastor" placeholder="Pastor Name">
-                <input type="password" id="set-adm-p" placeholder="New Admin Password">
-                <button onclick="saveSettings()" class="btn-action uppercase">Save Changes</button>
+                <input type="password" id="set-adm-p" placeholder="New Password">
+                <button onclick="saveSettings()" class="btn-action">SAVE SETTINGS</button>
             </div>
         </section>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('lex_v18_db')) || [];
-        let finance = JSON.parse(localStorage.getItem('lex_v18_f')) || [];
-        let config = JSON.parse(localStorage.getItem('lex_v18_c')) || { 
-            church: "GRACE & GLORY CHURCH", pastor: "PASTOR", 
-            adm_u: "admin", adm_p: "1234", fin_u: "mhasibu", fin_p: "1234", logo: "" 
+        // --- FIREBASE CONFIGURATION ---
+        const firebaseConfig = {
+            databaseURL: "https://graceandglory-65dce-default-rtdb.firebaseio.com/"
         };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let config = JSON.parse(localStorage.getItem('lex_cfg')) || { church: "GRACE & GLORY CHURCH", adm_u: "admin", adm_p: "1234", fin_u: "mhasibu", fin_p: "1234" };
 
         function showPage(id) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
@@ -173,142 +158,86 @@
 
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
-            const icon = document.getElementById('theme-icon');
-            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-sun text-yellow-500' : 'fas fa-moon text-blue-400';
+        }
+
+        // Save Finance to Firebase
+        function saveFin() {
+            const f = { cat: document.getElementById('f-cat').value, amt: document.getElementById('f-amt').value, who: document.getElementById('f-who').value, date: new Date().toLocaleDateString(), timestamp: Date.now() };
+            if(!f.amt || !f.who) return alert("Fill all fields!");
+            database.ref('finance').push(f);
+            alert("Saved to Cloud!");
+            document.getElementById('f-amt').value = ""; document.getElementById('f-who').value = "";
+        }
+
+        // Save Registration to Firebase
+        function doRegister() {
+            const m = { name: document.getElementById('u-name').value, email: document.getElementById('u-email').value, phone: document.getElementById('u-phone').value, type: document.getElementById('u-type').value };
+            if(!m.name || !m.phone) return alert("Fill Name and Phone!");
+            database.ref('members').push(m);
+            alert(`Sajili imekamilika! Karibu ${m.name}`);
+            location.reload();
+        }
+
+        // Live Listener for UI Updates
+        function initUI() {
+            document.getElementById('disp-church').innerText = config.church;
+
+            // Listen for Finance Data
+            database.ref('finance').on('value', (snapshot) => {
+                const data = snapshot.val();
+                let html = ""; let inc = 0; let exp = 0;
+                for(let id in data) {
+                    const f = data[id];
+                    if(f.cat === 'In' || f.cat === 'Tithe') inc += parseInt(f.amt);
+                    else exp += parseInt(f.amt);
+                    
+                    html += `<div class="glass p-3 border-l-4 ${f.cat==='Out'?'border-red-500':'border-emerald-500'} mb-2 flex justify-between">
+                        <div><p class="text-[8px] font-black uppercase">${f.cat}</p><p class="text-xs font-bold">${f.who}</p></div>
+                        <p class="text-xs font-black">${parseInt(f.amt).toLocaleString()}</p>
+                    </div>`;
+                }
+                document.getElementById('fin-list-office').innerHTML = html;
+                document.getElementById('fin-list-adm').innerHTML = html;
+                document.getElementById('c-in').innerText = inc.toLocaleString();
+                document.getElementById('c-out').innerText = exp.toLocaleString();
+                document.getElementById('c-bal').innerText = (inc - exp).toLocaleString();
+            });
+
+            // Listen for Member Data
+            database.ref('members').on('value', (snapshot) => {
+                const data = snapshot.val();
+                let html = "";
+                for(let id in data) {
+                    const m = data[id];
+                    html += `<div class="glass p-4 border-l-4 border-blue-500 mb-2">
+                        <p class="font-bold text-sm uppercase">${m.name}</p>
+                        <p class="text-[10px] text-blue-400">${m.phone} | ${m.email}</p>
+                    </div>`;
+                }
+                document.getElementById('db-list').innerHTML = html;
+            });
+        }
+
+        function doLogin(type) {
+            if(type === 'admin') showPage('admin-dash');
+            else showPage('fin-dash');
+            initUI();
         }
 
         function createNeonBackground() {
             const container = document.getElementById('neon-container');
-            const colors = ['#3b82f6', '#10b981', '#a855f7', '#f59e0b'];
-            for(let i=0; i<12; i++) {
+            for(let i=0; i<10; i++) {
                 const span = document.createElement('span');
                 span.className = 'floating-text';
                 span.innerText = "GRACE & GLORY CHURCH";
                 span.style.top = Math.random() * 100 + 'vh';
-                span.style.color = colors[Math.floor(Math.random() * colors.length)];
-                span.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
-                span.style.animationDuration = (Math.random() * 20 + 15) + 's';
-                span.style.animationDelay = (Math.random() * 10) + 's';
+                span.style.color = "#3b82f6";
+                span.style.animationDuration = (Math.random() * 20 + 10) + 's';
                 container.appendChild(span);
             }
         }
 
-        function doLogin(type) {
-            if(type === 'admin') {
-                if(document.getElementById('adm-u').value === config.adm_u && document.getElementById('adm-p').value === config.adm_p) { showPage('admin-dash'); initUI(); }
-                else alert("Admin Access Denied!");
-            } else {
-                if(document.getElementById('fin-u').value === config.fin_u && document.getElementById('fin-p').value === config.fin_p) { showPage('fin-dash'); initUI(); }
-                else alert("Finance Access Denied!");
-            }
-        }
-
-        function saveFin() {
-            const f = { cat: document.getElementById('f-cat').value, amt: document.getElementById('f-amt').value, who: document.getElementById('f-who').value, date: new Date().toLocaleDateString(), id: Date.now() };
-            if(!f.amt || !f.who) return alert("Fill all fields!");
-            finance.unshift(f);
-            localStorage.setItem('lex_v18_f', JSON.stringify(finance));
-            initUI(); alert("Transaction Recorded!");
-            document.getElementById('f-amt').value = ""; document.getElementById('f-who').value = "";
-        }
-
-        function delFin(id) {
-            if(confirm("Futa muamala huu?")) { finance = finance.filter(x => x.id !== id); localStorage.setItem('lex_v18_f', JSON.stringify(finance)); initUI(); }
-        }
-
-        function changeFinPass() {
-            const p = document.getElementById('new-fin-p').value;
-            if(p) { config.fin_p = p; localStorage.setItem('lex_v18_c', JSON.stringify(config)); alert("Mhasibu Pass Updated!"); showPage('fin-dash'); }
-        }
-
-        function doRegister() {
-            const m = { 
-                name: document.getElementById('u-name').value, 
-                email: document.getElementById('u-email').value, 
-                phone: document.getElementById('u-phone').value, 
-                type: document.getElementById('u-type').value, 
-                id: Date.now() 
-            };
-            if(!m.name || !m.phone) return alert("Jaza Jina na Namba ya Simu!");
-            db.unshift(m);
-            localStorage.setItem('lex_v18_db', JSON.stringify(db));
-            alert(`USAJILI UMESHAINGIZWA!\nEmail na SMS zimetumwa kwa ${m.name}`);
-            location.reload();
-        }
-
-        function renderDb(type) {
-            document.getElementById('btn-w').className = `flex-1 glass p-2 text-[10px] font-black uppercase ${type === 'Mshirika' ? 'bg-blue-600' : ''}`;
-            document.getElementById('btn-g').className = `flex-1 glass p-2 text-[10px] font-black uppercase ${type === 'Mgeni' ? 'bg-orange-600' : ''}`;
-            
-            const filtered = db.filter(m => m.type === type);
-            // HAPA NDIO MAREKEBISHO YA EMAIL YAMEFANYIKA
-            document.getElementById('db-list').innerHTML = filtered.map(m => `
-                <div class="glass p-4 border-l-4 ${type === 'Mgeni' ? 'border-orange-500' : 'border-blue-500'} flex justify-between items-center mb-2">
-                    <div>
-                        <p class="font-bold text-sm text-white uppercase">${m.name}</p>
-                        <p class="text-[10px] text-blue-400 font-bold">${m.phone}</p>
-                        <p class="text-[9px] opacity-60 italic">${m.email || 'No email'}</p>
-                    </div>
-                    <button onclick="delM(${m.id})" class="text-red-900"><i class="fas fa-trash-alt"></i></button>
-                </div>
-            `).join('');
-        }
-
-        function delM(id) {
-            if(confirm("Futa huyu mshirika?")) { db = db.filter(x => x.id !== id); localStorage.setItem('lex_v18_db', JSON.stringify(db)); renderDb('Mshirika'); }
-        }
-
-        function saveSettings() {
-            config.church = document.getElementById('set-church').value || config.church;
-            config.pastor = document.getElementById('set-pastor').value || config.pastor;
-            if(document.getElementById('set-adm-p').value) config.adm_p = document.getElementById('set-adm-p').value;
-            localStorage.setItem('lex_v18_c', JSON.stringify(config));
-            alert("Updated Successfully!"); initUI();
-        }
-
-        function uploadLogo(input) {
-            if (input.files && input.files[0]) {
-                let r = new FileReader();
-                r.onload = (e) => { config.logo = e.target.result; alert("Logo Updated!"); };
-                r.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function initUI() {
-            document.getElementById('disp-church').innerText = config.church;
-            const inc = finance.filter(f => f.cat === 'In' || f.cat === 'Tithe').reduce((s, i) => s + parseInt(i.amt), 0);
-            const exp = finance.filter(f => f.cat === 'Out').reduce((s, i) => s + parseInt(i.amt), 0);
-            document.getElementById('c-in').innerText = inc.toLocaleString();
-            document.getElementById('c-out').innerText = exp.toLocaleString();
-            document.getElementById('c-bal').innerText = (inc - exp).toLocaleString();
-
-            if(config.logo) {
-                const img = `<img src="${config.logo}" class="w-full h-full object-cover">`;
-                document.getElementById('main-logo-box').innerHTML = img;
-                document.getElementById('adm-logo-box').innerHTML = img;
-            }
-
-            const titheHtml = finance.filter(f => f.cat === 'Tithe').map(f => `
-                <div class="glass p-3 border-l-4 border-yellow-500 flex justify-between items-center mb-2">
-                    <div><p class="text-[8px] font-black text-yellow-500 uppercase">Zaka / Tithe</p><p class="text-xs font-bold">${f.who}</p></div>
-                    <div class="flex items-center gap-2"><p class="text-xs font-black">${parseInt(f.amt).toLocaleString()}</p><button onclick="delFin(${f.id})" class="text-red-900 text-[10px]"><i class="fas fa-trash"></i></button></div>
-                </div>
-            `).join('');
-            
-            const otherHtml = finance.filter(f => f.cat !== 'Tithe').map(f => `
-                <div class="glass p-3 border-l-4 ${f.cat === 'In' ? 'border-emerald-500' : 'border-red-500'} flex justify-between items-center mb-2">
-                    <div><p class="text-[8px] font-black ${f.cat === 'In' ? 'text-emerald-400' : 'text-red-400'}">${f.cat === 'In' ? 'INCOME' : 'EXPENSE'}</p><p class="text-xs font-bold">${f.who}</p></div>
-                    <div class="flex items-center gap-2"><p class="text-xs font-black">${parseInt(f.amt).toLocaleString()}</p><button onclick="delFin(${f.id})" class="text-red-900 text-[10px]"><i class="fas fa-trash"></i></button></div>
-                </div>
-            `).join('');
-
-            document.getElementById('adm-tithe-list').innerHTML = titheHtml;
-            document.getElementById('fin-list-office').innerHTML = titheHtml + otherHtml;
-            document.getElementById('fin-list-adm').innerHTML = otherHtml;
-            renderDb('Mshirika');
-        }
-
-        window.onload = () => { createNeonBackground(); initUI(); };
+        window.onload = () => { createNeonBackground(); };
     </script>
 </body>
 </html>
