@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grace & Glory Church | Ultra Master ERP</title>
+    <title>Grace & Glory Church | Master ERP v18.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -12,12 +12,12 @@
         .light-mode { --bg: #f8fafc; --glass: rgba(0,0,0,0.05); --text: #0f172a; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); transition: 0.5s; overflow-x: hidden; margin: 0; }
 
-        /* MULTI-NEON BACKGROUND */
+        /* NEON BACKGROUND ANIMATION */
         .neon-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; overflow: hidden; pointer-events: none; }
-        .floating-text { position: absolute; font-weight: 900; text-transform: uppercase; white-space: nowrap; opacity: 0.12; animation: float 25s linear infinite; text-shadow: 0 0 10px currentColor; }
+        .floating-text { position: absolute; font-weight: 900; text-transform: uppercase; white-space: nowrap; opacity: 0.12; animation: float 22s linear infinite; text-shadow: 0 0 10px currentColor; }
         @keyframes float { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
 
-        .video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; object-fit: cover; opacity: 0.25; filter: blur(3px); }
+        .video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; object-fit: cover; opacity: 0.25; filter: blur(4px); }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -4; background: radial-gradient(circle, rgba(2,6,23,0.7) 0%, rgba(2,6,23,1) 100%); }
         
         .neon-glow { color: #3b82f6; text-shadow: 0 0 15px #3b82f6, 0 0 30px #2563eb; font-weight: 900; text-align: center; display: block; letter-spacing: 2px; }
@@ -33,7 +33,7 @@
 
     <div class="max-w-[480px] mx-auto min-h-screen p-4 flex flex-col relative z-10">
         <div class="py-4 flex justify-between items-center">
-            <span class="text-[10px] font-black opacity-40 tracking-widest uppercase">Lexon ERP v17.0 Premium</span>
+            <span class="text-[10px] font-black opacity-40 tracking-widest uppercase">Lexon Systems v18.0</span>
             <button onclick="toggleTheme()" class="w-10 h-10 glass rounded-full flex items-center justify-center"><i id="theme-icon" class="fas fa-moon text-blue-400"></i></button>
         </div>
 
@@ -49,21 +49,21 @@
 
         <section id="adm-login-page" class="hidden flex-1 flex flex-col justify-center">
             <div class="glass p-8 space-y-4">
-                <h2 class="text-center font-black text-blue-400">ADMIN LOGIN</h2>
+                <h2 class="text-center font-black text-blue-400 uppercase">Admin Access</h2>
                 <input type="text" id="adm-u" placeholder="Admin Username">
                 <input type="password" id="adm-p" placeholder="Admin Password">
                 <button onclick="doLogin('admin')" class="btn-action">LOGIN</button>
-                <button onclick="showPage('main-menu')" class="w-full text-xs opacity-40 mt-4 text-center">BACK</button>
+                <button onclick="showPage('main-menu')" class="w-full text-xs opacity-40 mt-4 text-center uppercase font-bold">Back</button>
             </div>
         </section>
 
         <section id="fin-login-page" class="hidden flex-1 flex flex-col justify-center">
             <div class="glass p-8 space-y-4 border-emerald-500/20">
-                <h2 class="text-center font-black text-emerald-400">FINANCE LOGIN</h2>
+                <h2 class="text-center font-black text-emerald-400 uppercase">Finance Access</h2>
                 <input type="text" id="fin-u" placeholder="Mhasibu User">
                 <input type="password" id="fin-p" placeholder="Mhasibu Password">
-                <button onclick="doLogin('finance')" class="w-full bg-emerald-600 p-4 rounded-xl font-bold uppercase text-xs text-white">LOGIN OFFICE</button>
-                <button onclick="showPage('main-menu')" class="w-full text-xs opacity-40 mt-4 text-center">BACK</button>
+                <button onclick="doLogin('finance')" class="w-full bg-emerald-600 p-4 rounded-xl font-bold uppercase text-xs text-white">Enter Office</button>
+                <button onclick="showPage('main-menu')" class="w-full text-xs opacity-40 mt-4 text-center uppercase font-bold">Back</button>
             </div>
         </section>
 
@@ -74,66 +74,60 @@
                 </div>
                 <h2 id="disp-church" class="neon-glow text-sm">...</h2>
                 <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-white/5 text-[8px] font-black uppercase">
-                    <div class="bg-blue-500/10 p-2 rounded-xl">Income<p id="c-in" class="text-xs text-white">0</p></div>
-                    <div class="bg-red-500/10 p-2 rounded-xl">Expense<p id="c-out" class="text-xs text-white">0</p></div>
+                    <div class="bg-blue-500/10 p-2 rounded-xl">In<p id="c-in" class="text-xs text-white">0</p></div>
+                    <div class="bg-red-500/10 p-2 rounded-xl">Out<p id="c-out" class="text-xs text-white">0</p></div>
                     <div class="bg-emerald-500/10 p-2 rounded-xl">Bal<p id="c-bal" class="text-xs text-white">0</p></div>
                 </div>
             </header>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="showPage('db-page')" class="glass p-5"><i class="fas fa-users text-blue-500 mb-2"></i><p class="text-[10px] font-bold">RECORDS</p></button>
-                <button onclick="showPage('fin-report')" class="glass p-5"><i class="fas fa-coins text-emerald-400 mb-2"></i><p class="text-[10px] font-bold">FINANCE</p></button>
-                <button onclick="showPage('settings-page')" class="glass p-5"><i class="fas fa-cog text-purple-400 mb-2"></i><p class="text-[10px] font-bold">SETTINGS</p></button>
-                <button onclick="location.reload()" class="glass p-5 text-red-500"><i class="fas fa-power-off mb-2"></i><p class="text-[10px] font-bold">LOGOUT</p></button>
+                <button onclick="showPage('db-page')" class="glass p-5"><i class="fas fa-users text-blue-500 mb-2"></i><p class="text-[10px] font-bold uppercase">Database</p></button>
+                <button onclick="showPage('fin-report')" class="glass p-5"><i class="fas fa-coins text-emerald-400 mb-2"></i><p class="text-[10px] font-bold uppercase">Reports</p></button>
+                <button onclick="showPage('settings-page')" class="glass p-5"><i class="fas fa-cog text-purple-400 mb-2"></i><p class="text-[10px] font-bold uppercase">Settings</p></button>
+                <button onclick="location.reload()" class="glass p-5 text-red-500"><i class="fas fa-power-off mb-2"></i><p class="text-[10px] font-bold uppercase">Logout</p></button>
             </div>
         </section>
 
         <section id="fin-dash" class="hidden py-4">
             <div class="glass p-6 mb-4">
-                <h2 class="text-center font-black text-emerald-400 text-xs mb-4 uppercase">Ingiza Muamala Mpya</h2>
-                <select id="f-cat" onchange="toggleTitheField()">
-                    <option value="In">Mapato Ya Kawaida (Sadaka etc)</option>
+                <h2 class="text-center font-black text-emerald-400 text-xs mb-4 uppercase">Financial Entry</h2>
+                <select id="f-cat">
+                    <option value="In">Mapato Ya Kawaida</option>
                     <option value="Tithe">ZAKA / FUNGU LA KUMI</option>
                     <option value="Out">Matumizi (Expense)</option>
                 </select>
-                <input type="text" id="f-who" placeholder="Jina la Mtoaji / Mhusika">
+                <input type="text" id="f-who" placeholder="Jina la Mhusika">
                 <input type="number" id="f-amt" placeholder="Kiasi (Tsh)">
-                <button onclick="saveFin()" class="w-full bg-emerald-600 p-4 rounded-xl font-bold uppercase text-xs text-white mb-4">HIFADHI REKODI</button>
-                
-                <hr class="border-white/10 mb-4">
-                <button onclick="showPage('fin-pass-page')" class="w-full glass p-3 text-[10px] font-black uppercase text-slate-400">Badili Password ya Mhasibu</button>
-                <button onclick="location.reload()" class="w-full text-red-500 text-[10px] font-bold mt-4 uppercase">Logout Office</button>
+                <button onclick="saveFin()" class="w-full bg-emerald-600 p-4 rounded-xl font-bold uppercase text-xs text-white mb-4">SAVE RECORD</button>
+                <button onclick="showPage('fin-pass-page')" class="w-full glass p-3 text-[10px] font-black uppercase text-slate-400">Change Office Password</button>
             </div>
-            
-            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2 px-4">Ripoti ya Zaka (Hivi Karibuni)</h3>
-            <div id="tithe-list" class="space-y-2 mb-6"></div>
-            
-            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2 px-4">Mapato & Matumizi</h3>
-            <div id="fin-list-office" class="space-y-2"></div>
+            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2 px-4">Tithe & Income List</h3>
+            <div id="fin-list-office" class="space-y-2 mb-4"></div>
+            <button onclick="location.reload()" class="w-full text-red-500 text-[10px] font-bold uppercase">Exit Office</button>
         </section>
 
         <section id="fin-pass-page" class="hidden flex-1 flex flex-col justify-center">
             <div class="glass p-8 space-y-4">
-                <h2 class="text-center font-black text-emerald-400 text-xs">NEW MHASIBU PASSWORD</h2>
-                <input type="password" id="new-fin-p" placeholder="Password Mpya">
+                <h2 class="text-center font-black text-emerald-400 text-xs uppercase">New Office Password</h2>
+                <input type="password" id="new-fin-p" placeholder="Enter New Password">
                 <button onclick="changeFinPass()" class="btn-action">UPDATE PASSWORD</button>
-                <button onclick="showPage('fin-dash')" class="w-full text-xs opacity-40 text-center uppercase">Rudi</button>
+                <button onclick="showPage('fin-dash')" class="w-full text-xs opacity-40 text-center uppercase font-bold">Cancel</button>
             </div>
         </section>
 
         <section id="reg-page" class="hidden py-6">
             <div class="glass p-8 space-y-3">
-                <h2 class="neon-glow text-sm mb-6">USAJILI WA WASHIRIKA</h2>
+                <h2 class="neon-glow text-sm mb-6 uppercase">Church Registration</h2>
                 <input type="text" id="u-name" placeholder="Full Name">
                 <input type="email" id="u-email" placeholder="Email Address">
                 <input type="tel" id="u-phone" placeholder="Phone Number">
                 <select id="u-type"><option value="Mshirika">Mshirika</option><option value="Mgeni">Mgeni</option></select>
-                <button onclick="doRegister()" class="btn-action">KAMILISHA USAJILI</button>
-                <button onclick="location.reload()" class="w-full text-xs opacity-40 text-center font-bold mt-4">CANCEL</button>
+                <button onclick="doRegister()" class="btn-action">REGISTER</button>
+                <button onclick="location.reload()" class="w-full text-xs opacity-40 text-center font-bold mt-4 uppercase">Back</button>
             </div>
         </section>
 
         <section id="db-page" class="hidden py-4">
-            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50"><i class="fas fa-arrow-left"></i> BACK</button>
+            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="flex gap-2 mb-4">
                 <button id="btn-w" onclick="renderDb('Mshirika')" class="flex-1 glass p-2 text-[10px] font-black uppercase bg-blue-600">Members</button>
                 <button id="btn-g" onclick="renderDb('Mgeni')" class="flex-1 glass p-2 text-[10px] font-black uppercase">Guests</button>
@@ -142,33 +136,33 @@
         </section>
 
         <section id="fin-report" class="hidden py-4">
-            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50"><i class="fas fa-arrow-left"></i> BACK</button>
+            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="glass p-4 mb-4 border-l-4 border-yellow-500">
-                <h3 class="text-[10px] font-black uppercase text-yellow-500 mb-2">RIPOTI YA ZAKA (FUNGU LA KUMI)</h3>
+                <h3 class="text-[10px] font-black uppercase text-yellow-500 mb-2">TITHE REPORT (ZAKA)</h3>
                 <div id="adm-tithe-list" class="space-y-2"></div>
             </div>
-            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2">MAPATO NA MATUMIZI MENGINE</h3>
+            <h3 class="text-[10px] font-black opacity-40 uppercase mb-2">GENERAL CASHFLOW</h3>
             <div id="fin-list-adm" class="space-y-2"></div>
         </section>
 
         <section id="settings-page" class="hidden py-4">
-            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50"><i class="fas fa-arrow-left"></i> BACK</button>
+            <button onclick="showPage('admin-dash')" class="mb-4 text-xs font-bold opacity-50 uppercase"><i class="fas fa-arrow-left"></i> Back</button>
             <div class="glass p-6 space-y-4">
-                <h3 class="text-[10px] font-black opacity-40 uppercase">Admin Config</h3>
+                <h3 class="text-[10px] font-black uppercase opacity-40 uppercase">Admin Config</h3>
                 <input type="file" accept="image/*" onchange="uploadLogo(this)">
-                <input type="text" id="set-church" placeholder="Jina la Kanisa">
-                <input type="text" id="set-pastor" placeholder="Jina la Mchungaji">
-                <input type="password" id="set-adm-p" placeholder="Password Mpya Admin">
-                <button onclick="saveSettings()" class="btn-action">HIFADHI MABADILIKO</button>
+                <input type="text" id="set-church" placeholder="Church Name">
+                <input type="text" id="set-pastor" placeholder="Pastor Name">
+                <input type="password" id="set-adm-p" placeholder="New Admin Password">
+                <button onclick="saveSettings()" class="btn-action uppercase">Save Changes</button>
             </div>
         </section>
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('lex_v17_db')) || [];
-        let finance = JSON.parse(localStorage.getItem('lex_v17_f')) || [];
-        let config = JSON.parse(localStorage.getItem('lex_v17_c')) || { 
-            church: "GRACE & GLORY CHURCH", pastor: "PASTOR JAMES", 
+        let db = JSON.parse(localStorage.getItem('lex_v18_db')) || [];
+        let finance = JSON.parse(localStorage.getItem('lex_v18_f')) || [];
+        let config = JSON.parse(localStorage.getItem('lex_v18_c')) || { 
+            church: "GRACE & GLORY CHURCH", pastor: "PASTOR", 
             adm_u: "admin", adm_p: "1234", fin_u: "mhasibu", fin_p: "1234", logo: "" 
         };
 
@@ -202,66 +196,74 @@
         function doLogin(type) {
             if(type === 'admin') {
                 if(document.getElementById('adm-u').value === config.adm_u && document.getElementById('adm-p').value === config.adm_p) { showPage('admin-dash'); initUI(); }
-                else alert("Admin Error!");
+                else alert("Admin Access Denied!");
             } else {
                 if(document.getElementById('fin-u').value === config.fin_u && document.getElementById('fin-p').value === config.fin_p) { showPage('fin-dash'); initUI(); }
-                else alert("Finance Error!");
+                else alert("Finance Access Denied!");
             }
         }
 
         function saveFin() {
-            const f = { 
-                cat: document.getElementById('f-cat').value, 
-                amt: document.getElementById('f-amt').value, 
-                who: document.getElementById('f-who').value, 
-                date: new Date().toLocaleDateString(), 
-                id: Date.now() 
-            };
-            if(!f.amt || !f.who) return alert("Jaza Jina na Kiasi!");
+            const f = { cat: document.getElementById('f-cat').value, amt: document.getElementById('f-amt').value, who: document.getElementById('f-who').value, date: new Date().toLocaleDateString(), id: Date.now() };
+            if(!f.amt || !f.who) return alert("Fill all fields!");
             finance.unshift(f);
-            localStorage.setItem('lex_v17_f', JSON.stringify(finance));
-            initUI(); alert("Rekodi Imehifadhiwa!");
+            localStorage.setItem('lex_v18_f', JSON.stringify(finance));
+            initUI(); alert("Transaction Recorded!");
             document.getElementById('f-amt').value = ""; document.getElementById('f-who').value = "";
         }
 
         function delFin(id) {
-            if(confirm("Futa muamala huu?")) { finance = finance.filter(x => x.id !== id); localStorage.setItem('lex_v17_f', JSON.stringify(finance)); initUI(); }
+            if(confirm("Futa muamala huu?")) { finance = finance.filter(x => x.id !== id); localStorage.setItem('lex_v18_f', JSON.stringify(finance)); initUI(); }
         }
 
         function changeFinPass() {
             const p = document.getElementById('new-fin-p').value;
-            if(p) { config.fin_p = p; localStorage.setItem('lex_v17_c', JSON.stringify(config)); alert("Mhasibu Pass Updated!"); showPage('fin-dash'); }
+            if(p) { config.fin_p = p; localStorage.setItem('lex_v18_c', JSON.stringify(config)); alert("Mhasibu Pass Updated!"); showPage('fin-dash'); }
         }
 
         function doRegister() {
-            const m = { name: document.getElementById('u-name').value, email: document.getElementById('u-email').value, phone: document.getElementById('u-phone').value, type: document.getElementById('u-type').value, id: Date.now() };
-            if(!m.name || !m.phone) return alert("Jaza taarifa zote!");
+            const m = { 
+                name: document.getElementById('u-name').value, 
+                email: document.getElementById('u-email').value, 
+                phone: document.getElementById('u-phone').value, 
+                type: document.getElementById('u-type').value, 
+                id: Date.now() 
+            };
+            if(!m.name || !m.phone) return alert("Jaza Jina na Namba ya Simu!");
             db.unshift(m);
-            localStorage.setItem('lex_v17_db', JSON.stringify(db));
-            alert(`USAJILI SAHIHI!\nEmail & SMS zimetumwa kwa ${m.name}`);
+            localStorage.setItem('lex_v18_db', JSON.stringify(db));
+            alert(`USAJILI UMESHAINGIZWA!\nEmail na SMS zimetumwa kwa ${m.name}`);
             location.reload();
         }
 
         function renderDb(type) {
+            document.getElementById('btn-w').className = `flex-1 glass p-2 text-[10px] font-black uppercase ${type === 'Mshirika' ? 'bg-blue-600' : ''}`;
+            document.getElementById('btn-g').className = `flex-1 glass p-2 text-[10px] font-black uppercase ${type === 'Mgeni' ? 'bg-orange-600' : ''}`;
+            
             const filtered = db.filter(m => m.type === type);
+            // HAPA NDIO MAREKEBISHO YA EMAIL YAMEFANYIKA
             document.getElementById('db-list').innerHTML = filtered.map(m => `
                 <div class="glass p-4 border-l-4 ${type === 'Mgeni' ? 'border-orange-500' : 'border-blue-500'} flex justify-between items-center mb-2">
-                    <div><p class="font-bold text-xs text-white uppercase">${m.name}</p><p class="text-[9px] opacity-60">${m.phone}</p></div>
+                    <div>
+                        <p class="font-bold text-sm text-white uppercase">${m.name}</p>
+                        <p class="text-[10px] text-blue-400 font-bold">${m.phone}</p>
+                        <p class="text-[9px] opacity-60 italic">${m.email || 'No email'}</p>
+                    </div>
                     <button onclick="delM(${m.id})" class="text-red-900"><i class="fas fa-trash-alt"></i></button>
                 </div>
             `).join('');
         }
 
         function delM(id) {
-            if(confirm("Futa?")) { db = db.filter(x => x.id !== id); localStorage.setItem('lex_v17_db', JSON.stringify(db)); renderDb('Mshirika'); }
+            if(confirm("Futa huyu mshirika?")) { db = db.filter(x => x.id !== id); localStorage.setItem('lex_v18_db', JSON.stringify(db)); renderDb('Mshirika'); }
         }
 
         function saveSettings() {
             config.church = document.getElementById('set-church').value || config.church;
             config.pastor = document.getElementById('set-pastor').value || config.pastor;
             if(document.getElementById('set-adm-p').value) config.adm_p = document.getElementById('set-adm-p').value;
-            localStorage.setItem('lex_v17_c', JSON.stringify(config));
-            alert("Settings Updated!"); initUI();
+            localStorage.setItem('lex_v18_c', JSON.stringify(config));
+            alert("Updated Successfully!"); initUI();
         }
 
         function uploadLogo(input) {
@@ -287,22 +289,21 @@
             }
 
             const titheHtml = finance.filter(f => f.cat === 'Tithe').map(f => `
-                <div class="glass p-3 border-l-4 border-yellow-500 flex justify-between items-center">
-                    <div><p class="text-[8px] font-black text-yellow-500">TITHE / ZAKA</p><p class="text-xs font-bold">${f.who}</p></div>
+                <div class="glass p-3 border-l-4 border-yellow-500 flex justify-between items-center mb-2">
+                    <div><p class="text-[8px] font-black text-yellow-500 uppercase">Zaka / Tithe</p><p class="text-xs font-bold">${f.who}</p></div>
                     <div class="flex items-center gap-2"><p class="text-xs font-black">${parseInt(f.amt).toLocaleString()}</p><button onclick="delFin(${f.id})" class="text-red-900 text-[10px]"><i class="fas fa-trash"></i></button></div>
                 </div>
             `).join('');
             
             const otherHtml = finance.filter(f => f.cat !== 'Tithe').map(f => `
-                <div class="glass p-3 border-l-4 ${f.cat === 'In' ? 'border-emerald-500' : 'border-red-500'} flex justify-between items-center">
+                <div class="glass p-3 border-l-4 ${f.cat === 'In' ? 'border-emerald-500' : 'border-red-500'} flex justify-between items-center mb-2">
                     <div><p class="text-[8px] font-black ${f.cat === 'In' ? 'text-emerald-400' : 'text-red-400'}">${f.cat === 'In' ? 'INCOME' : 'EXPENSE'}</p><p class="text-xs font-bold">${f.who}</p></div>
                     <div class="flex items-center gap-2"><p class="text-xs font-black">${parseInt(f.amt).toLocaleString()}</p><button onclick="delFin(${f.id})" class="text-red-900 text-[10px]"><i class="fas fa-trash"></i></button></div>
                 </div>
             `).join('');
 
-            document.getElementById('tithe-list').innerHTML = titheHtml;
             document.getElementById('adm-tithe-list').innerHTML = titheHtml;
-            document.getElementById('fin-list-office').innerHTML = otherHtml;
+            document.getElementById('fin-list-office').innerHTML = titheHtml + otherHtml;
             document.getElementById('fin-list-adm').innerHTML = otherHtml;
             renderDb('Mshirika');
         }
