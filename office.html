@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRACE & GLORY ERP | v103 CLEAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: #f8fafc; margin: 0; }
+        
+        /* SOLID COLORS FOR VISIBILITY */
+        .page-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 1rem; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .input-p { background: #1e293b; border: 1px solid #334155; padding: 14px; border-radius: 10px; width: 100%; color: white; margin-bottom: 15px; outline: none; }
+        .input-p:focus { border-color: #2563eb; }
+        
+        .btn-p { background: #2563eb; padding: 15px; border-radius: 10px; font-weight: 800; width: 100%; color: white; cursor: pointer; border: none; text-transform: uppercase; transition: 0.3s; }
+        .btn-p:hover { background: #1d4ed8; }
+        
+        .hidden { display: none !important; }
+        .nav-btn { font-weight: 700; font-size: 11px; text-transform: uppercase; cursor: pointer; padding: 10px 15px; border-radius: 8px; transition: 0.2s; }
+        .nav-btn:hover { background: rgba(255,255,255,0.05); }
+
+        table { width: 100%; border-collapse: collapse; background: #0f172a; border-radius: 10px; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #1e293b; color: #64748b; font-size: 11px; }
+        td { padding: 15px; border-bottom: 1px solid #1e293b; font-size: 13px; }
+        
+        .stat-card { background: #0f172a; border-bottom: 4px solid #2563eb; padding: 20px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-[1300px] mx-auto p-4 md:p-8">
+        <nav class="flex justify-between items-center mb-10 pb-5 border-b border-white/5">
+            <h1 class="text-xl font-black tracking-tighter text-white">GRACE & GLORY <span class="text-blue-500">ERP</span></h1>
+            <div class="flex gap-1 md:gap-3">
+                <span onclick="go('home')" class="nav-btn">Home</span>
+                <span onclick="go('reg')" class="nav-btn text-blue-400">Usajili</span>
+                <span onclick="go('adm-login')" class="nav-btn text-blue-500">Admin</span>
+                <span onclick="go('fin-login')" class="nav-btn text-emerald-500">Finance</span>
+            </div>
+        </nav>
+
+        <section id="p-home" class="py-20 text-center">
+            <h1 class="text-6xl md:text-8xl font-black text-white mb-4">LEXON v103</h1>
+            <p class="text-gray-500 max-w-xl mx-auto italic">"Usimamizi wa Kanisa kwa njia ya kisasa na rahisi."</p>
+            <div class="mt-10 flex justify-center gap-4">
+                <button onclick="go('reg')" class="bg-blue-600 px-8 py-3 rounded-full font-bold">Anza Usajili</button>
+            </div>
+        </section>
+
+        <section id="p-reg" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="page-box">
+                <h2 class="text-xl font-black mb-6 text-blue-400">USAJILI WA WASHIRIKA</h2>
+                <input type="text" id="rn" placeholder="Jina Kamili" class="input-p">
+                <input type="tel" id="rp" placeholder="Namba ya Simu" class="input-p">
+                <input type="email" id="re" placeholder="Barua Pepe (Email)" class="input-p">
+                <input type="date" id="rd" class="input-p">
+                <button onclick="saveM()" class="btn-p">Sajili Mshirika</button>
+            </div>
+            <div class="page-box border-l-4 border-purple-600">
+                <h2 class="text-xl font-black mb-6 text-purple-400">RIPOTI YA MUUJIZA</h2>
+                <input type="text" id="mn" placeholder="Jina la Mhusika" class="input-p">
+                <input type="email" id="me" placeholder="Email ya Mhusika" class="input-p">
+                <input type="date" id="md" class="input-p">
+                <textarea id="mdesc" placeholder="Elezea muujiza hapa..." class="input-p" rows="4"></textarea>
+                <button onclick="saveMir()" class="btn-p" style="background: #7c3aed;">Hifadhi Muujiza</button>
+            </div>
+        </section>
+
+        <section id="p-adm-login" class="hidden max-w-sm mx-auto page-box text-center">
+            <h2 class="font-bold mb-6">ADMIN ACCESS</h2>
+            <input type="text" id="au" placeholder="Username" class="input-p">
+            <input type="password" id="ap" placeholder="Password" class="input-p">
+            <button onclick="doLogin('admin')" class="btn-p">Ingia Admin</button>
+        </section>
+
+        <section id="p-fin-login" class="hidden max-w-sm mx-auto page-box text-center">
+            <h2 class="font-bold mb-6 text-emerald-500">FINANCE ACCESS</h2>
+            <input type="text" id="fu" placeholder="Username" class="input-p">
+            <input type="password" id="fp" placeholder="Password" class="input-p">
+            <button onclick="doLogin('finance')" class="btn-p" style="background: #10b981;">Ingia Finance</button>
+        </section>
+
+        <section id="p-fin-dash" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 page-box border-t-4 border-emerald-500">
+                    <h2 class="text-xl font-black mb-6 text-emerald-400">INGIZA FEDHA</h2>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase">Maelezo na Tarehe</label>
+                    <input type="date" id="fd" class="input-p">
+                    <input type="text" id="fdesc" placeholder="Maelezo (Mf: Sadaka ya Ibada)" class="input-p">
+                    
+                    <label class="text-[10px] text-gray-500 font-bold uppercase">Aina ya Sadaka</label>
+                    <select id="fc" class="input-p">
+                        <option value="Sadaka">Sadaka</option>
+                        <option value="Zaka">Zaka</option>
+                        <option value="Ujenzi">Ujenzi</option>
+                        <option value="Matumizi">MATUMIZI (Expense)</option>
+                    </select>
+                    
+                    <input type="text" id="fw" placeholder="Nani ametoa/amelipwa?" class="input-p">
+                    <input type="number" id="fa" placeholder="Kiasi (Tsh)" class="input-p">
+                    <button onclick="saveF()" class="btn-p" style="background: #10b981;">HIFADHI REKODI</button>
+                </div>
+                <div class="lg:col-span-8 page-box">
+                    <h3 class="text-gray-500 font-bold mb-4 uppercase text-xs">Miamala ya Hivi Karibuni</h3>
+                    <div id="fin-list" class="space-y-3 max-h-[500px] overflow-y-auto"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="p-admin-dash" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="stat-card"><h3>TOTAL INCOME</h3><h2 id="s-in" class="text-3xl font-black text-emerald-400">0</h2></div>
+                <div class="stat-card border-red-500"><h3>TOTAL EXPENSE</h3><h2 id="s-out" class="text-3xl font-black text-red-500">0</h2></div>
+                <div class="stat-card border-blue-400"><h3>SALIO LILILOPO</h3><h2 id="s-bal" class="text-3xl font-black text-blue-400">0</h2></div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-8">
+                <button onclick="viewT('members')" class="bg-gray-800 px-4 py-2 rounded text-[10px] font-bold">WANACHAMA</button>
+                <button onclick="viewT('finance')" class="bg-gray-800 px-4 py-2 rounded text-[10px] font-bold">FEDHA</button>
+                <button onclick="viewT('miracles')" class="bg-gray-800 px-4 py-2 rounded text-[10px] font-bold">MIUJIZA</button>
+                <button onclick="go('settings')" class="bg-blue-900 px-4 py-2 rounded text-[10px] font-bold">SETTINGS</button>
+                <button onclick="location.reload()" class="bg-red-900 px-4 py-2 rounded text-[10px] font-bold ml-auto">LOGOUT</button>
+            </div>
+            <div id="table-view" class="hidden page-box overflow-x-auto"></div>
+        </section>
+
+        <section id="p-settings" class="hidden max-w-2xl mx-auto page-box">
+            <h2 class="text-xl font-black mb-6">SYSTEM SETTINGS</h2>
+            <div class="mb-8">
+                <h3 class="text-sm text-blue-400 mb-4 uppercase font-bold">Badili Password za Admin</h3>
+                <input type="text" id="n-au" placeholder="New Admin Username" class="input-p">
+                <input type="password" id="n-ap" placeholder="New Admin Password" class="input-p">
+                <button onclick="saveSec()" class="btn-p">Update Password</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const firebaseConfig = { databaseURL: "https://graceandglory-65dce-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function go(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('p-' + id).classList.remove('hidden');
+            if(id === 'admin-dash') loadStats();
+            if(id === 'fin-dash') loadFin();
+        }
+
+        function doLogin(role) {
+            const u = document.getElementById(role==='admin'?'au':'fu').value;
+            const p = document.getElementById(role==='admin'?'ap':'fp').value;
+            db.ref('security/' + role).once('value', snap => {
+                const c = snap.val() || { u: role, p: '1234' };
+                if(u === c.u && p === c.p) go(role + '-dash');
+                else alert("Login Imekataa!");
+            });
+        }
+
+        function saveM() {
+            const d = { name: document.getElementById('rn').value, phone: document.getElementById('rp').value, email: document.getElementById('re').value, date: document.getElementById('rd').value };
+            if(!d.name) return alert("Jaza jina!");
+            db.ref('members').push(d).then(() => { alert("Saved!"); go('home'); });
+        }
+
+        function saveMir() {
+            const d = { name: document.getElementById('mn').value, email: document.getElementById('me').value, date: document.getElementById('md').value, desc: document.getElementById('mdesc').value };
+            db.ref('miracles').push(d).then(() => { alert("Saved!"); go('home'); });
+        }
+
+        function saveF() {
+            const d = { date: document.getElementById('fd').value, desc: document.getElementById('fdesc').value, cat: document.getElementById('fc').value, who: document.getElementById('fw').value, amt: document.getElementById('fa').value };
+            if(!d.amt || !d.date) return alert("Jaza Tarehe na Kiasi!");
+            db.ref('finance').push(d).then(() => { alert("Saved!"); loadFin(); });
+        }
+
+        function loadFin() {
+            db.ref('finance').limitToLast(15).on('value', snap => {
+                let h = "";
+                snap.forEach(c => {
+                    const v = c.val();
+                    h += `<div class="p-4 bg-white/5 rounded-lg flex justify-between border-l-4 ${v.cat==='Matumizi'?'border-red-500':'border-emerald-500'}">
+                        <div><b>${v.who}</b><br><small class="opacity-40">${v.desc} | ${v.date}</small></div>
+                        <span class="font-bold ${v.cat==='Matumizi'?'text-red-500':'text-emerald-500'}">${parseInt(v.amt).toLocaleString()}/=</span>
+                    </div>`;
+                });
+                document.getElementById('fin-list').innerHTML = h || "Hakuna data.";
+            });
+        }
+
+        function loadStats() {
+            db.ref('finance').on('value', snap => {
+                let i = 0, e = 0;
+                snap.forEach(c => {
+                    let a = parseInt(c.val().amt) || 0;
+                    if(c.val().cat === 'Matumizi') e += a; else i += a;
+                });
+                document.getElementById('s-in').innerText = i.toLocaleString();
+                document.getElementById('s-out').innerText = e.toLocaleString();
+                document.getElementById('s-bal').innerText = (i - e).toLocaleString();
+            });
+        }
+
+        function viewT(path) {
+            const area = document.getElementById('table-view');
+            area.classList.remove('hidden');
+            db.ref(path).once('value', snap => {
+                let h = "<table><tr>";
+                if(path === 'members') h += "<th>Jina</th><th>Simu</th><th>Email</th><th>Tarehe</th>";
+                else if(path === 'miracles') h += "<th>Jina</th><th>Email</th><th>Tarehe</th><th>Maelezo</th>";
+                else h += "<th>Tarehe</th><th>Maelezo</th><th>Mhusika</th><th>Kiasi</th>";
+                h += "<th>Del</th></tr>";
+                snap.forEach(c => {
+                    const v = c.val(); h += "<tr>";
+                    if(path === 'members') h += `<td>${v.name}</td><td>${v.phone}</td><td>${v.email}</td><td>${v.date}</td>`;
+                    else if(path === 'miracles') h += `<td>${v.name}</td><td>${v.email}</td><td>${v.date}</td><td>${v.desc}</td>`;
+                    else h += `<td>${v.date}</td><td>${v.desc}</td><td>${v.who}</td><td>${v.amt}</td>`;
+                    h += `<td><i onclick="del('${path}/${c.key}')" class="fas fa-trash text-red-500 cursor-pointer"></i></td></tr>`;
+                });
+                area.innerHTML = h + "</table>";
+            });
+        }
+
+        function del(p) { if(confirm("Futa?")) db.ref(p).remove().then(()=>go('admin-dash')); }
+
+        function saveSec() {
+            const u = document.getElementById('n-au').value, p = document.getElementById('n-ap').value;
+            if(u && p) db.ref('security/admin').set({ u, p }).then(()=>alert("Security Updated!"));
+        }
+
+        window.onload = () => go('home');
+    </script>
+</body>
+</html>
