@@ -2,120 +2,71 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Office - Vision 103 Security</title>
+    <title>Finance Office - Vision 103</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    
     <style>
         body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .login-box { background: #1e293b; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 320px; }
-        .vision-container { display: none; width: 95%; max-width: 1000px; background: #1e293b; padding: 30px; border-radius: 15px; margin: 20px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-login { background: #3b82f6; color: white; }
-        .btn-report { background: #10b981; color: white; width: auto; padding: 10px 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #334155; padding-bottom: 15px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
-        .card { background: #334155; padding: 20px; border-radius: 10px; text-align: center; border-top: 4px solid #3b82f6; }
+        .login { background: #1e293b; padding: 40px; border-radius: 15px; text-align: center; }
+        .dashboard { display: none; width: 90%; max-width: 900px; background: #1e293b; padding: 20px; border-radius: 12px; }
+        input { padding: 12px; border-radius: 5px; border: none; margin-bottom: 10px; width: 250px; }
+        button { padding: 12px 20px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; text-align: left; }
         th { background: #3b82f6; }
     </style>
 </head>
 <body>
 
-    <div id="login-section" class="login-box">
-        <h2 style="color:#3b82f6;">VISION 103</h2>
-        <p>Ingiza Password ya Ofisi</p>
-        <input type="password" id="pass-key" placeholder="Password hapa...">
-        <button class="btn-login" onclick="checkAuth()">INGIA OFISINI</button>
-        <p id="error-msg" style="color: #ef4444; font-size: 13px; margin-top: 10px; display: none;">Password Sio Sahihi!</p>
+    <div id="loginBox" class="login">
+        <h2>OFFICE LOGIN</h2>
+        <input type="password" id="pass" placeholder="Password"><br>
+        <button onclick="login()">INGIA</button>
     </div>
 
-    <div id="main-dashboard" class="vision-container">
-        <div class="header">
-            <h1>FINANCE <span style="color:#3b82f6;">v103</span></h1>
-            <button class="btn-report" onclick="tengenezaPDF()">DOWNLOAD PDF</button>
+    <div id="dash" class="dashboard">
+        <div style="display:flex; justify-content:space-between;">
+            <h1>FINANCE DASHBOARD</h1>
+            <button style="background:#10b981;" onclick="downloadPDF()">DOWNLOAD PDF</button>
         </div>
-
-        <div class="stats-grid">
-            <div class="card">
-                <p>WASHIRIKA</p>
-                <h1 id="m-count">0</h1>
-            </div>
-            <div class="card" style="border-top-color: #10b981;">
-                <p>BIDHAA</p>
-                <h1 id="p-count">0</h1>
-            </div>
-        </div>
-
-        <h3>Usajili wa Hivi Karibuni</h3>
         <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>JINA</th>
-                    <th>SIMU</th>
-                </tr>
-            </thead>
-            <tbody id="recent-list"></tbody>
+            <thead><tr><th>ID</th><th>JINA</th><th>SIMU</th><th>TAREHE</th></tr></thead>
+            <tbody id="list"></tbody>
         </table>
     </div>
 
     <script>
-        const { jsPDF } = window.jspdf;
-        let globalData = [];
-        
-        // --- PASSWORD YAKO HAPA ---
-        const OFFICE_PASSWORD = "103"; 
+        const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+        let merchants = [];
 
-        function checkAuth() {
-            const input = document.getElementById('pass-key').value;
-            if(input === OFFICE_PASSWORD) {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('main-dashboard').style.display = 'block';
-                document.body.style.alignItems = 'flex-start'; // Rekebisha muonekano
-                loadVision103();
-            } else {
-                document.getElementById('error-msg').style.display = 'block';
+        function login() {
+            if(document.getElementById('pass').value === "103") {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('dash').style.display = 'block';
+                document.body.style.alignItems = 'flex-start';
+                load();
             }
         }
 
-        async function loadVision103() {
-            try {
-                // TUMIA URL YAKO YA KOYEB
-                const res = await fetch('https://YAKO-KOYEB-URL.koyeb.app/api/office/stats');
-                const data = await res.json();
-                
-                globalData = data.recent_merchants;
-                document.getElementById('m-count').innerText = data.total_merchants;
-                document.getElementById('p-count').innerText = data.total_products;
-                
-                let rows = "";
-                data.recent_merchants.forEach(m => {
-                    rows += `<tr><td>${m.id}</td><td>${m.name}</td><td>${m.phone}</td></tr>`;
-                });
-                document.getElementById('recent-list').innerHTML = rows;
-            } catch (e) {
-                console.log("Waiting for Engine...");
-            }
+        async function load() {
+            const res = await fetch(`${KOYEB_URL}/api/office/stats`);
+            const data = await res.json();
+            merchants = data.recent_merchants;
+            document.getElementById('list').innerHTML = merchants.map(m => 
+                `<tr><td>${m.id}</td><td>${m.name}</td><td>${m.phone}</td><td>${m.date}</td></tr>`
+            ).join('');
         }
 
-        function tengenezaPDF() {
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.setFontSize(18);
-            doc.text("GRACE & GLORY - FINANCE REPORT v103", 15, 20);
-            doc.setFontSize(10);
-            doc.text(`Tarehe: ${new Date().toLocaleString()}`, 15, 28);
-
-            const tableBody = globalData.map(m => [m.id, m.name, m.phone]);
+            doc.text("VISION 103 - FINANCE REPORT", 15, 20);
             doc.autoTable({
-                startY: 35,
-                head: [['ID', 'Jina la Mshirika', 'Simu']],
-                body: tableBody,
+                startY: 25,
+                head: [['ID', 'Jina', 'Simu', 'Tarehe']],
+                body: merchants.map(m => [m.id, m.name, m.phone, m.date])
             });
-            doc.save("Vision103_Finance_Report.pdf");
+            doc.save("Report.pdf");
         }
     </script>
 </body>
