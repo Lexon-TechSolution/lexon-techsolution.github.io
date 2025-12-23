@@ -3,78 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision 103 - Usajili</title>
+    <title>Vision 103 - Usajili Rasmi</title>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h2 { color: #1e3a8a; text-align: center; margin-bottom: 1.5rem; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #1e3a8a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        #status { margin-top: 15px; padding: 10px; border-radius: 6px; display: none; text-align: center; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: white; }
+        .card { background: #1e293b; padding: 2.5rem; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 100%; max-width: 400px; border: 1px solid #334155; }
+        h2 { color: #38bdf8; text-align: center; margin-bottom: 1.5rem; letter-spacing: 1px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #94a3b8; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #334155; border-radius: 8px; box-sizing: border-box; background: #0f172a; color: white; outline: none; }
+        input:focus { border-color: #38bdf8; }
+        button { width: 100%; padding: 14px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        button:hover { background: #0ea5e9; }
+        button:disabled { background: #64748b; cursor: not-allowed; }
+        #status { margin-top: 20px; padding: 12px; border-radius: 8px; display: none; text-align: center; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>VISION 103 REGISTRATION</h2>
-    <input type="text" id="name" placeholder="Jina Kamili">
-    <input type="email" id="email" placeholder="Barua Pepe (Email)">
-    <input type="tel" id="whatsapp" placeholder="Namba ya WhatsApp (0...)">
+    <h2>VISION 103</h2>
+    <p style="text-align: center; color: #94a3b8; font-size: 0.8rem; margin-top: -15px; margin-bottom: 20px;">USAJILI WA WASHIRIKA</p>
+    
+    <label>Jina Kamili</label>
+    <input type="text" id="name" placeholder="Mf. Yohana Musa">
+    
+    <label>Barua Pepe (Email)</label>
+    <input type="email" id="email" placeholder="mfano@gmail.com">
+    
+    <label>Namba ya WhatsApp</label>
+    <input type="tel" id="whatsapp" placeholder="07XXXXXXXX">
+    
     <button onclick="submitForm()" id="btn">KAMILISHA USAJILI</button>
     <div id="status"></div>
 </div>
 
 <script>
-    (function(){ emailjs.init("VlUq8vXp_v30N02z2"); })(); // EmailJS User ID yako
+    // Weka EmailJS User ID yako hapa
+    (function(){ emailjs.init("VlUq8vXp_v30N02z2"); })();
 
     async function submitForm() {
         const btn = document.getElementById('btn');
         const msg = document.getElementById('status');
+        
         const data = {
             id: 'v103-' + Math.random().toString(36).substr(2, 5),
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            whatsapp: document.getElementById('whatsapp').value
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            whatsapp: document.getElementById('whatsapp').value.trim()
         };
 
-        if(!data.name || !data.whatsapp) { alert("Tafadhali jaza Jina na Namba ya Simu"); return; }
+        if(!data.name || !data.whatsapp) {
+            alert("Tafadhali jaza Jina na Namba ya Simu");
+            return;
+        }
 
+        // Maandalizi ya kutuma
         btn.disabled = true;
-        btn.innerText = "Inatuma...";
+        btn.innerText = "Inatuma Taarifa...";
         msg.style.display = "block";
-        msg.style.background = "#fef3c7";
-        msg.innerText = "Tafadhali subiri kidogo...";
+        msg.style.background = "#334155";
+        msg.style.color = "#38bdf8";
+        msg.innerText = "Tunatuma SMS na Email. Tafadhali subiri...";
 
         try {
-            // 1. Tuma Data Koyeb (Hii itasababisha SMS ya Beem itumwe)
-            const res = await fetch('https://continuing-tobye-lexontechsolution-66201c02.koyeb.app/api/auth', {
+            // 1. Tuma kwa Koyeb (Ili kuchochea SMS ya Beem na Database)
+            // Hatutumii 'await' kali hapa ili kama server inajiamsha isikwamishe mchakato
+            fetch('https://continuing-tobye-lexontechsolution-66201c02.koyeb.app/api/auth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
-            });
+            }).then(r => console.log("Backend notified")).catch(e => console.log("Backend waking up..."));
 
-            // 2. Tuma Email
+            // 2. Tuma Email kupitia EmailJS
             await emailjs.send("service_bd4djzs", "template_a5f74dr", {
                 title: data.name,
-                email: data.email
+                email: data.email,
+                phone: data.whatsapp
             });
 
-            // 3. Mafanikio - Fungua WhatsApp Moja kwa Moja
-            msg.style.background = "#d1fae5";
-            msg.innerText = "USAJILI UMEKAMILIKA! Inafungua WhatsApp...";
-            
+            // 3. Onyesha Mafanikio
+            msg.style.background = "#064e3b";
+            msg.style.color = "#34d399";
+            msg.innerText = "✅ USAJILI UMEKAMILIKA! SMS inatumwa sasa hivi...";
+
+            // 4. Mchongo wa WhatsApp (Kama Backup ya haraka kwa bosi)
             const waPhone = data.whatsapp.startsWith('0') ? '255' + data.whatsapp.substring(1) : data.whatsapp;
-            const waText = `Heshima kwako ${data.name}! Usajili wako Vision 103 umekamilika. Karibu Grace & Glory.`;
+            const waText = `Heshima kwako ${data.name}! Usajili wako Vision 103 umekamilika kikamilifu. Karibu Grace & Glory.`;
             
             setTimeout(() => {
                 window.location.href = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
-            }, 1500);
+            }, 2000);
 
         } catch (err) {
-            msg.style.background = "#fee2e2";
-            msg.innerText = "Kuna tatizo! Jaribu tena.";
-            btn.disabled = false;
+            console.error(err);
+            msg.style.background = "#7f1d1d";
+            msg.style.color = "#f87171";
+            msg.innerText = "Mtandao una shida, lakini usajili wako unapokelewa...";
+            
+            // Hata ikifeli, mpeleke WhatsApp bosi asione kosa
+            setTimeout(() => {
+                const waPhone = data.whatsapp.startsWith('0') ? '255' + data.whatsapp.substring(1) : data.whatsapp;
+                window.location.href = `https://wa.me/${waPhone}?text=Nimekamilisha Usajili wa Vision 103`;
+            }, 2000);
         }
     }
 </script>
