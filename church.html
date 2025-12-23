@@ -3,100 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGR - Grace & Glory Church</title>
+    <title>SGR - Vision 103</title>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .box { background: #1e293b; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
-        h2 { color: #3b82f6; text-align: center; margin-bottom: 20px; }
+        body { font-family: sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; }
+        .box { background: #1e293b; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h2 { color: #3b82f6; text-align: center; }
         input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
-        #msg { margin-top: 15px; padding: 10px; border-radius: 5px; display: none; text-align: center; font-size: 14px; font-weight: bold; }
-        .loader { display: none; margin: 10px auto; border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 2s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        #msg { margin-top: 15px; padding: 10px; border-radius: 5px; display: none; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>VISION 103 - SGR</h2>
+    <h2>VISION 103 REGISTRATION</h2>
     <form id="regForm">
-        <input type="text" id="m_id" placeholder="ID ya Mshirika (Mfano: duka01)" required>
-        <input type="text" id="m_name" placeholder="Jina Kamili la Mshirika" required>
-        <input type="text" id="m_phone" placeholder="Namba ya Simu (Mfano: 2557...)" required>
+        <input type="text" id="m_id" placeholder="ID ya Mshirika" required>
+        <input type="text" id="m_name" placeholder="Jina Kamili" required>
+        <input type="text" id="m_phone" placeholder="Namba (Mfano: 0712...)" required>
         <input type="email" id="m_email" placeholder="Barua Pepe (Email)" required>
-        <button type="submit" id="subBtn">KAMILISHA USAJILI</button>
-        <div class="loader" id="spinner"></div>
+        <button type="submit" id="subBtn">SAJILI SASA</button>
     </form>
     <div id="msg"></div>
 </div>
 
 <script>
-    // Initialize EmailJS
-    (function() { emailjs.init("V051_x68GvC6qSIdz"); })();
+    // 1. PUBLIC KEY YAKO MPYA HAPA:
+    (function() { emailjs.init("4aL-YVciYad9MuyLB"); })();
 
-    // URL yako ya Koyeb (Ihakiki iwe hivi hivi)
     const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
 
     document.getElementById('regForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const btn = document.getElementById('subBtn');
         const msg = document.getElementById('msg');
-        const spinner = document.getElementById('spinner');
         
         const data = {
-            id: document.getElementById('m_id').value.trim(),
-            name: document.getElementById('m_name').value.trim(),
-            whatsapp: document.getElementById('m_phone').value.trim(),
-            email: document.getElementById('m_email').value.trim()
+            id: document.getElementById('m_id').value,
+            name: document.getElementById('m_name').value,
+            whatsapp: document.getElementById('m_phone').value,
+            email: document.getElementById('m_email').value
         };
 
-        // Muonekano wa mwanzo
         btn.disabled = true;
-        spinner.style.display = 'block';
         msg.style.display = 'block';
         msg.style.background = '#3b82f6';
-        msg.innerHTML = "Inatuma data kwenye Engine...";
+        msg.innerHTML = "Inasajili...";
 
         try {
-            // STEP 1: Tuma Koyeb
+            // STEP 1: KOYEB (SMS & DB)
             const res = await fetch(`${KOYEB_URL}/api/auth`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
 
             if(res.ok) {
-                // STEP 2: Tuma Email kama usajili umefanikiwa
-                try {
-                    await emailjs.send('service_bd4djzs', 'template_a5f74dr', { 
-                        title: data.name, 
-                        email: data.email 
-                    });
-                } catch (emailErr) {
-                    console.log("Email failed but registration success");
-                }
+                // STEP 2: EMAILJS
+                await emailjs.send('service_bd4djzs', 'template_a5f74dr', { 
+                    title: data.name, 
+                    email: data.email 
+                });
 
                 msg.style.background = '#10b981';
-                msg.innerHTML = "HONGWRA! USAJILI NA SMS ZIMEKAMILIKA.";
+                msg.innerHTML = "HONGWRA! SMS NA EMAIL ZIMETUMWA.";
                 document.getElementById('regForm').reset();
-            } else {
-                const errorData = await res.json();
-                throw new Error(errorData.error || "Server Error");
-            }
+            } else { throw new Error(); }
         } catch (err) {
-            console.error(err);
             msg.style.background = '#ef4444';
-            msg.innerHTML = "ERROR: Server ya Koyeb haijapokea data. Hakikisha Koyeb ipo HEALTHY.";
-        } finally {
-            btn.disabled = false;
-            spinner.style.display = 'none';
-        }
+            msg.innerHTML = "Kosa la mawasiliano na Server.";
+        } finally { btn.disabled = false; }
     });
 </script>
 </body>
