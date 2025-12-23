@@ -12,7 +12,6 @@ CORS(app)
 BEEM_API_KEY = "1aefe53a86b4e997"
 BEEM_SECRET_KEY = "NjM3Mjc1ZDRiYTBiYTZhZWUxMWNhNDU0ZWI1YjkyMDBmNmVmNzkwY2U3NGMyNTU0Mzg1NjQzYTkxMTI4ZTIzMA=="
 
-# --- DB CONFIG ---
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vision103.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -32,17 +31,19 @@ def send_beem_sms(phone_number, full_name):
     if clean_phone.startswith("0"): clean_phone = "255" + clean_phone[1:]
     
     payload = {
-        "source_addr": "INFO",
+        "source_addr": "255621887100", # WEKA NAMBA YAKO YA BEEM HAPA ILI SMS ITOKE HARAKA
         "schedule_time": "",
         "encoding": "0",
         "message": f"Heshima kwako {full_name}! Usajili wako Vision 103 umekamilika. Karibu Grace & Glory.",
         "recipients": [{"recipient_id": 1, "dest_addr": clean_phone}]
     }
     try:
-        requests.post("https://api.beem.africa/v1/send", 
+        r = requests.post("https://api.beem.africa/v1/send", 
                       auth=(BEEM_API_KEY, BEEM_SECRET_KEY), 
-                      json=payload, timeout=10)
-    except: pass
+                      json=payload, timeout=15)
+        print(f"BEEM STATUS: {r.status_code} - {r.text}")
+    except Exception as e: 
+        print(f"SMS Error: {e}")
 
 @app.route('/')
 def home(): return jsonify({"status": "Online"}), 200
@@ -58,7 +59,7 @@ def auth():
         merchant = Merchant(id=m_id, name=data.get('name'), phone=data.get('whatsapp'), email=data.get('email'))
         db.session.add(merchant)
         db.session.commit()
-        send_beem_sms(merchant.phone, merchant.name)
+        send_beem_sms(merchant.phone, merchant.name) # Hapa SMS inatumwa
     
     return jsonify({"status": "success", "name": merchant.name})
 
