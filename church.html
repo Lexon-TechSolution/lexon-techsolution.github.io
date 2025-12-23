@@ -10,7 +10,7 @@
         .box { background: #1e293b; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         h2 { color: #3b82f6; text-align: center; }
         input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
         #msg { margin-top: 15px; padding: 10px; border-radius: 5px; display: none; text-align: center; }
     </style>
 </head>
@@ -23,13 +23,12 @@
         <input type="text" id="m_name" placeholder="Jina Kamili" required>
         <input type="text" id="m_phone" placeholder="Namba (Mfano: 0712...)" required>
         <input type="email" id="m_email" placeholder="Barua Pepe (Email)" required>
-        <button type="submit" id="subBtn">SAJILI SASA</button>
+        <button type="submit" id="subBtn">KAMILISHA USAJILI</button>
     </form>
     <div id="msg"></div>
 </div>
 
 <script>
-    // 1. PUBLIC KEY YAKO MPYA HAPA:
     (function() { emailjs.init("4aL-YVciYad9MuyLB"); })();
 
     const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
@@ -40,19 +39,19 @@
         const msg = document.getElementById('msg');
         
         const data = {
-            id: document.getElementById('m_id').value,
-            name: document.getElementById('m_name').value,
-            whatsapp: document.getElementById('m_phone').value,
-            email: document.getElementById('m_email').value
+            id: document.getElementById('m_id').value.trim(),
+            name: document.getElementById('m_name').value.trim(),
+            whatsapp: document.getElementById('m_phone').value.trim(),
+            email: document.getElementById('m_email').value.trim()
         };
 
         btn.disabled = true;
         msg.style.display = 'block';
         msg.style.background = '#3b82f6';
-        msg.innerHTML = "Inasajili...";
+        msg.innerHTML = "Inachakata Usajili...";
 
         try {
-            // STEP 1: KOYEB (SMS & DB)
+            // 1. Tuma Koyeb (Kwa ajili ya Database & SMS ya Beem baadae)
             const res = await fetch(`${KOYEB_URL}/api/auth`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -60,19 +59,34 @@
             });
 
             if(res.ok) {
-                // STEP 2: EMAILJS
+                // 2. Tuma EmailJS
                 await emailjs.send('service_bd4djzs', 'template_a5f74dr', { 
                     title: data.name, 
                     email: data.email 
                 });
 
                 msg.style.background = '#10b981';
-                msg.innerHTML = "HONGWRA! SMS NA EMAIL ZIMETUMWA.";
-                document.getElementById('regForm').reset();
+                msg.innerHTML = "USAJILI KIKAMILIFU! FUNGUA WHATSAPP...";
+
+                // 3. WHATSAPP REDIRECT (Hapa ndio mambo yanapotokea)
+                // Hii inamfungulia mshirika WhatsApp yake ikiwa na ujumbe
+                const text = `Heshima kwako ${data.name}! Usajili wako wa Vision 103 umekamilika kikamilifu. Karibu Grace & Glory.`;
+                const encodedText = encodeURIComponent(text);
+                
+                // Safisha namba ya simu kwa ajili ya link
+                let waPhone = data.whatsapp.replace(/\D/g, '');
+                if (waPhone.startsWith('0')) waPhone = '255' + waPhone.substring(1);
+                if (!waPhone.startsWith('255')) waPhone = '255' + waPhone;
+
+                setTimeout(() => {
+                    window.open(`https://wa.me/${waPhone}?text=${encodedText}`, '_blank');
+                    document.getElementById('regForm').reset();
+                }, 2000);
+
             } else { throw new Error(); }
         } catch (err) {
             msg.style.background = '#ef4444';
-            msg.innerHTML = "Kosa la mawasiliano na Server.";
+            msg.innerHTML = "Kosa limetokea. Jaribu tena.";
         } finally { btn.disabled = false; }
     });
 </script>
