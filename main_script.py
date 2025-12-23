@@ -30,13 +30,12 @@ with app.app_context():
 def send_beem_sms(phone_number, full_name):
     clean_phone = ''.join(filter(str.isdigit, str(phone_number)))
     if clean_phone.startswith("0"): clean_phone = "255" + clean_phone[1:]
-    elif not clean_phone.startswith("255"): clean_phone = "255" + clean_phone
     
     payload = {
         "source_addr": "INFO",
         "schedule_time": "",
         "encoding": "0",
-        "message": f"Heshima kwako {full_name}! Usajili wako wa Vision 103 umekamilika. Karibu Grace & Glory.",
+        "message": f"Heshima kwako {full_name}! Usajili wako Vision 103 umekamilika. Karibu Grace & Glory.",
         "recipients": [{"recipient_id": 1, "dest_addr": clean_phone}]
     }
     try:
