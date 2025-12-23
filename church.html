@@ -6,66 +6,97 @@
     <title>SGR - Grace & Glory Church</title>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; }
-        .box { background: #1e293b; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        h2 { color: #3b82f6; text-align: center; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .box { background: #1e293b; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        h2 { color: #3b82f6; text-align: center; margin-bottom: 20px; }
         input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
-        #msg { margin-top: 15px; padding: 10px; border-radius: 5px; display: none; text-align: center; }
+        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:disabled { background: #1e293b; color: #475569; cursor: not-allowed; }
+        #msg { margin-top: 15px; padding: 10px; border-radius: 5px; display: none; text-align: center; font-size: 14px; font-weight: bold; }
+        .loader { display: none; margin: 10px auto; border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h2>USAJILI WA MSHIRIKA</h2>
+    <h2>VISION 103 - SGR</h2>
     <form id="regForm">
         <input type="text" id="m_id" placeholder="ID ya Mshirika (Mfano: duka01)" required>
-        <input type="text" id="m_name" placeholder="Jina Kamili" required>
-        <input type="text" id="m_phone" placeholder="Namba ya Simu (255...)" required>
-        <input type="email" id="m_email" placeholder="Barua Pepe" required>
-        <button type="submit" id="subBtn">SAJILI NA TUMA SMS</button>
+        <input type="text" id="m_name" placeholder="Jina Kamili la Mshirika" required>
+        <input type="text" id="m_phone" placeholder="Namba ya Simu (Mfano: 2557...)" required>
+        <input type="email" id="m_email" placeholder="Barua Pepe (Email)" required>
+        <button type="submit" id="subBtn">KAMILISHA USAJILI</button>
+        <div class="loader" id="spinner"></div>
     </form>
     <div id="msg"></div>
 </div>
 
 <script>
+    // Initialize EmailJS
     (function() { emailjs.init("V051_x68GvC6qSIdz"); })();
+
+    // URL yako ya Koyeb (Ihakiki iwe hivi hivi)
     const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
 
     document.getElementById('regForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
         const btn = document.getElementById('subBtn');
         const msg = document.getElementById('msg');
+        const spinner = document.getElementById('spinner');
         
         const data = {
-            id: document.getElementById('m_id').value,
-            name: document.getElementById('m_name').value,
-            whatsapp: document.getElementById('m_phone').value,
-            email: document.getElementById('m_email').value
+            id: document.getElementById('m_id').value.trim(),
+            name: document.getElementById('m_name').value.trim(),
+            whatsapp: document.getElementById('m_phone').value.trim(),
+            email: document.getElementById('m_email').value.trim()
         };
 
+        // Muonekano wa mwanzo
         btn.disabled = true;
+        spinner.style.display = 'block';
         msg.style.display = 'block';
         msg.style.background = '#3b82f6';
-        msg.innerHTML = "Inasajili...";
+        msg.innerHTML = "Inatuma data kwenye Engine...";
 
         try {
+            // STEP 1: Tuma Koyeb
             const res = await fetch(`${KOYEB_URL}/api/auth`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 body: JSON.stringify(data)
             });
 
             if(res.ok) {
-                await emailjs.send('service_bd4djzs', 'template_a5f74dr', { title: data.name, email: data.email });
+                // STEP 2: Tuma Email kama usajili umefanikiwa
+                try {
+                    await emailjs.send('service_bd4djzs', 'template_a5f74dr', { 
+                        title: data.name, 
+                        email: data.email 
+                    });
+                } catch (emailErr) {
+                    console.log("Email failed but registration success");
+                }
+
                 msg.style.background = '#10b981';
-                msg.innerHTML = "USAJILI KIKAMILIFU! SMS IMETUMWA.";
+                msg.innerHTML = "HONGWRA! USAJILI NA SMS ZIMEKAMILIKA.";
                 document.getElementById('regForm').reset();
-            } else { throw new Error(); }
+            } else {
+                const errorData = await res.json();
+                throw new Error(errorData.error || "Server Error");
+            }
         } catch (err) {
+            console.error(err);
             msg.style.background = '#ef4444';
-            msg.innerHTML = "Kosa! Jaribu tena baadae.";
-        } finally { btn.disabled = false; }
+            msg.innerHTML = "ERROR: Server ya Koyeb haijapokea data. Hakikisha Koyeb ipo HEALTHY.";
+        } finally {
+            btn.disabled = false;
+            spinner.style.display = 'none';
+        }
     });
 </script>
 </body>
