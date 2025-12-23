@@ -6,104 +6,67 @@
     <title>SGR - Grace & Glory Church</title>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        :root { --primary: #3b82f6; --dark: #0f172a; --card: #1e293b; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; padding: 20px; }
-        .container { max-width: 500px; margin: 50px auto; background: var(--card); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { text-align: center; color: var(--primary); margin-bottom: 25px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #2563eb; transform: translateY(-2px); }
-        #message { text-align: center; margin-top: 20px; padding: 10px; border-radius: 8px; display: none; }
-        .loading { display: none; text-align: center; margin-top: 10px; color: #60a5fa; }
+        body { font-family: sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; padding: 20px; }
+        .box { background: #1e293b; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h2 { color: #3b82f6; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: #3b82f6; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        #msg { margin-top: 15px; padding: 10px; border-radius: 5px; display: none; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="box">
     <h2>USAJILI WA MSHIRIKA</h2>
-    <form id="registrationForm">
-        <div class="form-group">
-            <label>ID ya Mshirika (Mfano: jina123)</label>
-            <input type="text" id="merchant_id" placeholder="Ingiza ID ya duka au jina" required>
-        </div>
-        <div class="form-group">
-            <label>Jina Kamili</label>
-            <input type="text" id="full_name" placeholder="Jina la Mshirika" required>
-        </div>
-        <div class="form-group">
-            <label>Namba ya WhatsApp/Simu</label>
-            <input type="text" id="phone" placeholder="Mfano: 255712345678" required>
-        </div>
-        <div class="form-group">
-            <label>Barua Pepe (Email)</label>
-            <input type="email" id="email" placeholder="email@gmail.com" required>
-        </div>
-        <button type="submit" id="submitBtn">SAJILI NA TUMA SMS</button>
+    <form id="regForm">
+        <input type="text" id="m_id" placeholder="ID ya Mshirika (Mfano: duka01)" required>
+        <input type="text" id="m_name" placeholder="Jina Kamili" required>
+        <input type="text" id="m_phone" placeholder="Namba ya Simu (255...)" required>
+        <input type="email" id="m_email" placeholder="Barua Pepe" required>
+        <button type="submit" id="subBtn">SAJILI NA TUMA SMS</button>
     </form>
-    <div class="loading" id="loader">Inasajili Vision 103 Engine...</div>
-    <div id="message"></div>
+    <div id="msg"></div>
 </div>
 
 <script>
-    // 1. Initialize EmailJS (Tumia ID tulizohakiki)
-    (function() {
-        emailjs.init("V051_x68GvC6qSIdz"); // Public Key yako
-    })();
-
+    (function() { emailjs.init("V051_x68GvC6qSIdz"); })();
     const KOYEB_URL = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
 
-    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+    document.getElementById('regForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const btn = document.getElementById('subBtn');
+        const msg = document.getElementById('msg');
         
-        const btn = document.getElementById('submitBtn');
-        const loader = document.getElementById('loader');
-        const msg = document.getElementById('message');
-
-        const userData = {
-            id: document.getElementById('merchant_id').value,
-            name: document.getElementById('full_name').value,
-            whatsapp: document.getElementById('phone').value,
-            email: document.getElementById('email').value
+        const data = {
+            id: document.getElementById('m_id').value,
+            name: document.getElementById('m_name').value,
+            whatsapp: document.getElementById('m_phone').value,
+            email: document.getElementById('m_email').value
         };
 
         btn.disabled = true;
-        loader.style.display = 'block';
-        msg.style.display = 'none';
+        msg.style.display = 'block';
+        msg.style.background = '#3b82f6';
+        msg.innerHTML = "Inasajili...";
 
         try {
-            // STEP 1: Tuma data Koyeb (Hii itasajili na kurusha SMS)
-            const response = await fetch(`${KOYEB_URL}/api/auth`, {
+            const res = await fetch(`${KOYEB_URL}/api/auth`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(userData)
+                body: JSON.stringify(data)
             });
 
-            if (response.ok) {
-                // STEP 2: Tuma Email kupitia EmailJS
-                await emailjs.send('service_bd4djzs', 'template_a5f74dr', {
-                    title: userData.name,
-                    email: userData.email
-                });
-
-                msg.style.backgroundColor = '#10b981';
-                msg.innerHTML = "Hongera! Usajili Umekamilika. SMS na Email zimetumwa.";
-                msg.style.display = 'block';
-                document.getElementById('registrationForm').reset();
-            } else {
-                throw new Error("Tatizo kwenye Server");
-            }
-        } catch (error) {
-            msg.style.backgroundColor = '#ef4444';
-            msg.innerHTML = "Kosa limetokea! Angalia internet au jaribu tena.";
-            msg.style.display = 'block';
-        } finally {
-            btn.disabled = false;
-            loader.style.display = 'none';
-        }
+            if(res.ok) {
+                await emailjs.send('service_bd4djzs', 'template_a5f74dr', { title: data.name, email: data.email });
+                msg.style.background = '#10b981';
+                msg.innerHTML = "USAJILI KIKAMILIFU! SMS IMETUMWA.";
+                document.getElementById('regForm').reset();
+            } else { throw new Error(); }
+        } catch (err) {
+            msg.style.background = '#ef4444';
+            msg.innerHTML = "Kosa! Jaribu tena baadae.";
+        } finally { btn.disabled = false; }
     });
 </script>
-
 </body>
 </html>
