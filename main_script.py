@@ -2,7 +2,7 @@ import os
 import sqlite3
 import requests
 import base64
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime
 
@@ -13,20 +13,17 @@ DB_NAME = "lexon_erp.db"
 
 # --- NEXTSMS CONFIG (REAL SMS) ---
 NEXTSMS_USER = "lexon_tech" 
-NEXTSMS_PASS = "Weka_Password_Yako"   
+NEXTSMS_PASS = "WEKA_PASSWORD_YAKO_HAPA" # <-- Weka password yako hapa
 NEXTSMS_SENDER = "SMART_SMS"
 
 def send_nextsms(phone, message):
-    # Live URL ya NextSMS
     url = "https://messaging-service.co.tz/api/sms/v1/send/single"
     auth_str = f"{NEXTSMS_USER}:{NEXTSMS_PASS}"
     encoded_auth = base64.b64encode(auth_str.encode()).decode()
     headers = {
         'Authorization': f'Basic {encoded_auth}',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Content-Type': 'application/json'
     }
-    # Hakikisha namba inaanza na 255
     clean_phone = phone.strip()
     if clean_phone.startswith('0'): clean_phone = '255' + clean_phone[1:]
     
@@ -64,31 +61,8 @@ def register():
     conn.commit()
     conn.close()
     
-    # REAL SMS TRIGGER
-    msg = f"SHALOM {name}! Usajili wako LEXON TECH ERP umekamilika. Karibu."
+    msg = f"SHALOM {name}! Karibu LEXON TECH ERP. Taarifa zako zimehifadhiwa."
     send_nextsms(phone, msg)
-    return jsonify({"status": "success"}), 200
-
-@app.route('/api/finance/add', methods=['POST'])
-def add_finance():
-    data = request.json
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO finance (type, donor_name, amount, description, date) VALUES (?, ?, ?, ?, ?)',
-                   (data['type'], data.get('donor_name', 'N/A'), data['amount'], data['description'], datetime.now().strftime("%d/%m/%Y")))
-    conn.commit()
-    conn.close()
-    return jsonify({"status": "success"}), 200
-
-@app.route('/api/miracle/add', methods=['POST'])
-def add_miracle():
-    data = request.json
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO miracles (member_name, testimony, date) VALUES (?, ?, ?)',
-                   (data['name'], data['testimony'], datetime.now().strftime("%d/%m/%Y")))
-    conn.commit()
-    conn.close()
     return jsonify({"status": "success"}), 200
 
 @app.route('/api/data/all', methods=['GET'])
@@ -103,15 +77,6 @@ def get_data():
     }
     conn.close()
     return jsonify(res)
-
-@app.route('/api/data/delete', methods=['POST'])
-def delete_record():
-    data = request.json
-    conn = sqlite3.connect(DB_NAME)
-    conn.execute(f"UPDATE {data['table']} SET status='trash' WHERE id=?", (data['id'],))
-    conn.commit()
-    conn.close()
-    return jsonify({"status": "deleted"}), 200
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8000))
