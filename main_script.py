@@ -1,5 +1,7 @@
 import os
 import sqlite3
+import requests
+import base64
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from datetime import datetime
@@ -7,30 +9,49 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-DB_NAME = "ggc_master.db"
+DB_NAME = "lexon_erp.db"
+
+# --- NEXTSMS CONFIG ---
+NEXTSMS_USER = "lexon_tech" # Weka Username yako ya NextSMS
+NEXTSMS_PASS = "Yako_Hapa"   # Weka Password yako ya NextSMS
+NEXTSMS_SENDER = "SMART_SMS" # Au Sender ID yako iliyopitishwa
+
+def send_nextsms(phone, message):
+    url = "https://messaging-service.co.tz/api/sms/v1/test/single" # Badili kuwa /v1/send/single ukiingia live
+    auth_str = f"{NEXTSMS_USER}:{NEXTSMS_PASS}"
+    encoded_auth = base64.b64encode(auth_str.encode()).decode()
+    
+    headers = {
+        'Authorization': f'Basic {encoded_auth}',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+    payload = {
+        "from": NEXTSMS_SENDER,
+        "to": phone,
+        "text": message
+    }
+    try:
+        requests.post(url, json=payload, headers=headers)
+    except Exception as e:
+        print(f"SMS Error: {e}")
 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    # Washirika Table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS members 
-        (id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT, name TEXT, email TEXT, phone TEXT, date TEXT)''')
-    # Finance Table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS finance 
-        (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, amount REAL, type TEXT, date TEXT)''')
-    # Settings Table
-    cursor.execute('''CREATE TABLE IF NOT EXISTS settings 
-        (id INTEGER PRIMARY KEY, title TEXT, logo_url TEXT, password TEXT)''')
-    # Initial Settings kama hazipo
-    cursor.execute("INSERT OR IGNORE INTO settings (id, title, logo_url, password) VALUES (1, 'GGC ERP', '', 'admin123')")
+    cursor.execute('CREATE TABLE IF NOT EXISTS members (id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT, name TEXT, email TEXT, phone TEXT, date TEXT, status TEXT DEFAULT "active")')
+    cursor.execute('CREATE TABLE IF NOT EXISTS finance (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, donor_name TEXT, amount REAL, description TEXT, date TEXT, status TEXT DEFAULT "active")')
+    cursor.execute('CREATE TABLE IF NOT EXISTS miracles (id INTEGER PRIMARY KEY AUTOINCREMENT, member_name TEXT, testimony TEXT, date TEXT, status TEXT DEFAULT "active")')
+    cursor.execute('CREATE TABLE IF NOT EXISTS sermons (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, scripture TEXT, content TEXT, date TEXT, status TEXT DEFAULT "active")')
+    cursor.execute('CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, office_name TEXT, password TEXT, logo_url TEXT)')
+    cursor.execute("INSERT OR IGNORE INTO settings (id, office_name, password) VALUES (1, 'LEXON TECH SOLUTION', 'admin123')")
     conn.commit()
     conn.close()
 
 init_db()
 
-@app.route('/api/register', methods=['POST', 'OPTIONS'])
+@app.route('/api/register', methods=['POST'])
 def register():
-    if request.method == 'OPTIONS': return make_response()
     data = request.json
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -38,26 +59,25 @@ def register():
                    (data['category'], data['name'], data['email'], data['whatsapp'], datetime.now().strftime("%d/%m/%Y")))
     conn.commit()
     conn.close()
+    
+    # NextSMS Trigger
+    msg = f"SHALOM {data['name']}! Usajili wako LEXON TECH umekamilika. Karibu."
+    send_nextsms(data['whatsapp'], msg)
+    
     return jsonify({"status": "success"}), 200
 
-@app.route('/api/finance/add', methods=['POST'])
-def add_finance():
-    data = request.json
-    conn = sqlite3.connect(DB_NAME)
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO finance (name, amount, type, date) VALUES (?, ?, ?, ?)',
-                   (data['name'], data['amount'], data['type'], datetime.now().strftime("%d/%m/%Y")))
-    conn.commit()
-    conn.close()
-    return jsonify({"status": "success"}), 200
-
-@app.route('/api/admin/all', methods=['GET'])
-def get_all():
+# API zingine (Finance, Miracles, Sermons, etc.) zinaendelea kama kawaida...
+@app.route('/api/data/all', methods=['GET'])
+def get_data():
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row
-    res = {"members": [dict(r) for r in conn.execute('SELECT * FROM members').fetchall()],
-           "finance": [dict(r) for r in conn.execute('SELECT * FROM finance').fetchall()],
-           "settings": dict(conn.execute('SELECT * FROM settings WHERE id=1').fetchone())}
+    res = {
+        "members": [dict(r) for r in conn.execute('SELECT * FROM members WHERE status="active"').fetchall()],
+        "finance": [dict(r) for r in conn.execute('SELECT * FROM finance WHERE status="active"').fetchall()],
+        "miracles": [dict(r) for r in conn.execute('SELECT * FROM miracles WHERE status="active"').fetchall()],
+        "sermons": [dict(r) for r in conn.execute('SELECT * SELECT * FROM sermons WHERE status="active"').fetchall()],
+        "settings": dict(conn.execute('SELECT * FROM settings WHERE id=1').fetchone())
+    }
     conn.close()
     return jsonify(res)
 
