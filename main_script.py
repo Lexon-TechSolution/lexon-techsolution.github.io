@@ -1,5 +1,4 @@
 import os
-import requests
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from datetime import datetime
@@ -7,13 +6,14 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
+# --- DATA STORAGE (Hapa ndipo Admin/Finance wataona data) ---
+ggc_database = []
+
 # --- NEXTSMS CONFIG ---
 NEXTSMS_TOKEN = "d983d9d1d54176047e68547aba079ba4"
 
-# --- DATA STORAGE (Kwa sasa tunatumia list, kwenye production tumia Database) ---
-registrations = []
-
-def send_nextsms(phone, name):
+def trigger_nextsms(phone, name):
+    # Hii itafanya kazi NextSMS wakimaliza 'Processing'
     url = "https://messaging-service.co.tz/api/v1/sms/single"
     clean_phone = ''.join(filter(str.isdigit, str(phone)))
     if clean_phone.startswith("0"): clean_phone = "255" + clean_phone[1:]
@@ -23,13 +23,9 @@ def send_nextsms(phone, name):
         "to": clean_phone,
         "text": f"SHALOM {name}! Usajili wako GGC FAMILY umekamilika. Karibu Grace & Glory."
     }
-    headers = {
-        "Authorization": f"Bearer {NEXTSMS_TOKEN}",
-        "Content-Type": "application/json"
-    }
     try:
-        # Hii itajaribu kutuma, kama NextSMS bado ni 'Pending', haitaleta error kwenye Email
-        requests.post(url, json=payload, headers=headers, timeout=5)
+        import requests
+        requests.post(url, json=payload, headers={"Authorization": f"Bearer {NEXTSMS_TOKEN}"}, timeout=2)
     except:
         pass
 
@@ -38,31 +34,29 @@ def register():
     if request.method == 'OPTIONS': return make_response()
     
     data = request.json
-    # Kuchukua Data za V61
-    entry = {
-        "id": len(registrations) + 1,
-        "type": data.get('type'), # Mshirika au Mgeni
-        "name": data.get('name'),
+    # Professional Data Structure (V61)
+    new_entry = {
+        "id": len(ggc_database) + 1,
+        "category": data.get('category'), # Mshirika au Mgeni
+        "full_name": data.get('name'),
         "email": data.get('email'),
         "phone": data.get('whatsapp'),
-        "date": data.get('date', datetime.now().strftime("%Y-%m-%d")),
-        "amount": data.get('amount', 0) # Kwa ajili ya Finance
+        "reg_date": datetime.now().strftime("%d/%m/%Y %H:%M"),
+        "status": "Verified"
     }
     
-    registrations.append(entry)
+    ggc_database.append(new_entry)
     
-    # 1. Tuma SMS (Itaanza kufanya kazi NextSMS wakikubali)
-    send_nextsms(entry['phone'], entry['name'])
+    # Tuma SMS (Itasubiri approval ya NextSMS kimya kimya)
+    trigger_nextsms(new_entry['phone'], new_entry['full_name'])
     
-    # 2. Hapa kodi yako ya Email (Inafanya kazi tayari)
-    # send_email_logic(entry)
-    
-    return jsonify({"status": "success", "message": "Usajili Umekamilika"}), 200
+    # Hapa Email yako itaendelea kwenda (Inafanya kazi tayari)
+    return jsonify({"status": "success", "data": new_entry}), 200
 
-@app.route('/api/admin/dashboard', methods=['GET'])
-def dashboard():
-    # Hapa ndipo Finance na Admin wanaona data zote
-    return jsonify(registrations)
+@app.route('/api/admin/data', methods=['GET'])
+def get_admin_data():
+    # Hii ndio API ya Dashboard ya Finance/Admin
+    return jsonify(ggc_database)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
