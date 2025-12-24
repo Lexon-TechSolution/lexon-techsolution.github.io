@@ -2,185 +2,107 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRACE & GLORY | CHURCH ERP v105</title>
+    <title>GGC ERP v105 MASTER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: #f8fafc; margin: 0; }
-        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
-        .input-style { background: #1e293b; border: 1px solid #334155; padding: 14px; border-radius: 12px; width: 100%; color: white; margin-bottom: 15px; outline: none; transition: 0.3s; }
-        .input-style:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
-        .btn-master { background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 16px; border-radius: 12px; font-weight: 800; width: 100%; color: white; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: #f8fafc; }
+        .glass { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.05); border-radius: 1rem; }
+        .input-p { background: #1e293b; border: 1px solid #334155; padding: 12px; border-radius: 8px; width: 100%; color: white; margin-bottom: 12px; outline: none; }
+        .btn-p { background: #2563eb; padding: 14px; border-radius: 8px; font-weight: 800; width: 100%; color: white; cursor: pointer; border: none; }
         .hidden { display: none !important; }
-        .nav-link { font-weight: 700; font-size: 12px; cursor: pointer; padding: 10px 20px; border-radius: 10px; transition: 0.3s; }
-        .nav-link:hover { background: rgba(37, 99, 235, 0.1); color: #60a5fa; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        th { padding: 15px; text-align: left; color: #64748b; font-size: 12px; text-transform: uppercase; }
-        td { padding: 15px; background: #0f172a; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        td:first-child { border-left: 1px solid rgba(255,255,255,0.05); border-radius: 12px 0 0 12px; }
-        td:last-child { border-right: 1px solid rgba(255,255,255,0.05); border-radius: 0 12px 12px 0; }
+        table { width: 100%; border-spacing: 0 10px; border-collapse: separate; }
+        td { background: #0f172a; padding: 15px; }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="max-w-[1400px] mx-auto">
-        <nav class="flex justify-between items-center mb-12 pb-6 border-b border-white/5">
-            <div>
-                <h1 class="text-2xl font-black tracking-tighter">GRACE & GLORY <span class="text-blue-500">ERP</span></h1>
-                <p class="text-[10px] text-emerald-500 font-bold uppercase tracking-[3px]">SQLite Database Linked ✅</p>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="show('home')" class="nav-link text-slate-400">Home</button>
-                <button onclick="show('registration')" class="nav-link text-blue-400 bg-blue-500/5">Usajili</button>
-                <button onclick="show('admission')" class="nav-link text-purple-400">Admission</button>
-                <button onclick="show('finance')" class="nav-link text-emerald-400">Finance</button>
+    <div class="max-w-[1300px] mx-auto">
+        <nav class="flex justify-between items-center mb-10 pb-5 border-b border-white/5">
+            <h1 class="text-xl font-black">GGC <span class="text-blue-500">ERP</span></h1>
+            <div class="flex gap-3">
+                <span onclick="go('home')" class="cursor-pointer font-bold text-xs uppercase">Home</span>
+                <span onclick="go('reg')" class="cursor-pointer font-bold text-xs uppercase text-blue-400">Usajili</span>
+                <span onclick="go('adm')" class="cursor-pointer font-bold text-xs uppercase text-emerald-400">Admin</span>
             </div>
         </nav>
 
-        <section id="page-home" class="py-20 text-center">
-            <h1 class="text-7xl md:text-9xl font-black text-white mb-6">LEXON <span class="text-blue-600">v105</span></h1>
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto">Mfumo mkuu wa kidijitali wa GGC FAMILY. SQLite Engine, Email System, na SMS Gateway zote zimeunganishwa.</p>
-            <div class="mt-12 flex justify-center gap-4">
-                <button onclick="show('registration')" class="btn-master w-auto px-10">Anza Usajili wa Washirika</button>
-            </div>
+        <section id="p-home" class="py-20 text-center">
+            <h1 class="text-7xl font-black mb-4 uppercase italic">Vision 105</h1>
+            <p class="text-blue-400 font-bold tracking-widest uppercase">SQLite & Infobip Linked ✅</p>
+            <button onclick="go('reg')" class="mt-10 bg-blue-600 px-10 py-4 rounded-full font-black">ANZA KAZI</button>
         </section>
 
-        <section id="page-registration" class="hidden max-w-xl mx-auto glass-card p-10">
-            <h2 class="text-2xl font-black mb-8 text-center">USAJILI WA MSHIRIKA / MGENI</h2>
-            <select id="reg_category" class="input-style">
-                <option value="MSHIRIKA">MSHIRIKA (Member)</option>
-                <option value="MGENI">MGENI (Visitor)</option>
-            </select>
-            <input type="text" id="reg_name" placeholder="Jina Kamili" class="input-style">
-            <input type="email" id="reg_email" placeholder="Barua Pepe (Email)" class="input-style">
-            <input type="tel" id="reg_phone" placeholder="Namba ya Simu (255...)" class="input-style">
-            <button onclick="processRegistration()" id="btn_submit" class="btn-master">Kamilisha Usajili</button>
-            <p id="reg_msg" class="mt-6 text-center font-bold text-sm"></p>
+        <section id="p-reg" class="hidden max-w-lg mx-auto glass p-8">
+            <h2 class="text-xl font-black mb-6 text-center">USAJILI</h2>
+            <select id="cat" class="input-p"><option value="MSHIRIKA">MSHIRIKA</option><option value="MGENI">MGENI</option></select>
+            <input type="text" id="name" placeholder="Jina Kamili" class="input-p">
+            <input type="email" id="email" placeholder="Barua Pepe" class="input-p">
+            <input type="tel" id="phone" placeholder="Namba (255...)" class="input-p">
+            <button onclick="submit()" id="s-btn" class="btn-p">Sajili Sasa</button>
         </section>
 
-        <section id="page-admission" class="hidden glass-card p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-black">ADMISSION OFFICE</h2>
-                <button onclick="refreshData()" class="text-xs bg-white/5 px-4 py-2 rounded-lg">Update Data</button>
-            </div>
+        <section id="p-adm" class="hidden glass p-8">
+            <h2 class="text-xl font-black mb-6">ADMISSION RECORDS</h2>
             <div class="overflow-x-auto">
                 <table>
-                    <thead>
-                        <tr><th>ID</th><th>JINA</th><th>JAMII</th><th>MAWASILIANO</th><th>TAREHE</th><th>HALI</th></tr>
-                    </thead>
-                    <tbody id="admission_table_body">
-                        </tbody>
+                    <thead><tr class="text-left text-slate-500 text-xs"><th>ID</th><th>JINA</th><th>JAMII</th><th>SIMU</th><th>TAREHE</th></tr></thead>
+                    <tbody id="adm-body"></tbody>
                 </table>
             </div>
-        </section>
-
-        <section id="page-finance" class="hidden glass-card p-8 border-l-4 border-emerald-500">
-            <h2 class="text-2xl font-black mb-8">FINANCE & RECORDS</h2>
-            <div id="finance_summary" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div class="bg-emerald-500/10 p-6 rounded-2xl border border-emerald-500/20">
-                    <p class="text-xs font-bold text-emerald-500 uppercase">Jumla ya Washirika</p>
-                    <h3 id="total_members" class="text-3xl font-black">0</h3>
-                </div>
-            </div>
-            <div id="finance_list">
-                </div>
         </section>
     </div>
 
     <script>
-        // 1. ENGINE LINK (SQLite Backend)
-        const ENGINE_URL = "https://LINK_YAKO_YA_KOYEB.koyeb.app"; 
-
-        // 2. EMAILJS INIT
+        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         emailjs.init("4aL-YVciYad9MuyLB");
 
-        // 3. NAVIGATION SYSTEM
-        function show(pageId) {
+        function go(id) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById('page-' + pageId).classList.remove('hidden');
-            if(pageId === 'admission' || pageId === 'finance') refreshData();
+            document.getElementById('p-' + id).classList.remove('hidden');
+            if(id === 'adm') load();
         }
 
-        // 4. PROCESS REGISTRATION (FRONT TO BACK)
-        async function processRegistration() {
-            const btn = document.getElementById('btn_submit');
-            const msg = document.getElementById('reg_msg');
+        async function submit() {
+            const btn = document.getElementById('s-btn');
             const data = {
-                category: document.getElementById('reg_category').value,
-                name: document.getElementById('reg_name').value,
-                email: document.getElementById('reg_email').value,
-                whatsapp: document.getElementById('reg_phone').value
+                category: document.getElementById('cat').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                whatsapp: document.getElementById('phone').value
             };
 
-            if(!data.name || !data.whatsapp) return alert("Tafadhali jaza Jina na Simu!");
-
-            btn.innerText = "INASINDIKA...";
+            btn.innerText = "Processing...";
             btn.disabled = true;
 
             try {
-                // A. Tuma Email Kwanza (Maana inafanya kazi 100%)
-                await emailjs.send('service_t3wznn2', 'template_b6o60cr', {
-                    to_name: data.name,
-                    to_email: data.email,
-                    category: data.category
-                });
-
-                // B. Tuma kwa SQLite Engine (Koyeb)
-                const response = await fetch(`${ENGINE_URL}/api/register`, {
+                // Tuma Email
+                await emailjs.send('service_t3wznn2', 'template_b6o60cr', { to_name: data.name, to_email: data.email });
+                // Tuma API
+                const res = await fetch(`${API}/api/register`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
-
-                if(response.ok) {
-                    msg.innerText = "USAJILI UMEKAMILIKA NA DATA IMEHIFADHIWA! ✅";
-                    msg.className = "mt-6 text-center font-bold text-sm text-emerald-400";
-                    clearInputs();
-                }
-            } catch (err) {
-                msg.innerText = "DATA IMEHIFADHIWA ILA KUNA SHIDA YA NETWORK.";
-                msg.className = "mt-6 text-center font-bold text-sm text-amber-500";
-            } finally {
-                btn.innerText = "KAMILISHA USAJILI";
-                btn.disabled = false;
-            }
+                if(res.ok) alert("Imekamilika! ✅");
+            } catch (e) { alert("Hitilafu imetokea!"); }
+            finally { btn.innerText = "Sajili Sasa"; btn.disabled = false; }
         }
 
-        // 5. FETCH DATA FROM ENGINE (SQLITE RECORDS)
-        async function refreshData() {
-            const tbody = document.getElementById('admission_table_body');
-            tbody.innerHTML = "<tr><td colspan='6' class='text-center'>Inapakia data kutoka kwenye Database...</td></tr>";
-
+        async function load() {
+            const body = document.getElementById('adm-body');
+            body.innerHTML = "Pakua data...";
             try {
-                const res = await fetch(`${ENGINE_URL}/api/admin/all`);
-                const records = await res.json();
-                
-                document.getElementById('total_members').innerText = records.length;
-                
-                tbody.innerHTML = records.map(r => `
-                    <tr>
-                        <td class="font-bold text-blue-500">#${r.id}</td>
-                        <td class="font-bold">${r.name}</td>
-                        <td><span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold">${r.category}</span></td>
-                        <td class="text-slate-400 text-xs">${r.phone}<br>${r.email}</td>
-                        <td class="text-xs">${r.date || 'Leo'}</td>
-                        <td class="text-emerald-500 font-bold text-[10px]">VERIFIED</td>
-                    </tr>
+                const res = await fetch(`${API}/api/admin/all`);
+                const data = await res.json();
+                body.innerHTML = data.map(m => `
+                    <tr><td>#${m.id}</td><td class="font-bold">${m.name}</td><td>${m.category}</td><td>${m.phone}</td><td>${m.reg_date}</td></tr>
                 `).join('');
-            } catch (err) {
-                tbody.innerHTML = "<tr><td colspan='6' class='text-center text-red-500'>Engine haipatikani kwa sasa.</td></tr>";
-            }
+            } catch (e) { body.innerHTML = "Engine offline."; }
         }
 
-        function clearInputs() {
-            document.getElementById('reg_name').value = "";
-            document.getElementById('reg_email').value = "";
-            document.getElementById('reg_phone').value = "";
-        }
-
-        window.onload = () => show('home');
+        window.onload = () => go('home');
     </script>
 </body>
 </html>
