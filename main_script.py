@@ -1,62 +1,67 @@
 import os
+import requests
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)
+CORS(app) # Muhimu ili Netlify iweze kutuma data hapa
 
-# --- DATA STORAGE (Hapa ndipo Admin/Finance wataona data) ---
-ggc_database = []
+# --- CONFIG ZA INFOBIP ---
+INFOBIP_API_KEY = "c2d7220f305487d6f7344c934d3740fc-4890475b-a39d-48dd-8588-9247da27b3ae"
+INFOBIP_URL = "https://qw36gr.api.infobip.com/sms/2/text/advanced"
 
-# --- NEXTSMS CONFIG ---
-NEXTSMS_TOKEN = "d983d9d1d54176047e68547aba079ba4"
+# --- DATABASE YA MUDA (Inatunza washirika waliojisajili) ---
+# Kila Engine ikiamka, list hii inaanza upya. Baadaye tutaweka SQL database.
+ggc_members_db = []
 
-def trigger_nextsms(phone, name):
-    # Hii itafanya kazi NextSMS wakimaliza 'Processing'
-    url = "https://messaging-service.co.tz/api/v1/sms/single"
+def send_infobip_sms(phone, name):
     clean_phone = ''.join(filter(str.isdigit, str(phone)))
     if clean_phone.startswith("0"): clean_phone = "255" + clean_phone[1:]
     
     payload = {
-        "from": "GGC FAMILY",
-        "to": clean_phone,
-        "text": f"SHALOM {name}! Usajili wako GGC FAMILY umekamilika. Karibu Grace & Glory."
+        "messages": [{
+            "destinations": [{"to": clean_phone}],
+            "from": "ServiceSMS",
+            "text": f"SHALOM {name}! Usajili wako GGC FAMILY umekamilika. Karibu Grace & Glory."
+        }]
+    }
+    headers = {
+        "Authorization": f"App {INFOBIP_API_KEY}",
+        "Content-Type": "application/json"
     }
     try:
-        import requests
-        requests.post(url, json=payload, headers={"Authorization": f"Bearer {NEXTSMS_TOKEN}"}, timeout=2)
-    except:
-        pass
+        res = requests.post(INFOBIP_URL, json=payload, headers=headers, timeout=10)
+        print(f"ENGINE SMS LOG: {res.status_code} - {res.text}")
+    except Exception as e:
+        print(f"ENGINE ERROR: {str(e)}")
 
 @app.route('/api/register', methods=['POST', 'OPTIONS'])
-def register():
+def register_engine():
     if request.method == 'OPTIONS': return make_response()
     
     data = request.json
-    # Professional Data Structure (V61)
-    new_entry = {
-        "id": len(ggc_database) + 1,
-        "category": data.get('category'), # Mshirika au Mgeni
-        "full_name": data.get('name'),
+    # Hapa Engine inarekodi kila kitu kinachokuja kutoka kwa muonekano
+    member = {
+        "id": len(ggc_members_db) + 1,
+        "name": data.get('name'),
         "email": data.get('email'),
         "phone": data.get('whatsapp'),
-        "reg_date": datetime.now().strftime("%d/%m/%Y %H:%M"),
-        "status": "Verified"
+        "category": data.get('category', 'MSHIRIKA'), # Mshirika au Mgeni
+        "date": datetime.now().strftime("%d-%m-%Y %H:%M")
     }
     
-    ggc_database.append(new_entry)
+    ggc_members_db.append(member)
     
-    # Tuma SMS (Itasubiri approval ya NextSMS kimya kimya)
-    trigger_nextsms(new_entry['phone'], new_entry['full_name'])
+    # Engine inarusha SMS
+    send_infobip_sms(member['phone'], member['name'])
     
-    # Hapa Email yako itaendelea kwenda (Inafanya kazi tayari)
-    return jsonify({"status": "success", "data": new_entry}), 200
+    return jsonify({"status": "success", "engine_status": "data_recorded", "data": member}), 200
 
-@app.route('/api/admin/data', methods=['GET'])
-def get_admin_data():
-    # Hii ndio API ya Dashboard ya Finance/Admin
-    return jsonify(ggc_database)
+@app.route('/api/admin/all', methods=['GET'])
+def get_all_data():
+    # Hii ndio itatumiwa na Admin Dashboard na Finance Office
+    return jsonify(ggc_members_db)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
