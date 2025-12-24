@@ -17,7 +17,7 @@ def send_nextsms_internet(phone_number, full_name):
     url = "https://messaging-service.co.tz/api/v1/sms/single"
     
     # HAPA NDIPO UNAPOWEKA UJUMBE WAKO
-    ujumbe = f"Heshima kwako {full_name}! Usajili wako wa Vision 103 umekamilika. Karibu Grace & Glory."
+    ujumbe = f"Heshima kwako {full_name}! SHAROM MTUMISHI KATIKA BWANA UMESAJILIWA KIKAMILIFU KUA MSHILKA WA GGC FAMILY  PASTO ANS ANAKUTAKIA HERI YA MWAKA MPYA NA USHINDI TELEEE. Karibu Grace & Glory NUMBER YA POSTA 255779000015."
     
     payload = {
         "from": "NEXTSMS", # Tumia jina hili la bure sasa hivi
