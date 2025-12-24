@@ -18,11 +18,11 @@ def send_nextsms_internet(phone_number, full_name):
     
     url = "https://messaging-service.co.tz/api/v1/sms/single"
     
-    # UJUMBE WAKO ULIOIOMBA (Nimeuweka hapa ndani ya kodi)
-    ujumbe = f"Heshima kwako {full_name}! SHALOM MTUMISHI KATIKA BWANA UMESAJILIWA KIKAMILIFU KUA MSHILKA WA GGC FAMILY PASTO ANS ANAKUTAKIA HERI YA MWAKA MPYA NA USHINDI TELEEE. Karibu Grace & Glory NUMBER YA POSTA 255779000015."
+    # UJUMBE WAKO ULIOBORESHA (Shalom & Mshirika)
+    ujumbe = f"Heshima kwako {full_name}! SHALOM MTUMISHI KATIKA BWANA UMESAJILIWA KIKAMILIFU KUWA MSHIRIKA WA GGC FAMILY. PASTOR ANS ANAKUTAKIA HERI YA MWAKA MPYA NA USHINDI TELEEE. Karibu Grace & Glory. NAMBA YA POSTA 255779000015."
     
     payload = {
-        "from": "NEXTSMS", # Jina la muda wakati unasubiri jina la kanisa
+        "from": "NEXTSMS", 
         "to": clean_phone,
         "text": ujumbe
     }
@@ -42,7 +42,7 @@ def send_nextsms_internet(phone_number, full_name):
         print(f"SMS ERROR: {str(e)}")
         return None
 
-# --- KOYEB HEALTH CHECK (USIITOE HII) ---
+# --- KOYEB HEALTH CHECK (HII ITAONDOA ILE ERROR YA PORT 8000) ---
 @app.route('/')
 def home():
     return "SERVER IS LIVE", 200
@@ -63,5 +63,5 @@ def auth():
     return jsonify({"status": "error", "message": "Phone number missing"}), 400
 
 if __name__ == '__main__':
-    # Lazima iwe port 8000 kwa ajili ya Koyeb
+    # Koyeb inasikiliza Port 8000 pekee
     app.run(host='0.0.0.0', port=8000)
