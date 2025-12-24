@@ -2,96 +2,51 @@ import os
 import requests
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
 
-# --- BEEM CONFIG ---
-# Funguo zako za Beem (Ziko sahihi)
-BEEM_API_KEY = "1aefe53a86b4e997"
-BEEM_SECRET_KEY = "NjM3Mjc1ZDRiYTBiYTZhZWUxMWNhNDU0ZWI1YjkyMDBmNmVmNzkwY2U3NGMyNTU0Mzg1NjQzYTkxMTI4ZTIzMA=="
+# --- NEXTSMS CONFIG ---
+NEXTSMS_TOKEN = "d983d9d1d54176047e68547aba079ba4"
 
-# --- DATABASE CONFIG ---
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///vision103.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-class Merchant(db.Model):
-    id = db.Column(db.String(50), primary_key=True)
-    name = db.Column(db.String(100))
-    phone = db.Column(db.String(20))
-    email = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-# Tengeneza Database
-with app.app_context():
-    db.create_all()
-
-def send_beem_sms(phone_number, full_name):
-    # Safisha namba ya simu iwe format ya 255...
+def send_nextsms_internet(phone_number, full_name):
     clean_phone = ''.join(filter(str.isdigit, str(phone_number)))
     if clean_phone.startswith("0"):
         clean_phone = "255" + clean_phone[1:]
     
-    # Payload ya Beem kwa kutumia "Sms Mtandao" (Kuepuka Pending)
+    url = "https://messaging-service.co.tz/api/v1/sms/single"
+    
+    # HAPA NDIPO UNAPOWEKA UJUMBE WAKO
+    ujumbe = f"Heshima kwako {full_name}! Usajili wako wa Vision 103 umekamilika. Karibu Grace & Glory."
+    
     payload = {
-        "source_addr": "Sms Mtandao",
-        "schedule_time": "",
-        "encoding": "0",
-        "message": f"Heshima kwako {full_name}! Usajili wako wa Vision 103 umekamilika. Karibu Grace & Glory.",
-        "recipients": [
-            {
-                "recipient_id": 1,
-                "dest_addr": clean_phone
-            }
-        ]
+        "from": "NEXTSMS", # Tumia jina hili la bure sasa hivi
+        "to": clean_phone,
+        "text": ujumbe
+    }
+    
+    headers = {
+        "Authorization": f"Bearer {NEXTSMS_TOKEN}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
     }
     
     try:
-        response = requests.post(
-            "https://api.beem.africa/v1/send",
-            auth=(BEEM_API_KEY, BEEM_SECRET_KEY),
-            json=payload,
-            timeout=15
-        )
-        # Hii itatusaidia kuona jibu la Beem kwenye logs za Koyeb
-        print(f"BEEM RESPONSE: {response.status_code} - {response.text}")
+        response = requests.post(url, json=payload, headers=headers, timeout=15)
+        print(f"NEXTSMS PUSH: {response.status_code} - {response.text}")
         return response.json()
     except Exception as e:
-        print(f"SMS SENDING ERROR: {str(e)}")
+        print(f"SMS ERROR: {str(e)}")
         return None
-
-@app.route('/')
-def home():
-    return jsonify({"status": "Online", "gateway": "Sms Mtandao"}), 200
 
 @app.route('/api/auth', methods=['POST', 'OPTIONS'])
 def auth():
     if request.method == 'OPTIONS':
         return make_response()
-        
     data = request.json
-    m_id = data.get('id', '').lower().strip()
-    
-    # Angalia kama mshirika tayari yupo
-    merchant = Merchant.query.get(m_id)
-    if not merchant:
-        merchant = Merchant(
-            id=m_id, 
-            name=data.get('name'), 
-            phone=data.get('whatsapp'), 
-            email=data.get('email')
-        )
-        db.session.add(merchant)
-        db.session.commit()
-        
-        # TUMA SMS KWA BEEM
-        send_beem_sms(merchant.phone, merchant.name)
-    
-    return jsonify({"status": "success", "message": "SMS processed"}), 200
+    # Hapa inatuma SMS kwa mshirika
+    send_nextsms_internet(data.get('whatsapp'), data.get('name'))
+    return jsonify({"status": "success"})
 
 if __name__ == '__main__':
-    # Koyeb inahitaji port 8000
     app.run(host='0.0.0.0', port=8000)
