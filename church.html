@@ -9,51 +9,90 @@
     <style>
         body { background: #020617; color: #f8fafc; font-family: sans-serif; }
         .office-card { background: #0f172a; border-radius: 20px; padding: 30px; border: 1px solid #1e293b; }
-        .input-v { background: #1e293b; border: 1px solid #334155; padding: 12px; border-radius: 10px; width: 100%; color: white; margin-bottom: 15px; }
+        .input-v { background: #1e293b; border: 1px solid #334155; padding: 12px; border-radius: 10px; width: 100%; color: white; margin-bottom: 15px; outline: none; }
         .hidden { display: none !important; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
-        td { background: #1e293b; padding: 15px; border-radius: 8px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 5px; }
+        th { text-align: left; padding: 10px; font-size: 10px; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #1e293b; }
+        td { background: #1e293b; padding: 12px; font-size: 12px; border-radius: 4px; }
+        .btn-trash { color: #ef4444; font-weight: bold; cursor: pointer; font-size: 10px; }
     </style>
 </head>
 <body class="p-4 md:p-10">
     <nav class="flex justify-between items-center mb-10 border-b border-white/10 pb-6">
         <h1 class="text-3xl font-black italic text-blue-500">LEXON TECH</h1>
         <div class="flex gap-4">
-            <button onclick="nav('reg')" class="text-xs font-bold uppercase">Registration</button>
-            <button onclick="auth('poster')" class="text-xs font-bold uppercase text-blue-400">Poster Office</button>
-            <button onclick="auth('finance')" class="text-xs font-bold uppercase text-amber-400">Finance Office</button>
+            <button onclick="nav('reg')" class="text-xs font-bold uppercase hover:text-blue-400">Registration</button>
+            <button onclick="auth('poster')" class="text-xs font-bold uppercase text-blue-400 border border-blue-400/20 px-3 py-1 rounded">Poster Office</button>
+            <button onclick="auth('finance')" class="text-xs font-bold uppercase text-amber-400 border border-amber-400/20 px-3 py-1 rounded">Finance Office</button>
         </div>
     </nav>
 
-    <section id="view-reg" class="max-w-2xl mx-auto office-card">
-        <h2 class="text-2xl font-bold mb-6 text-center">USAJILI</h2>
-        <select id="r-cat" class="input-v"><option value="MSHIRIKA">MSHIRIKA</option><option value="MGENI">MGENI</option></select>
-        <input type="text" id="r-name" placeholder="Jina Kamili" class="input-v">
-        <input type="email" id="r-email" placeholder="Email" class="input-v">
-        <input type="tel" id="r-phone" placeholder="Simu (255...)" class="input-v">
-        <button onclick="handleReg()" id="reg-btn" class="bg-blue-600 w-full p-4 rounded-xl font-black">SAJILI & TUMA SMS</button>
-        <div class="mt-10 border-t border-white/5 pt-6">
-            <h3 class="font-bold mb-4">MIRACLE FORM</h3>
-            <input type="text" id="m-name" placeholder="Jina Lako" class="input-v">
-            <textarea id="m-text" placeholder="Ushuhuda..." class="input-v h-24"></textarea>
-            <button onclick="handleMiracle()" class="bg-white/5 w-full p-2 rounded text-xs">TUMA USHUHUDA</button>
+    <section id="view-reg" class="max-w-2xl mx-auto office-card shadow-2xl">
+        <h2 class="text-2xl font-bold mb-6 text-center text-white">USAJILI WA TAARIFA</h2>
+        <div class="space-y-1">
+            <label class="text-[10px] text-slate-500 ml-1">Kundi la Mtu</label>
+            <select id="r-cat" class="input-v"><option value="MSHIRIKA">MSHIRIKA (Member)</option><option value="MGENI">MGENI (Visitor)</option></select>
+        </div>
+        <input type="text" id="r-name" placeholder="Jina Kamili la Mgeni/Mshirika" class="input-v">
+        <input type="email" id="r-email" placeholder="Barua Pepe (Email)" class="input-v">
+        <input type="tel" id="r-phone" placeholder="Namba ya Simu (255...)" class="input-v">
+        
+        <button onclick="handleReg()" id="reg-btn" class="bg-blue-600 hover:bg-blue-700 w-full p-4 rounded-xl font-black transition-all shadow-lg mt-4">SAJILI & TUMA TAARIFA (Email + SMS)</button>
+        
+        <div class="mt-10 border-t border-white/5 pt-6 text-center">
+            <button onclick="nav('miracle')" class="text-xs text-blue-400 underline">Bonyeza hapa kutuma Ushuhuda (Miracle Form)</button>
         </div>
     </section>
 
+    <section id="view-miracle" class="hidden max-w-2xl mx-auto office-card">
+        <h2 class="text-2xl font-bold mb-6">MIRACLE TESTIMONY</h2>
+        <input type="text" id="m-name" placeholder="Jina Lako" class="input-v">
+        <textarea id="m-text" placeholder="Andika ushuhuda wako hapa..." class="input-v h-32"></textarea>
+        <button onclick="handleMiracle()" class="bg-purple-600 w-full p-4 rounded-xl font-black shadow-lg">TUMA USHUHUDA</button>
+        <button onclick="nav('reg')" class="w-full mt-4 text-xs text-slate-400">Rudi kwenye Usajili</button>
+    </section>
+
     <section id="view-poster" class="hidden space-y-8">
-        <h2 class="text-3xl font-black text-blue-400">POSTER OFFICE (ADMIN)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="flex justify-between items-center">
+            <h2 class="text-3xl font-black text-blue-500 uppercase">Poster Office</h2>
+            <div class="flex gap-4">
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-500">Jumla Washirika</p>
+                    <p id="count-washirika" class="font-bold text-emerald-400">0</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-500">Jumla Wageni</p>
+                    <p id="count-wageni" class="font-bold text-amber-400">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="office-card">
-                <h3 class="text-emerald-400 font-bold mb-4 uppercase text-xs">Meza ya Washirika</h3>
-                <div class="overflow-y-auto h-64"><table id="table-washirika"></table></div>
+                <h3 class="text-emerald-400 font-bold mb-4 uppercase text-xs tracking-widest">Meza ya Washirika</h3>
+                <div class="overflow-x-auto h-80">
+                    <table>
+                        <thead>
+                            <tr><th>Jina</th><th>Email</th><th>Simu</th><th>Tarehe</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="table-washirika"></tbody>
+                    </table>
+                </div>
             </div>
             <div class="office-card">
-                <h3 class="text-amber-400 font-bold mb-4 uppercase text-xs">Meza ya Wageni</h3>
-                <div class="overflow-y-auto h-64"><table id="table-wageni"></table></div>
+                <h3 class="text-amber-400 font-bold mb-4 uppercase text-xs tracking-widest">Meza ya Wageni</h3>
+                <div class="overflow-x-auto h-80">
+                    <table>
+                        <thead>
+                            <tr><th>Jina</th><th>Email</th><th>Simu</th><th>Tarehe</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="table-wageni"></tbody>
+                    </table>
+                </div>
             </div>
-            <div class="office-card md:col-span-2">
-                <h3 class="text-purple-400 font-bold mb-4 uppercase text-xs">Miracle Records</h3>
-                <div id="miracle-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <div class="office-card lg:col-span-2">
+                <h3 class="text-purple-400 font-bold mb-4 uppercase text-xs">Testimony Records (Miracles)</h3>
+                <div id="miracle-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
             </div>
         </div>
     </section>
@@ -61,31 +100,41 @@
     <section id="view-finance" class="hidden space-y-8">
         <div class="flex justify-between items-center">
             <h2 class="text-3xl font-black text-amber-500 uppercase">Finance Office</h2>
-            <button onclick="downloadPDF()" class="bg-white/10 px-6 py-2 rounded-full text-xs">Download Report (PDF)</button>
+            <button onclick="downloadPDF()" class="bg-white/10 px-6 py-2 rounded-full text-[10px] font-bold uppercase hover:bg-white/20 transition-all">Download Report (PDF)</button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="office-card">
-                <h3 class="font-bold mb-4">Ingiza Fedha</h3>
+            <div class="office-card h-fit">
+                <h3 class="font-bold mb-4 text-xs uppercase">Ingiza Hesabu</h3>
                 <select id="f-type" class="input-v">
                     <option value="SADAKA">Sadaka</option>
                     <option value="FUNGU LA KUMI">Fungu la Kumi</option>
-                    <option value="EXPENSE">Expense (Matumizi)</option>
+                    <option value="EXPENSE">Matumizi (Expense)</option>
                 </select>
-                <input type="text" id="f-donor" placeholder="Mhusika (Fungu la Kumi)" class="input-v">
-                <input type="number" id="f-amt" placeholder="Kiasi" class="input-v">
-                <input type="text" id="f-desc" placeholder="Maelezo" class="input-v">
-                <button onclick="handleFinance()" class="bg-amber-600 w-full p-4 rounded-xl font-black">HIFADHI REKODI</button>
+                <input type="text" id="f-donor" placeholder="Jina la Aliyetoa (Fungu la Kumi)" class="input-v">
+                <input type="number" id="f-amt" placeholder="Kiasi (TSH)" class="input-v">
+                <textarea id="f-desc" placeholder="Maelezo ya Muamala" class="input-v h-20"></textarea>
+                <button onclick="handleFinance()" class="bg-amber-600 w-full p-4 rounded-xl font-black shadow-lg">HIFADHI REKODI</button>
             </div>
             <div class="office-card md:col-span-2">
-                <h3 class="font-bold mb-4 uppercase text-xs">Miamala yote</h3>
-                <div class="overflow-y-auto h-96"><table id="table-finance"></table></div>
+                <h3 class="font-bold mb-4 uppercase text-xs">Miamala ya Mapato na Matumizi</h3>
+                <div class="overflow-y-auto h-[450px]">
+                    <table>
+                        <thead>
+                            <tr><th>Tarehe</th><th>Aina</th><th>Mhusika</th><th>Maelezo</th><th>Kiasi</th></tr>
+                        </thead>
+                        <tbody id="table-finance"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
 
     <script>
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        emailjs.init("4aL-YVciYad9MuyLB");
+        
+        // WEKA TAARIFA ZAKO ZA EMAILJS HAPA
+        emailjs.init("4aL-YVciYad9MuyLB"); 
+
         let db = { members: [], finance: [], miracles: [], settings: {} };
 
         function nav(id) {
@@ -94,49 +143,119 @@
         }
 
         async function auth(view) {
-            const pass = prompt("Ingiza Password:");
-            const res = await fetch(`${API}/api/data/all`);
-            const data = await res.json();
-            if(pass === data.settings.password) {
-                db = data;
-                render();
-                nav(view);
-            } else { alert("Password Sio Sahihi!"); }
+            const pass = prompt("Enter Office Password:");
+            try {
+                const res = await fetch(`${API}/api/data/all`);
+                const data = await res.json();
+                if(pass === data.settings.password) {
+                    db = data;
+                    render();
+                    nav(view);
+                } else { alert("Password Sio Sahihi!"); }
+            } catch(e) { alert("Engine Error. Hakikisha Engine kule Koyeb ipo ACTIVE."); }
         }
 
         async function handleReg() {
             const btn = document.getElementById('reg-btn');
-            const data = { category: document.getElementById('r-cat').value, name: document.getElementById('r-name').value, email: document.getElementById('r-email').value, whatsapp: document.getElementById('r-phone').value };
-            btn.innerText = "Processing...";
-            await emailjs.send('service_t3wznn2', 'template_b6o60cr', { to_name: data.name, to_email: data.email });
-            await fetch(`${API}/api/register`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)});
-            alert("Usajili Umekamilika!");
-            location.reload();
+            const data = { 
+                category: document.getElementById('r-cat').value, 
+                name: document.getElementById('r-name').value, 
+                email: document.getElementById('r-email').value, 
+                whatsapp: document.getElementById('r-phone').value 
+            };
+            
+            if(!data.name || !data.whatsapp) { alert("Jaza Jina na Namba ya Simu!"); return; }
+            
+            btn.innerText = "Inatuma Barua Pepe & SMS...";
+            btn.disabled = true;
+
+            try {
+                // 1. TUMA EMAIL KWA EMAILJS
+                await emailjs.send('service_t3wznn2', 'template_b6o60cr', { 
+                    to_name: data.name, 
+                    to_email: data.email,
+                    category: data.category,
+                    phone: data.whatsapp,
+                    message: "Karibu sana kwenye mfumo wa LEXON TECH SOLUTION ERP. Taarifa zako zimehifadhiwa."
+                });
+                
+                // 2. TUMA DATA KWENYE ENGINE (Inatuma na SMS ya NextSMS pia)
+                const response = await fetch(`${API}/api/register`, { 
+                    method: 'POST', 
+                    headers: {'Content-Type':'application/json'}, 
+                    body: JSON.stringify(data)
+                });
+
+                if(response.ok) {
+                    alert("USALAMA: Taarifa zimehifadhiwa, Email imetumwa na SMS imerushwa!");
+                    location.reload();
+                }
+            } catch (e) { 
+                alert("Kuna tatizo! Hakikisha EmailJS au Engine ipo hai."); 
+            } finally {
+                btn.innerText = "SAJILI & TUMA TAARIFA";
+                btn.disabled = false;
+            }
         }
 
         async function handleFinance() {
-            const data = { type: document.getElementById('f-type').value, donor_name: document.getElementById('f-donor').value, amount: document.getElementById('f-amt').value, description: document.getElementById('f-desc').value };
+            const data = { 
+                type: document.getElementById('f-type').value, 
+                donor_name: document.getElementById('f-donor').value || "N/A", 
+                amount: document.getElementById('f-amt').value, 
+                description: document.getElementById('f-desc').value 
+            };
+            if(!data.amount) { alert("Weka Kiasi!"); return; }
             await fetch(`${API}/api/finance/add`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)});
-            alert("Finance Imehifadhiwa!");
+            alert("Muamala umehifadhiwa kikamilifu!");
             location.reload();
         }
 
         async function handleMiracle() {
             const data = { name: document.getElementById('m-name').value, testimony: document.getElementById('m-text').value };
+            if(!data.name || !data.testimony) { alert("Jaza jina na ushuhuda!"); return; }
             await fetch(`${API}/api/miracle/add`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)});
-            alert("Ushuhuda Umetumwa!");
+            alert("Ushuhuda wako umetumwa kwa Poster Office.");
+            nav('reg');
         }
 
         function render() {
-            const w = db.members.filter(m => m.category === 'MSHIRIKA');
-            const g = db.members.filter(m => m.category === 'MGENI');
-            document.getElementById('table-washirika').innerHTML = w.map(m => `<tr><td>${m.name}</td><td>${m.phone}</td><td><button onclick="trash('members', ${m.id})" class="text-red-500">Trash</button></td></tr>`).join('');
-            document.getElementById('table-wageni').innerHTML = g.map(m => `<tr><td>${m.name}</td><td>${m.phone}</td><td><button onclick="trash('members', ${m.id})" class="text-red-500">Trash</button></td></tr>`).join('');
-            document.getElementById('table-finance').innerHTML = db.finance.map(f => `<tr><td>${f.date}</td><td>${f.type}</td><td>${f.donor_name}</td><td>${f.amount}</td></tr>`).join('');
-            document.getElementById('miracle-list').innerHTML = db.miracles.map(m => `<div class="p-4 bg-white/5 rounded-lg"><p class="font-bold text-blue-400">${m.member_name}</p><p class="text-sm italic">"${m.testimony}"</p></div>`).join('');
+            const washirika = db.members.filter(m => m.category === 'MSHIRIKA');
+            const wageni = db.members.filter(m => m.category === 'MGENI');
+            
+            document.getElementById('count-washirika').innerText = washirika.length;
+            document.getElementById('count-wageni').innerText = wageni.length;
+
+            // Render Washirika
+            document.getElementById('table-washirika').innerHTML = washirika.map(m => `
+                <tr><td>${m.name}</td><td>${m.email}</td><td>${m.phone}</td><td>${m.date}</td><td><span onclick="trash('members', ${m.id})" class="btn-trash">TRASH</span></td></tr>
+            `).join('');
+
+            // Render Wageni
+            document.getElementById('table-wageni').innerHTML = wageni.map(m => `
+                <tr><td>${m.name}</td><td>${m.email}</td><td>${m.phone}</td><td>${m.date}</td><td><span onclick="trash('members', ${m.id})" class="btn-trash">TRASH</span></td></tr>
+            `).join('');
+
+            // Render Finance
+            document.getElementById('table-finance').innerHTML = db.finance.map(f => `
+                <tr><td>${f.date}</td><td>${f.type}</td><td>${f.donor_name}</td><td>${f.description}</td><td class="${f.type === 'EXPENSE' ? 'text-red-400' : 'text-emerald-400'}">${Number(f.amount).toLocaleString()}</td></tr>
+            `).join('');
+
+            // Render Miracles
+            document.getElementById('miracle-list').innerHTML = db.miracles.map(m => `
+                <div class="p-4 bg-white/5 rounded-lg border border-white/5 shadow-inner">
+                    <div class="flex justify-between">
+                        <p class="font-bold text-blue-400 text-xs">${m.member_name}</p>
+                        <span onclick="trash('miracles', ${m.id})" class="text-[9px] text-red-800 cursor-pointer">FUTA</span>
+                    </div>
+                    <p class="text-xs italic text-slate-400 mt-2">"${m.testimony}"</p>
+                    <p class="text-[9px] text-slate-600 mt-3 border-t border-white/5 pt-1">${m.date}</p>
+                </div>
+            `).join('');
         }
 
         async function trash(table, id) {
+            if(!confirm("Hii rekodi itahamishiwa kwenye Trash Box. Endelea?")) return;
             await fetch(`${API}/api/data/delete`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({table, id})});
             location.reload();
         }
@@ -144,10 +263,19 @@
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text("LEXON TECH SOLUTION - FINANCE REPORT", 10, 10);
-            let y = 20;
-            db.finance.forEach(f => { doc.text(`${f.date} | ${f.type} | ${f.donor_name} | ${f.amount}`, 10, y); y += 10; });
-            doc.save("Report.pdf");
+            doc.setFontSize(20);
+            doc.text("LEXON TECH SOLUTION ERP", 10, 20);
+            doc.setFontSize(12);
+            doc.text("Ripoti ya Fedha (Mapato na Matumizi)", 10, 30);
+            doc.text("--------------------------------------------------", 10, 35);
+            
+            let y = 45;
+            db.finance.forEach(f => { 
+                doc.text(`${f.date} | ${f.type} | ${f.donor_name} | ${f.amount} TSH`, 10, y); 
+                y += 10; 
+                if (y > 280) { doc.addPage(); y = 20; }
+            });
+            doc.save("Lexon_Finance_Report.pdf");
         }
     </script>
 </body>
