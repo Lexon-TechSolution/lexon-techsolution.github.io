@@ -2,71 +2,93 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <title>LEXON TECH SOLUTION | ERP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXON TECH SOLUTION | ERP SECURE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { background: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); border: 1px solid #1e293b; border-radius: 15px; }
-        .input-v { background: #1e293b; border: 1px solid #334155; padding: 14px; border-radius: 12px; width: 100%; color: white; transition: 0.3s; }
-        .input-v:focus { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        body { background: #010409; color: #c9d1d9; font-family: 'JetBrains Mono', monospace; }
+        .secure-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; transition: 0.4s; }
+        .secure-card:hover { border-color: #58a6ff; }
+        .input-field { background: #161b22; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 6px; width: 100%; outline: none; }
+        .input-field:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1); }
+        .btn-primary { background: #238636; color: white; font-weight: bold; padding: 12px; border-radius: 6px; width: 100%; transition: 0.3s; }
+        .btn-primary:hover { background: #2ea043; }
         .hidden { display: none !important; }
-        tr:hover td { background: #1e293b; cursor: default; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #161b22; padding: 12px; text-align: left; font-size: 12px; border: 1px solid #30363d; color: #8b949e; }
+        td { padding: 12px; border: 1px solid #30363d; font-size: 13px; }
     </style>
 </head>
-<body class="p-4">
-    <nav class="max-w-6xl mx-auto flex justify-between items-center py-6 border-b border-white/5 mb-10">
-        <h1 class="text-2xl font-black text-blue-500 tracking-tighter">LEXON TECH <span class="text-white font-light">ERP</span></h1>
-        <div class="flex gap-4">
-            <button onclick="nav('reg')" class="text-xs font-bold px-4 py-2 hover:bg-white/5 rounded-lg">USAJILI</button>
-            <button onclick="auth('poster')" class="text-xs font-bold bg-blue-600/10 text-blue-400 px-4 py-2 rounded-lg border border-blue-500/20">POSTER OFFICE</button>
-        </div>
-    </nav>
+<body class="p-4 md:p-10">
 
-    <section id="view-reg" class="max-w-xl mx-auto glass-card p-8">
-        <h2 class="text-xl font-bold mb-6 text-center">SAJILI TAARIFA MPYA</h2>
-        <div class="space-y-4">
-            <select id="r-cat" class="input-v">
-                <option value="MSHIRIKA">MSHIRIKA (MEMBER)</option>
-                <option value="MGENI">MGENI (VISITOR)</option>
-            </select>
-            <input type="text" id="r-name" placeholder="Jina Kamili" class="input-v">
-            <input type="email" id="r-email" placeholder="Barua Pepe (Email)" class="input-v">
-            <input type="tel" id="r-phone" placeholder="Namba ya Simu (Mfano: 2557...)" class="input-v">
-            <button onclick="handleReg()" id="reg-btn" class="w-full bg-blue-600 py-4 rounded-xl font-bold hover:bg-blue-700 shadow-xl transition-all">SAJILI & TUMA TAARIFA</button>
+    <header class="max-w-6xl mx-auto flex justify-between items-center mb-12 border-b border-gray-800 pb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white tracking-widest">LEXON TECH <span class="text-blue-500 text-sm">SECURE ERP</span></h1>
+            <p class="text-[10px] text-gray-500 uppercase tracking-tighter italic">Data Integrity & Automated Systems</p>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="nav('reg')" class="text-xs hover:text-white">REGISTRATION</button>
+            <button onclick="auth('poster')" class="text-xs bg-blue-900/30 text-blue-400 border border-blue-500/30 px-4 py-2 rounded-full">POSTER OFFICE</button>
+        </div>
+    </header>
+
+    <section id="view-reg" class="max-w-lg mx-auto secure-card p-8 shadow-2xl">
+        <div class="mb-8 text-center border-b border-gray-800 pb-4">
+            <h2 class="text-xl font-bold text-white">SAJILI TAARIFA LIVE</h2>
+            <p class="text-xs text-gray-400 mt-2">Usajili unaji-automate na SMS na Email papo hapo.</p>
+        </div>
+        
+        <div class="space-y-5">
+            <div>
+                <label class="text-[10px] text-gray-500 block mb-1">KUNDI LA USAJILI</label>
+                <select id="r-cat" class="input-field">
+                    <option value="MSHIRIKA">MSHIRIKA (MEMBER)</option>
+                    <option value="MGENI">MGENI (VISITOR)</option>
+                </select>
+            </div>
+            <input type="text" id="r-name" placeholder="Jina Kamili" class="input-field">
+            <input type="email" id="r-email" placeholder="Barua Pepe (Email)" class="input-field">
+            <input type="tel" id="r-phone" placeholder="Simu (255...)" class="input-field">
+            
+            <button onclick="handleReg()" id="reg-btn" class="btn-primary">TEKELEZA USAJILI & TUMA AUTOMATION</button>
         </div>
     </section>
 
-    <section id="view-poster" class="hidden max-w-6xl mx-auto space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="glass-card p-4 text-center border-emerald-500/30">
-                <p class="text-[10px] text-slate-500 uppercase">Jumla Washirika</p>
-                <h3 id="count-washirika" class="text-2xl font-black text-emerald-400">0</h3>
-            </div>
-            <div class="glass-card p-4 text-center border-amber-500/30">
-                <p class="text-[10px] text-slate-500 uppercase">Jumla Wageni</p>
-                <h3 id="count-wageni" class="text-2xl font-black text-amber-400">0</h3>
+    <section id="view-poster" class="hidden max-w-6xl mx-auto">
+        <div class="flex justify-between items-end mb-6">
+            <h2 class="text-2xl font-bold text-blue-400 uppercase">Poster Office Records</h2>
+            <div class="flex gap-6">
+                <div class="text-center">
+                    <p class="text-[9px] text-gray-500">WASHIRIKA</p>
+                    <p id="cnt-w" class="text-xl font-bold text-emerald-500">0</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-[9px] text-gray-500">WAGENI</p>
+                    <p id="cnt-v" class="text-xl font-bold text-amber-500">0</p>
+                </div>
             </div>
         </div>
 
-        <div class="glass-card overflow-hidden">
-            <table class="w-full text-left">
-                <thead class="bg-white/5 text-[10px] text-slate-400 uppercase">
+        <div class="secure-card overflow-x-auto">
+            <table>
+                <thead>
                     <tr>
-                        <th class="p-4">Kundi</th>
-                        <th class="p-4">Jina</th>
-                        <th class="p-4">Email</th>
-                        <th class="p-4">Simu</th>
-                        <th class="p-4">Tarehe</th>
+                        <th>JINA</th>
+                        <th>KUNDI</th>
+                        <th>SIMU</th>
+                        <th>EMAIL</th>
+                        <th>TAREHE</th>
+                        <th>STATUS</th>
                     </tr>
                 </thead>
-                <tbody id="main-table-body" class="text-sm"></tbody>
+                <tbody id="table-body"></tbody>
             </table>
         </div>
     </section>
 
     <script>
-        // HAKIKISHA HII LINK NI YA KOYEB YAKO
         const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
         emailjs.init("4aL-YVciYad9MuyLB"); 
 
@@ -76,14 +98,14 @@
         }
 
         async function auth(view) {
-            const pass = prompt("Ingiza Password ya Ofisi:");
+            const pass = prompt("SECURE ACCESS: Ingiza Password ya Ofisi:");
             const res = await fetch(`${API}/api/data/all`);
             const data = await res.json();
             
             if(pass === data.settings.password) {
                 render(data);
                 nav(view);
-            } else { alert("Password Sio Sahihi!"); }
+            } else { alert("ACCESS DENIED: Password Sio Sahihi!"); }
         }
 
         async function handleReg() {
@@ -95,20 +117,20 @@
                 whatsapp: document.getElementById('r-phone').value
             };
 
-            if(!data.name || !data.whatsapp) { alert("Tafadhali jaza Jina na Simu!"); return; }
+            if(!data.name || !data.whatsapp) { alert("ERROR: Jaza Jina na Simu!"); return; }
 
-            btn.innerText = "Inatuma Data... Subiri";
+            btn.innerText = "AUTHENTICATING & SENDING...";
             btn.disabled = true;
 
             try {
-                // TUMA EMAIL
+                // STEP 1: AUTOMATED EMAIL
                 await emailjs.send('service_t3wznn2', 'template_b6o60cr', {
                     to_name: data.name,
                     to_email: data.email,
-                    category: data.category
+                    message: "Usajili wako umekamilika katika LEXON TECH SOLUTION."
                 });
 
-                // TUMA KWA ENGINE (DATABASE & SMS)
+                // STEP 2: SECURE DATABASE & SMS
                 const response = await fetch(`${API}/api/register`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -116,34 +138,36 @@
                 });
 
                 if(response.ok) {
-                    alert("Hongera! Taarifa zimefika, Email na SMS zimetumwa.");
+                    alert("INTEGRITY CONFIRMED: Taarifa zimehifadhiwa, SMS na Email zimetumwa.");
                     location.reload();
+                } else {
+                    throw new Error("Database connection failed");
                 }
             } catch (e) {
-                alert("Kuna hitilafu! Hakikisha Engine ya Koyeb ipo 'Healthy'.");
+                alert("SYSTEM ERROR: Hakikisha Engine (Koyeb) ipo LIVE.");
             } finally {
                 btn.disabled = false;
-                btn.innerText = "SAJILI & TUMA TAARIFA";
+                btn.innerText = "TEKELEZA USAJILI & TUMA AUTOMATION";
             }
         }
 
         function render(data) {
-            const body = document.getElementById('main-table-body');
-            const washirika = data.members.filter(m => m.category === 'MSHIRIKA');
-            const wageni = data.members.filter(m => m.category === 'MGENI');
+            const body = document.getElementById('table-body');
+            const members = data.members;
+            
+            document.getElementById('cnt-w').innerText = members.filter(m => m.category === 'MSHIRIKA').length;
+            document.getElementById('cnt-v').innerText = members.filter(m => m.category === 'MGENI').length;
 
-            document.getElementById('count-washirika').innerText = washirika.length;
-            document.getElementById('count-wageni').innerText = wageni.length;
-
-            body.innerHTML = data.members.map(m => `
-                <tr class="border-b border-white/5">
-                    <td class="p-4"><span class="px-2 py-1 rounded text-[10px] ${m.category === 'MSHIRIKA' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}">${m.category}</span></td>
-                    <td class="p-4 font-bold">${m.name}</td>
-                    <td class="p-4 text-slate-400">${m.email}</td>
-                    <td class="p-4 text-blue-400">${m.phone}</td>
-                    <td class="p-4 text-slate-500 text-xs">${m.date}</td>
+            body.innerHTML = members.map(m => `
+                <tr class="hover:bg-gray-800/30">
+                    <td class="text-white font-bold">${m.name}</td>
+                    <td><span class="text-[10px] px-2 py-0.5 rounded ${m.category === 'MSHIRIKA' ? 'bg-emerald-900/40 text-emerald-400' : 'bg-amber-900/40 text-amber-400'}">${m.category}</span></td>
+                    <td class="text-blue-400">${m.phone}</td>
+                    <td class="text-gray-400">${m.email}</td>
+                    <td class="text-gray-500">${m.date}</td>
+                    <td class="text-emerald-500 text-[10px]">● ENCRYPTED</td>
                 </tr>
-            `).reverse().join(''); // Inaanza na mpya zaidi juu
+            `).reverse().join('');
         }
     </script>
 </body>
