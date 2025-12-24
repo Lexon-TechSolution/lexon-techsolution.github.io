@@ -2,94 +2,105 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <title>GGC ERP ULTIMATE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEXON TECH SOLUTION | ERP v105</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { background: #020617; color: #f8fafc; font-family: sans-serif; }
-        .office-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 15px; padding: 25px; }
-        .hidden { display: none; }
-        .input-v { background: #1e293b; border: 1px solid #334155; padding: 12px; width: 100%; border-radius: 8px; color: white; margin-bottom: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #020617; color: #f8fafc; overflow-x: hidden; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
+        .input-v { background: #1e293b; border: 1px solid #334155; padding: 14px; border-radius: 12px; width: 100%; color: white; margin-bottom: 12px; outline: none; }
+        .btn-master { background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 16px; border-radius: 12px; font-weight: 800; width: 100%; color: white; cursor: pointer; text-transform: uppercase; border: none; }
+        .hidden { display: none !important; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        td { padding: 15px; background: #0f172a; border-radius: 8px; font-size: 13px; }
+        th { padding: 10px; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748b; }
+        .trash-btn { color: #ef4444; font-size: 11px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
-<body class="p-5 md:p-10">
-    <nav class="flex justify-between items-center mb-10 border-b border-white/10 pb-5">
-        <h1 id="sys-title" class="text-2xl font-black text-blue-500 italic">GGC ERP</h1>
-        <div class="flex gap-4">
-            <button onclick="show('reg')" class="text-xs font-bold uppercase">Registration</button>
-            <button onclick="show('adm')" class="text-xs font-bold uppercase text-emerald-400">Admission</button>
-            <button onclick="show('fin')" class="text-xs font-bold uppercase text-amber-400">Finance Office</button>
-            <button onclick="show('set')" class="text-xs font-bold uppercase text-slate-400">Settings</button>
+<body class="p-4 md:p-8">
+
+    <nav class="max-w-[1400px] mx-auto flex justify-between items-center mb-10 pb-6 border-b border-white/5">
+        <div>
+            <h1 class="text-2xl font-black italic">LEXON <span class="text-blue-500">TECH</span></h1>
+            <p id="sys-status" class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest">Active: NextSMS & SQLite ✅</p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+            <button onclick="show('reg')" class="px-4 py-2 text-[10px] font-bold uppercase bg-white/5 rounded-lg">Usajili</button>
+            <button onclick="auth('poster')" class="px-4 py-2 text-[10px] font-bold uppercase bg-blue-500/10 text-blue-400 rounded-lg">Poster Office</button>
+            <button onclick="auth('finance')" class="px-4 py-2 text-[10px] font-bold uppercase bg-amber-500/10 text-amber-400 rounded-lg">Finance Office</button>
+            <button onclick="auth('settings')" class="px-4 py-2 text-[10px] font-bold uppercase bg-slate-500/10 text-slate-400 rounded-lg">Settings</button>
         </div>
     </nav>
 
-    <section id="off-reg" class="max-w-xl mx-auto office-card">
-        <h2 class="text-xl font-bold mb-5">USAJILI WA MSHIRIKA</h2>
-        <select id="r-cat" class="input-v"><option>MSHIRIKA</option><option>MGENI</option></select>
-        <input type="text" id="r-name" placeholder="Jina Kamili" class="input-v">
-        <input type="email" id="r-email" placeholder="Email" class="input-v">
-        <input type="tel" id="r-phone" placeholder="Simu (255...)" class="input-v">
-        <button onclick="saveMember()" class="bg-blue-600 w-full p-3 rounded font-bold">KAMILISHA</button>
-    </section>
+    <div class="max-w-[1400px] mx-auto">
 
-    <section id="off-adm" class="hidden office-card">
-        <h2 class="text-xl font-bold mb-5 text-emerald-400">ADMISSION RECORDS</h2>
-        <table class="w-full text-left text-sm">
-            <thead><tr class="text-slate-500"><th>ID</th><th>JINA</th><th>JAMII</th><th>TAREHE</th></tr></thead>
-            <tbody id="adm-data"></tbody>
-        </table>
-    </section>
+        <section id="view-reg" class="max-w-2xl mx-auto glass p-8">
+            <h2 class="text-2xl font-black mb-6 text-center">USAJILI WA MSHIRIKA / MGENI</h2>
+            <select id="r-cat" class="input-v"><option value="MSHIRIKA">MSHIRIKA (Member)</option><option value="MGENI">MGENI (Visitor)</option></select>
+            <input type="text" id="r-name" placeholder="Jina Kamili" class="input-v">
+            <input type="email" id="r-email" placeholder="Email Address" class="input-v">
+            <input type="tel" id="r-phone" placeholder="Simu (255...)" class="input-v">
+            <button onclick="handleReg()" id="reg-btn" class="btn-master">Kamilisha Usajili</button>
+            
+            <div class="mt-12 pt-8 border-t border-white/5">
+                <h3 class="font-bold text-blue-400 mb-4 uppercase text-sm">Tuma Ushuhuda (Miracle Form)</h3>
+                <input type="text" id="m-name" placeholder="Jina Lako" class="input-v">
+                <textarea id="m-text" placeholder="Andika ushuhuda wako hapa..." class="input-v h-24"></textarea>
+                <button onclick="handleMiracle()" class="text-xs font-bold bg-white/5 px-6 py-2 rounded-full">Tuma Ushuhuda</button>
+            </div>
+        </section>
 
-    <section id="off-fin" class="hidden office-card border-l-4 border-amber-500">
-        <h2 class="text-xl font-bold mb-5 text-amber-400">FINANCE OFFICE</h2>
-        <div class="grid grid-cols-2 gap-4 mb-5">
-            <input type="text" id="f-name" placeholder="Maelezo (Mf: Sadaka)" class="input-v">
-            <input type="number" id="f-amt" placeholder="Kiasi" class="input-v">
-            <select id="f-type" class="input-v"><option>MAPATO</option><option>MATUMIZI</option></select>
-            <button onclick="saveFinance()" class="bg-amber-600 p-3 rounded font-bold">REKODI FEDHA</button>
-        </div>
-        <table class="w-full text-left text-sm">
-            <thead><tr class="text-slate-500"><th>MAELEZO</th><th>KIASI</th><th>AINA</th></tr></thead>
-            <tbody id="fin-data"></tbody>
-        </table>
-    </section>
+        <section id="view-poster" class="hidden space-y-8">
+            <div class="flex justify-between items-center">
+                <h2 class="text-3xl font-black text-blue-500">POSTER OFFICE</h2>
+                <button onclick="location.reload()" class="text-xs font-bold underline">Logout</button>
+            </div>
 
-    <section id="off-set" class="hidden office-card">
-        <h2 class="text-xl font-bold mb-5">SYSTEM SETTINGS</h2>
-        <input type="text" id="s-title" placeholder="Jina la Mfumo/Post" class="input-v">
-        <input type="password" id="s-pass" placeholder="Password Mpya" class="input-v">
-        <button class="bg-slate-600 w-full p-3 rounded font-bold">UPDATE SETTINGS</button>
-    </section>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 text-emerald-400 uppercase text-xs">Orodha ya Washirika</h3>
+                    <div class="overflow-x-auto h-72">
+                        <table>
+                            <thead><tr><th>ID</th><th>Jina</th><th>Simu</th><th>Action</th></tr></thead>
+                            <tbody id="washirika-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 text-amber-400 uppercase text-xs">Orodha ya Wageni</h3>
+                    <div class="overflow-x-auto h-72">
+                        <table>
+                            <thead><tr><th>ID</th><th>Jina</th><th>Simu</th><th>Action</th></tr></thead>
+                            <tbody id="wageni-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 text-purple-400 uppercase text-xs">Miracle Records</h3>
+                    <div id="poster-miracles" class="space-y-4 h-64 overflow-y-auto"></div>
+                </div>
+                <div class="glass p-6">
+                    <h3 class="font-bold mb-4 text-blue-400 uppercase text-xs">Sermon Archive (Masomo)</h3>
+                    <div id="sermon-list" class="space-y-4 h-64 overflow-y-auto"></div>
+                </div>
+            </div>
+        </section>
 
-    <script>
-        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+        <section id="view-finance" class="hidden space-y-8">
+            <div class="flex justify-between items-center">
+                <h2 class="text-3xl font-black text-amber-500 uppercase">Finance Office</h2>
+                <button onclick="downloadPDF()" class="bg-white/10 px-6 py-2 rounded-full text-xs font-bold">Download PDF Report</button>
+            </div>
 
-        function show(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById('off-' + id).classList.remove('hidden');
-            if(id === 'adm' || id === 'fin') loadAll();
-        }
-
-        async function saveMember() {
-            const data = {category:document.getElementById('r-cat').value, name:document.getElementById('r-name').value, email:document.getElementById('r-email').value, whatsapp:document.getElementById('r-phone').value};
-            await fetch(`${API}/api/register`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
-            alert("Mshirika Amesajiliwa!");
-        }
-
-        async function saveFinance() {
-            const data = {name:document.getElementById('f-name').value, amount:document.getElementById('f-amt').value, type:document.getElementById('f-type').value};
-            await fetch(`${API}/api/finance/add`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
-            loadAll();
-        }
-
-        async function loadAll() {
-            const res = await fetch(`${API}/api/admin/all`);
-            const d = await res.json();
-            document.getElementById('adm-data').innerHTML = d.members.map(m => `<tr><td>#${m.id}</td><td>${m.name}</td><td>${m.category}</td><td>${m.date}</td></tr>`).join('');
-            document.getElementById('fin-data').innerHTML = d.finance.map(f => `<tr><td>${f.name}</td><td>${f.amount}</td><td>${f.type}</td></tr>`).join('');
-            document.getElementById('sys-title').innerText = d.settings.title;
-        }
-
-        window.onload = loadAll;
-    </script>
-</body>
-</html>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass p-6 md:col-span-1">
+                    <h3 class="font-bold mb-4">Ingiza Muamala</h3>
+                    <select id="f-type" class="input-v">
+                        <option value="SADAKA">Sadaka</option>
+                        <option value="FUNGU LA KUMI">Fungu la Kumi</option>
+                        <option value="EXPENSE">Matumizi (Expense)</option>
+                    </select>
+                    <input type="text" id="f-donor" placeholder="Jina la M
