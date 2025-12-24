@@ -11,22 +11,28 @@ CORS(app)
 
 DB_NAME = "lexon_erp.db"
 
-# --- NEXTSMS CONFIG ---
+# --- NEXTSMS CONFIG (REAL SMS) ---
 NEXTSMS_USER = "lexon_tech" 
-NEXTSMS_PASS = "Yako_Hapa"   
+NEXTSMS_PASS = "Weka_Password_Yako"   
 NEXTSMS_SENDER = "SMART_SMS"
 
 def send_nextsms(phone, message):
-    url = "https://messaging-service.co.tz/api/sms/v1/test/single"
+    # Live URL ya NextSMS
+    url = "https://messaging-service.co.tz/api/sms/v1/send/single"
     auth_str = f"{NEXTSMS_USER}:{NEXTSMS_PASS}"
     encoded_auth = base64.b64encode(auth_str.encode()).decode()
     headers = {
         'Authorization': f'Basic {encoded_auth}',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
     }
-    payload = {"from": NEXTSMS_SENDER, "to": phone, "text": message}
+    # Hakikisha namba inaanza na 255
+    clean_phone = phone.strip()
+    if clean_phone.startswith('0'): clean_phone = '255' + clean_phone[1:]
+    
+    payload = {"from": NEXTSMS_SENDER, "to": clean_phone, "text": message}
     try:
-        requests.post(url, json=payload, headers=headers, timeout=5)
+        requests.post(url, json=payload, headers=headers, timeout=10)
     except:
         pass
 
@@ -43,22 +49,24 @@ def init_db():
 
 init_db()
 
-# --- KOYEB HEALTH CHECK ROUTE (MUHIMU SANA) ---
 @app.route('/', methods=['GET'])
-def home():
-    return "LEXON ENGINE IS LIVE ✅", 200
+def health():
+    return "LEXON TECH ERP ENGINE: ONLINE ✅", 200
 
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
+    name, phone = data.get('name'), data.get('whatsapp')
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('INSERT INTO members (category, name, email, phone, date) VALUES (?, ?, ?, ?, ?)',
-                   (data['category'], data['name'], data['email'], data['whatsapp'], datetime.now().strftime("%d/%m/%Y")))
+                   (data['category'], name, data['email'], phone, datetime.now().strftime("%d/%m/%Y")))
     conn.commit()
     conn.close()
-    # NextSMS
-    send_nextsms(data['whatsapp'], f"SHALOM {data['name']}! Karibu LEXON TECH ERP.")
+    
+    # REAL SMS TRIGGER
+    msg = f"SHALOM {name}! Usajili wako LEXON TECH ERP umekamilika. Karibu."
+    send_nextsms(phone, msg)
     return jsonify({"status": "success"}), 200
 
 @app.route('/api/finance/add', methods=['POST'])
