@@ -2,112 +2,106 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEXON TECH SOLUTION | FINAL SYSTEM</title>
+    <title>LEXON TECH ERP | VISION 120</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { background: #010409; font-family: 'Inter', sans-serif; color: #e6edf3; }
-        .glass-card { background: rgba(13, 17, 23, 0.8); border: 1px solid #30363d; border-radius: 12px; }
-        .input-field { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px; width: 100%; color: white; outline: none; }
-        .input-field:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1); }
+        .active-tab { border-bottom: 4px solid #3b82f6; color: white; }
+        .office-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="bg-[#0d1117] text-gray-200">
 
-    <div class="max-w-md w-full glass-card p-8 shadow-2xl">
-        <div class="text-center mb-8">
-            <h2 class="text-2xl font-bold tracking-tight">LEXON TECH <span class="text-blue-500">ERP</span></h2>
-            <p class="text-gray-500 text-sm mt-1">Mfumo wa Usajili - Version 3.0</p>
+    <nav class="bg-[#161b22] border-b border-gray-800 p-4 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="font-bold text-xl text-blue-500">LEXON ERP</h1>
+            <div class="flex space-x-6 text-sm font-bold">
+                <button onclick="showTab('reg')" id="tab-reg" class="pb-2 active-tab">USAJILI</button>
+                <button onclick="showTab('poster')" id="tab-poster" class="pb-2">POSTER OFFICE</button>
+                <button onclick="showTab('finance')" id="tab-finance" class="pb-2">FINANCE</button>
+            </div>
         </div>
+    </nav>
 
-        <div class="space-y-5">
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Chagua Kundi</label>
-                <select id="r-cat" class="input-field cursor-pointer">
-                    <option value="MSHIRIKA">MSHIRIKA (MEMBER)</option>
-                    <option value="MGENI">MGENI (VISITOR)</option>
-                </select>
+    <div class="max-w-5xl mx-auto p-6">
+        <section id="sec-reg" class="space-y-6">
+            <div class="max-w-md mx-auto office-card p-8">
+                <h2 class="text-xl font-bold mb-6 text-center">Fomu ya Usajili LIVE</h2>
+                <div class="space-y-4">
+                    <select id="r-cat" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
+                        <option value="MSHIRIKA">MSHIRIKA (MEMBER)</option>
+                        <option value="MGENI">MGENI (VISITOR)</option>
+                    </select>
+                    <input type="text" id="r-name" placeholder="Jina Kamili" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
+                    <input type="email" id="r-email" placeholder="Barua Pepe" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
+                    <input type="tel" id="r-phone" placeholder="Namba ya Simu" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
+                    <button onclick="submitData()" id="btn" class="w-full bg-blue-600 p-4 rounded-lg font-bold">KAMILISHA USAJILI</button>
+                </div>
             </div>
+        </section>
 
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Jina Kamili</label>
-                <input type="text" id="r-name" placeholder="Mfn: Juma Hamisi" class="input-field">
+        <section id="sec-poster" class="hidden">
+            <div class="office-card p-6">
+                <h2 class="text-xl font-bold mb-4">Poster Office: Orodha ya Waliojisajili</h2>
+                <table class="w-full text-left">
+                    <thead><tr class="border-b border-gray-700 text-gray-400"><th>JINA</th><th>CATEGORY</th><th>SIMU</th></tr></thead>
+                    <tbody id="poster-list"></tbody>
+                </table>
             </div>
+        </section>
 
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Barua Pepe</label>
-                <input type="email" id="r-email" placeholder="mfano@gmail.com" class="input-field">
+        <section id="sec-finance" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="office-card p-6 text-center"><p class="text-gray-400">Mapato Tarajiwa</p><h3 class="text-3xl font-bold text-green-500">TSH 0.00</h3></div>
+                <div class="office-card p-6 text-center"><p class="text-gray-400">Jumla ya Washirika</p><h3 id="count-m" class="text-3xl font-bold text-blue-500">0</h3></div>
+                <div class="office-card p-6 text-center"><p class="text-gray-400">Jumla ya Wageni</p><h3 id="count-v" class="text-3xl font-bold text-orange-500">0</h3></div>
             </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Namba ya Simu (WhatsApp)</label>
-                <input type="tel" id="r-phone" placeholder="2557XXXXXXXX" class="input-field">
-            </div>
-
-            <button onclick="tekelezaUsajili()" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 shadow-lg">
-                KAMILISHA USAJILI
-            </button>
-        </div>
-
-        <div class="mt-6 pt-6 border-t border-gray-800 text-center text-[10px] text-gray-500 uppercase tracking-widest">
-            Supabase Connected | SMS Enabled
-        </div>
+        </section>
     </div>
 
     <script>
-        // --- 1. CONFIGURATION ---
-        emailjs.init("4aL-YVciYad9MuyLB"); // Public Key yako
-        const KOYEB_API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+        emailjs.init("4aL-YVciYad9MuyLB");
 
-        async function tekelezaUsajili() {
-            const btn = document.getElementById('mainBtn');
+        function showTab(tab) {
+            ['reg', 'poster', 'finance'].forEach(t => {
+                document.getElementById('sec-' + t).classList.add('hidden');
+                document.getElementById('tab-' + t).classList.remove('active-tab');
+            });
+            document.getElementById('sec-' + tab).classList.remove('hidden');
+            document.getElementById('tab-' + tab).classList.add('active-tab');
+            if(tab !== 'reg') fetchOfficeData();
+        }
+
+        async function submitData() {
+            const btn = document.getElementById('btn');
             const data = {
                 category: document.getElementById('r-cat').value,
                 name: document.getElementById('r-name').value,
                 email: document.getElementById('r-email').value,
                 whatsapp: document.getElementById('r-phone').value
             };
-
-            // Validations
-            if (!data.name || !data.whatsapp) {
-                alert("Tafadhali jaza Jina na Simu!");
-                return;
-            }
-
-            btn.innerText = "INASINDIKA...";
-            btn.disabled = true;
-
+            btn.innerText = "Processing..."; btn.disabled = true;
             try {
-                // --- 2. EMAILJS (Template ID & Service ID yako) ---
-                await emailjs.send('service_bd4djzs', 'template_a5f74dr', {
-                    to_name: data.name,
-                    to_email: data.email
-                });
+                await emailjs.send('service_bd4djzs', 'template_a5f74dr', {to_name: data.name, to_email: data.email});
+                const res = await fetch(`${API}/api/register`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+                if(res.ok) alert("Imekamilika! Data ipo Supabase.");
+            } catch(e) { alert("Error: " + e); }
+            finally { btn.innerText = "KAMILISHA USAJILI"; btn.disabled = false; }
+        }
 
-                // --- 3. BACKEND (Koyeb -> Supabase + NextSMS) ---
-                const response = await fetch(`${KOYEB_API}/api/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert(`MAFANIKIO!\nImehifadhiwa kwenye Table ya: ${result.table}\nEmail na SMS zimetumwa.`);
-                    window.location.reload();
-                } else {
-                    throw new Error(result.message);
-                }
-
-            } catch (error) {
-                console.error(error);
-                alert("HITILAFU: " + error.message);
-            } finally {
-                btn.innerText = "KAMILISHA USAJILI";
-                btn.disabled = false;
-            }
+        async function fetchOfficeData() {
+            const res = await fetch(`${API}/api/data/all`);
+            const data = await res.json();
+            const list = document.getElementById('poster-list');
+            list.innerHTML = "";
+            let mCount = 0, vCount = 0;
+            data.forEach(row => {
+                list.innerHTML += `<tr class='border-b border-gray-800 p-2'><td>${row.jina}</td><td>${row.cat}</td><td>${row.simu}</td></tr>`;
+                if(row.cat === 'MSHIRIKA') mCount++; else vCount++;
+            });
+            document.getElementById('count-m').innerText = mCount;
+            document.getElementById('count-v').innerText = vCount;
         }
     </script>
 </body>
