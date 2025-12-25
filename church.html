@@ -3,51 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEXON TECH SOLUTION | ERP FINAL</title>
+    <title>LEXON TECH SOLUTION | FINAL SYSTEM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        body { background: #010409; font-family: ui-sans-serif, system-ui; }
-        .glass { background: rgba(13, 17, 23, 0.9); border: 1px solid #30363d; border-radius: 16px; }
-        .input-box { background: #161b22; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; transition: 0.3s; }
-        .input-box:focus { border-color: #58a6ff; box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.1); }
+        body { background: #010409; font-family: 'Inter', sans-serif; color: #e6edf3; }
+        .glass-card { background: rgba(13, 17, 23, 0.8); border: 1px solid #30363d; border-radius: 12px; }
+        .input-field { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px; width: 100%; color: white; outline: none; }
+        .input-field:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1); }
     </style>
 </head>
-<body class="p-4 md:p-10 flex flex-col items-center">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-lg glass p-8 shadow-2xl">
+    <div class="max-w-md w-full glass-card p-8 shadow-2xl">
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-white tracking-tight">LEXON TECH <span class="text-blue-500">ERP</span></h1>
-            <p class="text-xs text-gray-500 uppercase mt-2">Final Submission Mode | Secure Data</p>
+            <h2 class="text-2xl font-bold tracking-tight">LEXON TECH <span class="text-blue-500">ERP</span></h2>
+            <p class="text-gray-500 text-sm mt-1">Mfumo wa Usajili - Version 3.0</p>
         </div>
 
-        <div class="space-y-4">
+        <div class="space-y-5">
             <div>
-                <label class="text-[10px] text-gray-500 font-bold ml-1">KUNDI</label>
-                <select id="r-cat" class="input-box">
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Chagua Kundi</label>
+                <select id="r-cat" class="input-field cursor-pointer">
                     <option value="MSHIRIKA">MSHIRIKA (MEMBER)</option>
                     <option value="MGENI">MGENI (VISITOR)</option>
                 </select>
             </div>
-            <input type="text" id="r-name" placeholder="Jina Kamili" class="input-box">
-            <input type="email" id="r-email" placeholder="Barua Pepe (Email)" class="input-box">
-            <input type="tel" id="r-phone" placeholder="Simu (255...)" class="input-box">
-            
-            <button onclick="tekelezaUsajili()" id="btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/20">
-                WASILISHA USAJILI LIVE
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Jina Kamili</label>
+                <input type="text" id="r-name" placeholder="Mfn: Juma Hamisi" class="input-field">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Barua Pepe</label>
+                <input type="email" id="r-email" placeholder="mfano@gmail.com" class="input-field">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase">Namba ya Simu (WhatsApp)</label>
+                <input type="tel" id="r-phone" placeholder="2557XXXXXXXX" class="input-field">
+            </div>
+
+            <button onclick="tekelezaUsajili()" id="mainBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 shadow-lg">
+                KAMILISHA USAJILI
             </button>
         </div>
-        
-        <p class="text-center text-[10px] text-gray-600 mt-6 italic">System Status: Connected to Supabase & NextSMS</p>
+
+        <div class="mt-6 pt-6 border-t border-gray-800 text-center text-[10px] text-gray-500 uppercase tracking-widest">
+            Supabase Connected | SMS Enabled
+        </div>
     </div>
 
     <script>
-        // TAARIFA ZAKO ULIZOTOA
-        emailjs.init("4aL-YVciYad9MuyLB"); 
-        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app"; 
+        // --- 1. CONFIGURATION ---
+        emailjs.init("4aL-YVciYad9MuyLB"); // Public Key yako
+        const KOYEB_API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
 
         async function tekelezaUsajili() {
-            const btn = document.getElementById('btn');
+            const btn = document.getElementById('mainBtn');
             const data = {
                 category: document.getElementById('r-cat').value,
                 name: document.getElementById('r-name').value,
@@ -55,40 +69,44 @@
                 whatsapp: document.getElementById('r-phone').value
             };
 
-            if(!data.name || !data.whatsapp) {
-                alert("Tafadhali jaza Jina na Namba ya Simu!");
+            // Validations
+            if (!data.name || !data.whatsapp) {
+                alert("Tafadhali jaza Jina na Simu!");
                 return;
             }
 
-            btn.innerText = "AUTHENTICATING...";
+            btn.innerText = "INASINDIKA...";
             btn.disabled = true;
 
             try {
-                // 1. Tuma Email (EmailJS) - Service & Template IDs zako
+                // --- 2. EMAILJS (Template ID & Service ID yako) ---
                 await emailjs.send('service_bd4djzs', 'template_a5f74dr', {
                     to_name: data.name,
                     to_email: data.email
                 });
 
-                // 2. Tuma kwa Engine (Hifadhi Supabase + Tuma SMS)
-                const res = await fetch(`${API}/api/register`, {
+                // --- 3. BACKEND (Koyeb -> Supabase + NextSMS) ---
+                const response = await fetch(`${KOYEB_API}/api/register`, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
-                if(res.ok) {
-                    alert("KAZI IMEKAMILIKA!\n1. Data imehifadhiwa Supabase\n2. Email imetumwa\n3. SMS imetumwa");
-                    location.reload();
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`MAFANIKIO!\nImehifadhiwa kwenye Table ya: ${result.table}\nEmail na SMS zimetumwa.`);
+                    window.location.reload();
                 } else {
-                    throw new Error("Engine response error");
+                    throw new Error(result.message);
                 }
 
-            } catch (e) {
-                alert("HITILAFU: Hakikisha umeweka 'members' table kule Supabase.");
+            } catch (error) {
+                console.error(error);
+                alert("HITILAFU: " + error.message);
             } finally {
+                btn.innerText = "KAMILISHA USAJILI";
                 btn.disabled = false;
-                btn.innerText = "WASILISHA USAJILI LIVE";
             }
         }
     </script>
