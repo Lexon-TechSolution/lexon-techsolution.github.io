@@ -3,113 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEXON TECH SOLUTION | ERP SECURE</title>
+    <title>LEXON TECH SOLUTION | ERP FINAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-        body { background: #010409; color: #c9d1d9; font-family: 'JetBrains Mono', monospace; }
-        .secure-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; transition: 0.4s; }
-        .secure-card:hover { border-color: #58a6ff; }
-        .input-field { background: #161b22; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 6px; width: 100%; outline: none; }
-        .input-field:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1); }
-        .btn-primary { background: #238636; color: white; font-weight: bold; padding: 12px; border-radius: 6px; width: 100%; transition: 0.3s; }
-        .btn-primary:hover { background: #2ea043; }
-        .hidden { display: none !important; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: #161b22; padding: 12px; text-align: left; font-size: 12px; border: 1px solid #30363d; color: #8b949e; }
-        td { padding: 12px; border: 1px solid #30363d; font-size: 13px; }
+        body { background: #010409; font-family: ui-sans-serif, system-ui; }
+        .glass { background: rgba(13, 17, 23, 0.9); border: 1px solid #30363d; border-radius: 16px; }
+        .input-box { background: #161b22; border: 1px solid #30363d; color: white; padding: 12px; border-radius: 8px; width: 100%; outline: none; transition: 0.3s; }
+        .input-box:focus { border-color: #58a6ff; box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.1); }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-10 flex flex-col items-center">
 
-    <header class="max-w-6xl mx-auto flex justify-between items-center mb-12 border-b border-gray-800 pb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-white tracking-widest">LEXON TECH <span class="text-blue-500 text-sm">SECURE ERP</span></h1>
-            <p class="text-[10px] text-gray-500 uppercase tracking-tighter italic">Data Integrity & Automated Systems</p>
+    <div class="w-full max-w-lg glass p-8 shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-white tracking-tight">LEXON TECH <span class="text-blue-500">ERP</span></h1>
+            <p class="text-xs text-gray-500 uppercase mt-2">Final Submission Mode | Secure Data</p>
         </div>
-        <div class="flex gap-4">
-            <button onclick="nav('reg')" class="text-xs hover:text-white">REGISTRATION</button>
-            <button onclick="auth('poster')" class="text-xs bg-blue-900/30 text-blue-400 border border-blue-500/30 px-4 py-2 rounded-full">POSTER OFFICE</button>
-        </div>
-    </header>
 
-    <section id="view-reg" class="max-w-lg mx-auto secure-card p-8 shadow-2xl">
-        <div class="mb-8 text-center border-b border-gray-800 pb-4">
-            <h2 class="text-xl font-bold text-white">SAJILI TAARIFA LIVE</h2>
-            <p class="text-xs text-gray-400 mt-2">Usajili unaji-automate na SMS na Email papo hapo.</p>
-        </div>
-        
-        <div class="space-y-5">
+        <div class="space-y-4">
             <div>
-                <label class="text-[10px] text-gray-500 block mb-1">KUNDI LA USAJILI</label>
-                <select id="r-cat" class="input-field">
+                <label class="text-[10px] text-gray-500 font-bold ml-1">KUNDI</label>
+                <select id="r-cat" class="input-box">
                     <option value="MSHIRIKA">MSHIRIKA (MEMBER)</option>
                     <option value="MGENI">MGENI (VISITOR)</option>
                 </select>
             </div>
-            <input type="text" id="r-name" placeholder="Jina Kamili" class="input-field">
-            <input type="email" id="r-email" placeholder="Barua Pepe (Email)" class="input-field">
-            <input type="tel" id="r-phone" placeholder="Simu (255...)" class="input-field">
+            <input type="text" id="r-name" placeholder="Jina Kamili" class="input-box">
+            <input type="email" id="r-email" placeholder="Barua Pepe (Email)" class="input-box">
+            <input type="tel" id="r-phone" placeholder="Simu (255...)" class="input-box">
             
-            <button onclick="handleReg()" id="reg-btn" class="btn-primary">TEKELEZA USAJILI & TUMA AUTOMATION</button>
+            <button onclick="tekelezaUsajili()" id="btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-900/20">
+                WASILISHA USAJILI LIVE
+            </button>
         </div>
-    </section>
-
-    <section id="view-poster" class="hidden max-w-6xl mx-auto">
-        <div class="flex justify-between items-end mb-6">
-            <h2 class="text-2xl font-bold text-blue-400 uppercase">Poster Office Records</h2>
-            <div class="flex gap-6">
-                <div class="text-center">
-                    <p class="text-[9px] text-gray-500">WASHIRIKA</p>
-                    <p id="cnt-w" class="text-xl font-bold text-emerald-500">0</p>
-                </div>
-                <div class="text-center">
-                    <p class="text-[9px] text-gray-500">WAGENI</p>
-                    <p id="cnt-v" class="text-xl font-bold text-amber-500">0</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="secure-card overflow-x-auto">
-            <table>
-                <thead>
-                    <tr>
-                        <th>JINA</th>
-                        <th>KUNDI</th>
-                        <th>SIMU</th>
-                        <th>EMAIL</th>
-                        <th>TAREHE</th>
-                        <th>STATUS</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
-        </div>
-    </section>
+        
+        <p class="text-center text-[10px] text-gray-600 mt-6 italic">System Status: Connected to Supabase & NextSMS</p>
+    </div>
 
     <script>
-        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
+        // TAARIFA ZAKO ULIZOTOA
         emailjs.init("4aL-YVciYad9MuyLB"); 
+        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app"; 
 
-        function nav(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById('view-' + id).classList.remove('hidden');
-        }
-
-        async function auth(view) {
-            const pass = prompt("SECURE ACCESS: Ingiza Password ya Ofisi:");
-            const res = await fetch(`${API}/api/data/all`);
-            const data = await res.json();
-            
-            if(pass === data.settings.password) {
-                render(data);
-                nav(view);
-            } else { alert("ACCESS DENIED: Password Sio Sahihi!"); }
-        }
-
-        async function handleReg() {
-            const btn = document.getElementById('reg-btn');
+        async function tekelezaUsajili() {
+            const btn = document.getElementById('btn');
             const data = {
                 category: document.getElementById('r-cat').value,
                 name: document.getElementById('r-name').value,
@@ -117,57 +55,41 @@
                 whatsapp: document.getElementById('r-phone').value
             };
 
-            if(!data.name || !data.whatsapp) { alert("ERROR: Jaza Jina na Simu!"); return; }
+            if(!data.name || !data.whatsapp) {
+                alert("Tafadhali jaza Jina na Namba ya Simu!");
+                return;
+            }
 
-            btn.innerText = "AUTHENTICATING & SENDING...";
+            btn.innerText = "AUTHENTICATING...";
             btn.disabled = true;
 
             try {
-                // STEP 1: AUTOMATED EMAIL
-                await emailjs.send('service_t3wznn2', 'template_b6o60cr', {
+                // 1. Tuma Email (EmailJS) - Service & Template IDs zako
+                await emailjs.send('service_bd4djzs', 'template_a5f74dr', {
                     to_name: data.name,
-                    to_email: data.email,
-                    message: "Usajili wako umekamilika katika LEXON TECH SOLUTION."
+                    to_email: data.email
                 });
 
-                // STEP 2: SECURE DATABASE & SMS
-                const response = await fetch(`${API}/api/register`, {
+                // 2. Tuma kwa Engine (Hifadhi Supabase + Tuma SMS)
+                const res = await fetch(`${API}/api/register`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
 
-                if(response.ok) {
-                    alert("INTEGRITY CONFIRMED: Taarifa zimehifadhiwa, SMS na Email zimetumwa.");
+                if(res.ok) {
+                    alert("KAZI IMEKAMILIKA!\n1. Data imehifadhiwa Supabase\n2. Email imetumwa\n3. SMS imetumwa");
                     location.reload();
                 } else {
-                    throw new Error("Database connection failed");
+                    throw new Error("Engine response error");
                 }
+
             } catch (e) {
-                alert("SYSTEM ERROR: Hakikisha Engine (Koyeb) ipo LIVE.");
+                alert("HITILAFU: Hakikisha umeweka 'members' table kule Supabase.");
             } finally {
                 btn.disabled = false;
-                btn.innerText = "TEKELEZA USAJILI & TUMA AUTOMATION";
+                btn.innerText = "WASILISHA USAJILI LIVE";
             }
-        }
-
-        function render(data) {
-            const body = document.getElementById('table-body');
-            const members = data.members;
-            
-            document.getElementById('cnt-w').innerText = members.filter(m => m.category === 'MSHIRIKA').length;
-            document.getElementById('cnt-v').innerText = members.filter(m => m.category === 'MGENI').length;
-
-            body.innerHTML = members.map(m => `
-                <tr class="hover:bg-gray-800/30">
-                    <td class="text-white font-bold">${m.name}</td>
-                    <td><span class="text-[10px] px-2 py-0.5 rounded ${m.category === 'MSHIRIKA' ? 'bg-emerald-900/40 text-emerald-400' : 'bg-amber-900/40 text-amber-400'}">${m.category}</span></td>
-                    <td class="text-blue-400">${m.phone}</td>
-                    <td class="text-gray-400">${m.email}</td>
-                    <td class="text-gray-500">${m.date}</td>
-                    <td class="text-emerald-500 text-[10px]">● ENCRYPTED</td>
-                </tr>
-            `).reverse().join('');
         }
     </script>
 </body>
