@@ -14,9 +14,6 @@ DB_URL = "postgresql://postgres:450e4afe47a7443098e20d290192f15d493658495864d273
 def get_db_connection():
     return psycopg2.connect(DB_URL)
 
-@app.route('/')
-def home(): return "LEXON ENGINE: READY ✅"
-
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -24,29 +21,31 @@ def register():
         conn = get_db_connection()
         cur = conn.cursor()
         
-        # Hapa tunachagua table sahihi
-        cat = data.get('category', '').upper()
+        # Pata Category (Default ni WAGENI kama haijaandikwa)
+        cat = str(data.get('category', 'WAGENI')).upper()
         target_table = "washirika" if cat == "MSHIRIKA" else "wageni"
         
-        # Kuingiza data kwenye column tulizotengeneza (jina, email, simu)
+        # Ingiza data kwa kutumia majina ya column ya Supabase (jina, email, simu)
         query = f"INSERT INTO {target_table} (jina, email, simu) VALUES (%s, %s, %s)"
-        cur.execute(query, (data['name'], data['email'], data['whatsapp']))
+        cur.execute(query, (data.get('name'), data.get('email'), data.get('whatsapp')))
         
         conn.commit()
         cur.close()
         conn.close()
         
-        # NextSMS Automation
-        auth_str = base64.b64encode(f"lexon_tech:Saidi1234@.".encode()).decode()
-        clean_phone = data['whatsapp'].strip()
-        if clean_phone.startswith('0'): clean_phone = '255' + clean_phone[1:]
-        
-        requests.post("https://messaging-service.co.tz/api/sms/v1/send/single", 
-                      json={"from": "SMART_SMS", "to": clean_phone, "text": f"Habari {data['name']}, usajili wako umekamilika Lexon Tech!"},
-                      headers={'Authorization': f'Basic {auth_str}', 'Content-Type': 'application/json'}, timeout=5)
-        
+        # SMS Automation
+        try:
+            auth_str = base64.b64encode(f"lexon_tech:Saidi1234@.".encode()).decode()
+            phone = str(data.get('whatsapp')).strip()
+            if phone.startswith('0'): phone = '255' + phone[1:]
+            requests.post("https://messaging-service.co.tz/api/sms/v1/send/single", 
+                          json={"from": "SMART_SMS", "to": phone, "text": f"Habari {data.get('name')}, usajili umekamilika!"},
+                          headers={'Authorization': f'Basic {auth_str}', 'Content-Type': 'application/json'}, timeout=5)
+        except: pass
+
         return jsonify({"status": "success", "table": target_table}), 200
     except Exception as e:
+        # Hapa ndipo tunazuia "undefined" - tunarudisha kosa halisi
         return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
