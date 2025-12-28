@@ -2,107 +2,131 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <title>LEXON TECH ERP | VISION 120</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GGC EXECUTIVE SYSTEM | LEXSON TECH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript"> (function() { emailjs.init("HylSZExeEt-yXlXPl"); })(); </script>
+
     <style>
-        .active-tab { border-bottom: 4px solid #3b82f6; color: white; }
-        .office-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; }
+        :root { --primary: #0f172a; --accent: #d4af37; --success: #10b981; --white: #ffffff; }
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: #333; }
+        #bg-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -1; filter: brightness(20%); object-fit: cover; }
+        .top-nav { background: rgba(15, 23, 42, 0.9); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
+        .menu-btn { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); padding: 8px 18px; border-radius: 50px; cursor: pointer; margin-left: 5px; font-weight: 600; }
+        .active-btn { background: var(--accent); color: var(--primary); font-weight: bold; }
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s; max-width: 1200px; margin: 0 auto; }
+        .active-section { display: block; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-top: 5px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .stat-box { background: white; padding: 15px; border-radius: 10px; text-align: center; border-bottom: 4px solid var(--accent); }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f4f4f4; color: var(--primary); }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; text-transform: uppercase; }
+        .btn-action:hover { opacity: 0.9; transform: scale(0.98); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
-<body class="bg-[#0d1117] text-gray-200">
+<body>
 
-    <nav class="bg-[#161b22] border-b border-gray-800 p-4 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="font-bold text-xl text-blue-500">LEXON ERP</h1>
-            <div class="flex space-x-6 text-sm font-bold">
-                <button onclick="showTab('reg')" id="tab-reg" class="pb-2 active-tab">USAJILI</button>
-                <button onclick="showTab('poster')" id="tab-poster" class="pb-2">POSTER OFFICE</button>
-                <button onclick="showTab('finance')" id="tab-finance" class="pb-2">FINANCE</button>
-            </div>
-        </div>
-    </nav>
+<video autoplay muted loop id="bg-video">
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-blue-circuit-board-447-large.mp4" type="video/mp4">
+</video>
 
-    <div class="max-w-5xl mx-auto p-6">
-        <section id="sec-reg" class="space-y-6">
-            <div class="max-w-md mx-auto office-card p-8">
-                <h2 class="text-xl font-bold mb-6 text-center">Fomu ya Usajili LIVE</h2>
-                <div class="space-y-4">
-                    <select id="r-cat" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
-                        <option value="MSHIRIKA">MSHIRIKA (MEMBER)</option>
-                        <option value="MGENI">MGENI (VISITOR)</option>
-                    </select>
-                    <input type="text" id="r-name" placeholder="Jina Kamili" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
-                    <input type="email" id="r-email" placeholder="Barua Pepe" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
-                    <input type="tel" id="r-phone" placeholder="Namba ya Simu" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg">
-                    <button onclick="submitData()" id="btn" class="w-full bg-blue-600 p-4 rounded-lg font-bold">KAMILISHA USAJILI</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="sec-poster" class="hidden">
-            <div class="office-card p-6">
-                <h2 class="text-xl font-bold mb-4">Poster Office: Orodha ya Waliojisajili</h2>
-                <table class="w-full text-left">
-                    <thead><tr class="border-b border-gray-700 text-gray-400"><th>JINA</th><th>CATEGORY</th><th>SIMU</th></tr></thead>
-                    <tbody id="poster-list"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="sec-finance" class="hidden">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="office-card p-6 text-center"><p class="text-gray-400">Mapato Tarajiwa</p><h3 class="text-3xl font-bold text-green-500">TSH 0.00</h3></div>
-                <div class="office-card p-6 text-center"><p class="text-gray-400">Jumla ya Washirika</p><h3 id="count-m" class="text-3xl font-bold text-blue-500">0</h3></div>
-                <div class="office-card p-6 text-center"><p class="text-gray-400">Jumla ya Wageni</p><h3 id="count-v" class="text-3xl font-bold text-orange-500">0</h3></div>
-            </div>
-        </section>
+<header class="top-nav">
+    <h1 style="color:var(--accent); margin:0;">GGC <span style="color:white">FAMILY</span></h1>
+    <div>
+        <button onclick="showSection('registration')" id="nav-reg" class="menu-btn active-btn">USAJILI</button>
+        <button onclick="openLogin('mtumishi')" id="nav-mtu" class="menu-btn">MTUMISHI</button>
+        <button onclick="openLogin('finance')" id="nav-fin" class="menu-btn">FINANCE</button>
     </div>
+</header>
 
-    <script>
-        const API = "https://continuing-tobye-lexontechsolution-66201c02.koyeb.app";
-        emailjs.init("4aL-YVciYad9MuyLB");
+<div class="section active-section" id="registration">
+    <div class="grid">
+        <div class="glass-card">
+            <h3>📋 Usajili wa Waumini / Wageni</h3>
+            <form id="regForm">
+                <input type="text" id="jina" placeholder="Jina Kamili" required>
+                <input type="tel" id="simu" placeholder="Namba ya Simu (07xxxxxxxx)" required>
+                <input type="email" id="email" placeholder="Barua Pepe" required>
+                <select id="aina"><option>Mshirika</option><option>Mgeni</option></select>
+                <button type="submit" class="btn-action" style="background:var(--primary); color:white;">SAJILI & TUMA SMS</button>
+            </form>
+        </div>
+        <div class="glass-card" style="border-top-color:var(--success)">
+            <h3>✨ Shuhudia Muujiza</h3>
+            <form id="shuhudaForm">
+                <input type="text" id="s-jina" placeholder="Jina la Mtoa Shuhuda" required>
+                <textarea id="s-msg" placeholder="Elezea muujiza kwa kifupi..." rows="4" required></textarea>
+                <button type="submit" class="btn-action" style="background:var(--success); color:white;">TUMA SHUHUDA KWA PASTOR</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-        function showTab(tab) {
-            ['reg', 'poster', 'finance'].forEach(t => {
-                document.getElementById('sec-' + t).classList.add('hidden');
-                document.getElementById('tab-' + t).classList.remove('active-tab');
-            });
-            document.getElementById('sec-' + tab).classList.remove('hidden');
-            document.getElementById('tab-' + tab).classList.add('active-tab');
-            if(tab !== 'reg') fetchOfficeData();
-        }
+<script>
+    // 1. UPDATE: LINK YA CLOUDFLARE BRIDGE
+    const CLOUDFLARE_URL = "https://mortgage-holland-charity-podcast.trycloudflare.com";
+    
+    let currentRole = '';
+    let currentPassword = "1234"; 
 
-        async function submitData() {
-            const btn = document.getElementById('btn');
-            const data = {
-                category: document.getElementById('r-cat').value,
-                name: document.getElementById('r-name').value,
-                email: document.getElementById('r-email').value,
-                whatsapp: document.getElementById('r-phone').value
-            };
-            btn.innerText = "Processing..."; btn.disabled = true;
-            try {
-                await emailjs.send('service_bd4djzs', 'template_a5f74dr', {to_name: data.name, to_email: data.email});
-                const res = await fetch(`${API}/api/register`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
-                if(res.ok) alert("Imekamilika! Data ipo Supabase.");
-            } catch(e) { alert("Error: " + e); }
-            finally { btn.innerText = "KAMILISHA USAJILI"; btn.disabled = false; }
-        }
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+        document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active-btn'));
+        document.getElementById(id).classList.add('active-section');
+        if(id === 'registration') document.getElementById('nav-reg').classList.add('active-btn');
+        if(id === 'mtumishi-office') document.getElementById('nav-mtu').classList.add('active-btn');
+        if(id === 'finance-office') document.getElementById('nav-fin').classList.add('active-btn');
+    }
 
-        async function fetchOfficeData() {
-            const res = await fetch(`${API}/api/data/all`);
-            const data = await res.json();
-            const list = document.getElementById('poster-list');
-            list.innerHTML = "";
-            let mCount = 0, vCount = 0;
-            data.forEach(row => {
-                list.innerHTML += `<tr class='border-b border-gray-800 p-2'><td>${row.jina}</td><td>${row.cat}</td><td>${row.simu}</td></tr>`;
-                if(row.cat === 'MSHIRIKA') mCount++; else vCount++;
-            });
-            document.getElementById('count-m').innerText = mCount;
-            document.getElementById('count-v').innerText = vCount;
-        }
-    </script>
+    function openLogin(role) {
+        currentRole = role;
+        document.getElementById('login-title').innerText = "Ofisi ya " + role.toUpperCase();
+        document.getElementById('login-overlay').style.display = 'flex';
+    }
+
+    function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; }
+
+    function checkLogin() {
+        const p = document.getElementById('pass').value;
+        if(p === currentPassword) {
+            closeLogin();
+            showSection(currentRole === 'mtumishi' ? 'mtumishi-office' : 'finance-office');
+        } else { alert("Nenosiri si sahihi!"); }
+    }
+
+    // 2. UPDATE: USAJILI & SMS MOJA KWA MOJA KWENYE MACBOOK
+    document.getElementById('regForm').onsubmit = function(e) {
+        e.preventDefault();
+        const jina = document.getElementById('jina').value;
+        const simu = document.getElementById('simu').value;
+        const ujumbe = `SHALOM_${jina.replace(/ /g, "_")}_KARIBU_GGC_FAMILY_USAJILI_WAKO_UMEKAMILIKA`;
+
+        // EmailJS bado inafanya kazi yake
+        emailjs.send("service_bd4djzs", "template_a5f74dr", { user_name: jina, user_phone: simu });
+
+        // Tuma amri kwenye MacBook yako kupitia Cloudflare
+        fetch(`${CLOUDFLARE_URL}/tuma?namba=${simu}&msg=${ujumbe}`)
+        .then(res => {
+            alert("✅ " + jina + " amesajiliwa! Simu ya ofisini inatuma SMS sasa.");
+            this.reset();
+        })
+        .catch(err => {
+            alert("⚠️ KOSA: Hakikisha Cloudflare na gateway.py zimewaka kwenye MacBook!");
+        });
+    };
+
+    // --- SEHEMU YA SHUHUDA ---
+    document.getElementById('shuhudaForm').onsubmit = function(e) {
+        e.preventDefault();
+        alert("Shuhuda imetumwa kwa Pastor!");
+        this.reset();
+    };
+</script>
 </body>
 </html>
