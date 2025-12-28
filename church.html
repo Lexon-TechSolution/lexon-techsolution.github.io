@@ -3,26 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GGC EXECUTIVE SYSTEM | FIREBASE ENGINE</title>
+    <title>GGC EXECUTIVE SYSTEM V3 | LEXSON TECH</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-        :root { --primary: #0f172a; --accent: #d4af37; --success: #10b981; }
-        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
-        #bg-video { position: fixed; inset: 0; min-width: 100%; min-height: 100%; z-index: -1; filter: brightness(15%); object-fit: cover; }
-        .top-nav { background: rgba(15, 23, 42, 0.95); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
-        .menu-btn { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 8px 15px; border-radius: 50px; cursor: pointer; font-weight: 600; }
-        .section { display: none; padding: 40px 5%; max-width: 1200px; margin: auto; }
+        :root { --primary: #0f172a; --accent: #d4af37; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: #fff; }
+        #bg-video { position: fixed; inset: 0; min-width: 100%; min-height: 100%; z-index: -1; filter: brightness(10%); object-fit: cover; }
+        
+        .top-nav { background: rgba(15, 23, 42, 0.98); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
+        .menu-btn { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 8px 18px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .menu-btn:hover { background: var(--accent); color: #000; }
+
+        .section { display: none; padding: 30px 5%; max-width: 1400px; margin: auto; animation: fadeIn 0.4s; }
         .active-section { display: block !important; }
-        .glass-card { background: rgba(255, 255, 255, 0.98); color: #333; border-radius: 20px; padding: 30px; margin-bottom: 25px; border-top: 6px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        table { width: 100%; border-collapse: collapse; background: white; color: #333; font-size: 14px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        input, select, textarea { width: 100%; padding: 14px; margin-top: 10px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
-        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
+        
+        .glass-card { background: rgba(255, 255, 255, 0.98); color: #333; border-radius: 20px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { padding: 15px; border-radius: 15px; text-align: center; color: white; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th { background: #f1f5f9; color: #475569; padding: 12px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #f1f5f9; }
+        
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 8px; border: 1.5px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; }
+        .btn-action { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { background: #e2e8f0; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; }
+        .tab-btn.active { background: var(--accent); color: white; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -32,8 +45,8 @@
 </video>
 
 <header class="top-nav">
-    <h1 style="color:var(--accent); margin:0;">GGC <span style="color:white">FAMILY</span></h1>
-    <div style="display: flex; gap: 8px;">
+    <h1 style="color:var(--accent); margin:0; font-size: 22px;">GGC <span style="color:white">SYSTEM</span></h1>
+    <div style="display: flex; gap: 10px;">
         <button onclick="nav('registration')" class="menu-btn">USAJILI</button>
         <button onclick="openLogin('mtumishi')" class="menu-btn">MTUMISHI</button>
         <button onclick="openLogin('finance')" class="menu-btn">FINANCE</button>
@@ -41,136 +54,180 @@
 </header>
 
 <div class="section active-section" id="registration">
-    <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
         <div class="glass-card">
-            <h3>📋 Usajili wa Waumini</h3>
+            <h3>📋 Usajili wa Muumini</h3>
             <form id="regForm">
                 <input type="text" id="jina" placeholder="Jina Kamili" required>
-                <input type="email" id="email" placeholder="Barua Pepe (Email)" required>
-                <input type="tel" id="simu" placeholder="Simu 07xxxxxxxx" required>
+                <input type="tel" id="simu" placeholder="Simu" required>
                 <select id="aina"><option>Mshirika</option><option>Mgeni</option></select>
-                <button type="submit" class="btn-action" style="background:var(--primary); color:white;">SAJILI KILA KITU</button>
+                <button type="submit" class="btn-action" style="background:var(--primary); color:white;">SAJILI</button>
             </form>
         </div>
-        <div class="glass-card" style="border-top-color:var(--success)">
+        <div class="glass-card" style="border-top: 6px solid var(--success);">
             <h3>✨ Shuhudia Muujiza</h3>
-            <form onsubmit="alert('Shuhuda imetumwa kwa Pastor!'); this.reset(); return false;">
-                <input type="text" placeholder="Jina lako" required>
-                <textarea placeholder="Andika muujiza..." rows="5" required></textarea>
-                <button type="submit" class="btn-action" style="background:var(--success); color:white;">TUMA KWA PASTOR</button>
-            </form>
+            <input type="text" id="shuhuda_jina" placeholder="Jina lako">
+            <textarea id="shuhuda_msg" placeholder="Bwana amekutendea nini?" rows="4"></textarea>
+            <button class="btn-action" style="background:var(--success); color:white;" onclick="saveMiracle()">TUMA USHUHUDA</button>
         </div>
     </div>
 </div>
 
 <div class="section" id="mtumishi-office">
-    <div class="glass-card">
-        <h3>🏛️ OFISI YA MTUMISHI - Daftari la Kudumu</h3>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead><tr><th>Tarehe</th><th>Jina</th><th>Email</th><th>Simu</th><th>Aina</th></tr></thead>
-                <tbody id="member-table"></tbody>
-            </table>
+    <div class="stat-grid">
+        <div class="stat-card" style="background:var(--primary)"> <small>Waumini</small> <h2 id="s-total">0</h2> </div>
+        <div class="stat-card" style="background:var(--success)"> <small>Mapato (Mwezi)</small> <h2 id="s-income">0</h2> </div>
+        <div class="stat-card" style="background:var(--danger)"> <small>Matumizi (Mwezi)</small> <h2 id="s-expense">0</h2> </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showSub('m-waumini', this)">Waumini</button>
+        <button class="tab-btn" onclick="showSub('m-miujiza', this)">Miujiza</button>
+        <button class="tab-btn" onclick="showSub('m-masomo', this)">Masomo</button>
+        <button class="tab-btn" onclick="showSub('m-finance', this)">Finance Record</button>
+    </div>
+
+    <div id="m-waumini" class="sub-section">
+        <div class="glass-card">
+            <table id="waumini-table"><thead><tr><th>Tarehe</th><th>Jina</th><th>Simu</th><th>Aina</th></tr></thead><tbody id="m-body-waumini"></tbody></table>
+        </div>
+    </div>
+
+    <div id="m-miujiza" class="sub-section" style="display:none">
+        <div class="glass-card"><table id="miujiza-table"><thead><tr><th>Tarehe</th><th>Jina</th><th>Muujiza</th></tr></thead><tbody id="m-body-miujiza"></tbody></table></div>
+    </div>
+
+    <div id="m-masomo" class="sub-section" style="display:none">
+        <div class="glass-card">
+            <h3>📝 Rekodi Somo la Leo</h3>
+            <input type="text" id="somo_title" placeholder="Kichwa cha Somo">
+            <textarea id="somo_content" placeholder="Muhtasari wa somo..."></textarea>
+            <button class="btn-action" style="background:var(--primary); color:white;" onclick="saveSomo()">HIFADHI SOMO</button>
+            <hr>
+            <tbody id="m-body-masomo"></tbody>
+        </div>
+    </div>
+
+    <div id="m-finance" class="sub-section" style="display:none">
+        <div class="glass-card">
+            <button class="btn-action" style="background:var(--warning); color:black; width:auto; padding:10px 20px" onclick="downloadFinance()">Download Finance Statement (CSV)</button>
+            <h4>Matumizi ya Karibuni</h4>
+            <table id="matumizi-table"><thead><tr><th>Tarehe</th><th>Maelezo</th><th>Kiasi</th></tr></thead><tbody id="m-body-matumizi"></tbody></table>
         </div>
     </div>
 </div>
 
 <div class="section" id="finance-office">
-    <div class="glass-card">
-        <h3>💰 FINANCE OFFICE</h3>
-        <p>Hapa ndipo utaona michango na ku-download ripoti.</p>
-        <button class="btn-action" style="background:var(--success); color:white;" onclick="alert('Ripoti inatengenezwa...')">DOWNLOAD CSV</button>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="glass-card" style="border-top:6px solid var(--success)">
+            <h3>💰 Ingiza Mapato</h3>
+            <input type="text" id="inc_desc" placeholder="Maelezo (Zaka/Sadaka)">
+            <input type="number" id="inc_amt" placeholder="Kiasi">
+            <button class="btn-action" style="background:var(--success); color:white;" onclick="saveFinance('mapato')">HIFADHI MAPATO</button>
+        </div>
+        <div class="glass-card" style="border-top:6px solid var(--danger)">
+            <h3>💸 Ingiza Matumizi</h3>
+            <input type="text" id="exp_desc" placeholder="Maelezo (Umeme/Chakula)">
+            <input type="number" id="exp_amt" placeholder="Kiasi">
+            <button class="btn-action" style="background:var(--danger); color:white;" onclick="saveFinance('matumizi')">HIFADHI MATUMIZI</button>
+        </div>
     </div>
 </div>
 
 <div id="login-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:white; padding:40px; border-radius:20px; text-align:center; width: 300px; color:#333;">
-        <h3 id="login-title">Ingiza PIN</h3>
-        <input type="password" id="pass" placeholder="PIN ya Mfumo">
-        <button class="btn-action" style="background:black; color:white;" onclick="checkLogin()">FUNGUA</button>
-        <p onclick="document.getElementById('login-overlay').style.display='none'" style="color:red; cursor:pointer; margin-top:20px;">Ghairi</p>
+    <div style="background:white; padding:30px; border-radius:20px; text-align:center; color:#333;">
+        <h3 id="l-title">PIN</h3>
+        <input type="password" id="pass" placeholder="****">
+        <button class="btn-action" style="background:black; color:white;" onclick="checkLogin()">INGIA</button>
     </div>
 </div>
 
 <script>
-    // 1. FIREBASE INITIALIZATION
-    const firebaseConfig = {
-        databaseURL: "https://graceandglory-65dce-default-rtdb.firebaseio.com/",
-    };
+    const firebaseConfig = { databaseURL: "https://graceandglory-65dce-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    
-    // EmailJS
-    emailjs.init("HylSZExeEt-yXlXPl");
-    const CLOUD_URL = "https://mortgage-holland-charity-podcast.trycloudflare.com";
-    
-    let roleSelect = '';
+    const db = firebase.database();
 
-    // 2. NAVIGATION
+    let role = '';
     function nav(id) {
-        document.getElementById('registration').style.display = 'none';
-        document.getElementById('mtumishi-office').style.display = 'none';
-        document.getElementById('finance-office').style.display = 'none';
-        document.getElementById(id).style.display = 'block';
-        if(id === 'mtumishi-office') loadData();
+        document.querySelectorAll('.section').forEach(s => s.style.display='none');
+        document.getElementById(id).style.display='block';
+        if(id === 'mtumishi-office') loadAllData();
     }
 
-    function openLogin(r) {
-        roleSelect = r;
-        document.getElementById('login-title').innerText = "Ofisi ya " + r.toUpperCase();
-        document.getElementById('login-overlay').style.display = 'flex';
-    }
-
+    function openLogin(r) { role = r; document.getElementById('login-overlay').style.display='flex'; }
     function checkLogin() {
         if(document.getElementById('pass').value === "1234") {
-            document.getElementById('login-overlay').style.display = 'none';
-            nav(roleSelect === 'mtumishi' ? 'mtumishi-office' : 'finance-office');
-            document.getElementById('pass').value = '';
-        } else { alert("PIN Sio Sahihi!"); }
+            document.getElementById('login-overlay').style.display='none';
+            nav(role === 'mtumishi' ? 'mtumishi-office' : 'finance-office');
+        } else { alert("PIN Wrong!"); }
     }
 
-    // 3. SUBMIT TO FIREBASE
+    function showSub(id, btn) {
+        document.querySelectorAll('.sub-section').forEach(s => s.style.display='none');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).style.display='block';
+        btn.classList.add('active');
+    }
+
+    // FIREBASE SAVERS
     document.getElementById('regForm').onsubmit = function(e) {
         e.preventDefault();
-        const d = {
-            jina: document.getElementById('jina').value,
-            email: document.getElementById('email').value,
-            simu: document.getElementById('simu').value,
-            aina: document.getElementById('aina').value,
-            tarehe: new Date().toLocaleString('sw-TZ')
-        };
-
-        // Save Realtime
-        database.ref('waumini').push(d).then(() => {
-            // Tuma Email
-            emailjs.send("service_bd4djzs", "template_a5f74dr", {
-                user_name: d.jina,
-                user_email: d.email,
-                user_phone: d.simu
-            });
-
-            // Tuma SMS
-            const msg = `SHALOM_${d.jina.replace(/ /g, "_")}_KARIBU_GGC`;
-            fetch(`${CLOUD_URL}/tuma?namba=${d.simu}&msg=${msg}`);
-
-            alert("✅ USAJILI TAYARI! Kila kitu kimehifadhiwa Cloud.");
-            document.getElementById('regForm').reset();
-        }).catch(err => alert("Kosa la Firebase: " + err.message));
+        const d = { jina: document.getElementById('jina').value, simu: document.getElementById('simu').value, aina: document.getElementById('aina').value, tarehe: new Date().toLocaleDateString() };
+        db.ref('waumini').push(d).then(() => { alert("Sawa!"); this.reset(); });
     };
 
-    // 4. LOAD FROM FIREBASE
-    function loadData() {
-        database.ref('waumini').on('value', (snapshot) => {
-            const val = snapshot.val();
-            let rows = '';
-            if(val) {
-                Object.keys(val).reverse().forEach(id => {
-                    const item = val[id];
-                    rows += `<tr><td>${item.tarehe}</td><td>${item.jina}</td><td>${item.email}</td><td>${item.simu}</td><td><strong>${item.aina}</strong></td></tr>`;
-                });
-            }
-            document.getElementById('member-table').innerHTML = rows;
+    function saveMiracle() {
+        const d = { jina: document.getElementById('shuhuda_jina').value, msg: document.getElementById('shuhuda_msg').value, tarehe: new Date().toLocaleDateString() };
+        db.ref('miujiza').push(d).then(() => { alert("Ujumbe Umefika kwa Pastor!"); document.getElementById('shuhuda_msg').value=''; });
+    }
+
+    function saveSomo() {
+        const d = { title: document.getElementById('somo_title').value, content: document.getElementById('somo_content').value, tarehe: new Date().toLocaleDateString() };
+        db.ref('masomo').push(d).then(() => { alert("Somo limehifadhiwa!"); });
+    }
+
+    function saveFinance(type) {
+        const desc = document.getElementById(type === 'mapato' ? 'inc_desc' : 'exp_desc').value;
+        const amt = document.getElementById(type === 'mapato' ? 'inc_amt' : 'exp_amt').value;
+        const d = { desc, amt: parseFloat(amt), tarehe: new Date().toLocaleDateString(), mwezi: new Date().getMonth() + 1 };
+        db.ref(type).push(d).then(() => { alert("Hifadhiwa!"); location.reload(); });
+    }
+
+    // DATA LOADERS
+    function loadAllData() {
+        db.ref('waumini').on('value', snap => {
+            let r = ''; let c = 0; snap.forEach(child => { 
+                const i = child.val(); c++;
+                r = `<tr><td>${i.tarehe}</td><td>${i.jina}</td><td>${i.simu}</td><td>${i.aina}</td></tr>` + r;
+            });
+            document.getElementById('m-body-waumini').innerHTML = r;
+            document.getElementById('s-total').innerText = c;
         });
+
+        db.ref('miujiza').on('value', snap => {
+            let r = ''; snap.forEach(child => { const i = child.val(); r = `<tr><td>${i.tarehe}</td><td>${i.jina}</td><td>${i.msg}</td></tr>` + r; });
+            document.getElementById('m-body-miujiza').innerHTML = r;
+        });
+
+        db.ref('mapato').on('value', snap => {
+            let total = 0; snap.forEach(child => { total += child.val().amt; });
+            document.getElementById('s-income').innerText = "TZS " + total.toLocaleString();
+        });
+
+        db.ref('matumizi').on('value', snap => {
+            let total = 0; let r = '';
+            snap.forEach(child => { 
+                const i = child.val(); total += i.amt;
+                r = `<tr><td>${i.tarehe}</td><td>${i.desc}</td><td>${i.amt.toLocaleString()}</td></tr>` + r;
+            });
+            document.getElementById('s-expense').innerText = "TZS " + total.toLocaleString();
+            document.getElementById('m-body-matumizi').innerHTML = r;
+        });
+    }
+
+    function downloadFinance() {
+        alert("Statement ya mwezi huu inatengenezwa... CSV itapakuliwa.");
+        // Code ya kutengeneza CSV inaweza kuwekwa hapa
     }
 </script>
 </body>
