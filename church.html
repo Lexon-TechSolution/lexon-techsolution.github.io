@@ -16,23 +16,17 @@
         :root { --gold: #d4af37; --dark: #020617; --glass: rgba(15, 23, 42, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: var(--dark); color: #fff; height: 100vh; overflow: hidden; }
         
-        /* Video Background */
         #bg-video { position: fixed; inset: 0; min-width: 100%; min-height: 100%; z-index: -3; filter: brightness(10%); object-fit: cover; }
         
-        /* LEXSON TECH MOVING BACKGROUND */
         .moving-watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150%; font-size: 8rem; font-weight: 900; color: rgba(212, 175, 55, 0.03); white-space: nowrap; z-index: -2; pointer-events: none; animation: slideText 20s linear infinite; }
-
         @keyframes slideText { from { transform: translate(-50%, -50%) translateX(10%); } to { transform: translate(-50%, -50%) translateX(-10%); } }
 
-        /* Navigation */
         .top-nav { height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 4%; background: rgba(0,0,0,0.9); border-bottom: 3px solid var(--gold); }
         .logo { font-size: 22px; font-weight: 800; color: var(--gold); }
         .nav-btns button { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 18px; border-radius: 50px; cursor: pointer; margin-left: 10px; font-weight: 600; }
 
-        /* Executive Wing Layout */
         .wing { display: none; height: calc(100vh - 73px); grid-template-columns: 280px 1fr; animation: fadeIn 0.6s ease; }
         .active-wing { display: grid !important; }
-
         .sidebar { background: rgba(0,0,0,0.85); border-right: 1px solid rgba(212, 175, 55, 0.2); padding: 25px 15px; display: flex; flex-direction: column; gap: 10px; }
         .side-btn { padding: 15px; border-radius: 12px; color: #94a3b8; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
         .side-btn:hover, .side-btn.active { background: var(--gold); color: #000; font-weight: 700; transform: translateX(8px); }
@@ -40,7 +34,6 @@
         .workspace { padding: 30px; overflow-y: auto; background: rgba(2, 6, 23, 0.2); }
         .glass-box { background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 20px; padding: 25px; margin-bottom: 25px; }
 
-        /* Inputs & Tables */
         input, select, textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(212, 175, 55, 0.3); padding: 12px; border-radius: 10px; color: white; margin-top: 10px; }
         .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
         table { width: 100%; border-collapse: collapse; }
@@ -75,6 +68,22 @@
         <h2>Welcome to GGC</h2>
         <button class="btn-gold" onclick="showModal('reg-modal')">SAJILI MUUMINI</button>
         <button class="btn-gold" style="background:none; border:1px solid var(--gold); color:var(--gold)" onclick="showModal('mir-modal')">TUMA SHUHUDA</button>
+        
+        <hr style="margin:20px 0; border:0; border-top:1px solid rgba(212,175,55,0.1)">
+        <button class="btn-gold" style="background:#1e293b; color:#fff; font-size:12px; padding:10px;" onclick="showModal('gateway-modal')">
+            <i class="fas fa-plug"></i> CONNECT SMS ENGINE
+        </button>
+        <div id="ext-status" style="font-size:10px; margin-top:5px; color:#94a3b8;">Checking...</div>
+    </div>
+</div>
+
+<div id="gateway-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:11000; align-items:center; justify-content:center;">
+    <div class="login-card">
+        <h3>SMS Gateway Link</h3>
+        <input type="password" id="gw-pin" placeholder="Security PIN">
+        <input type="text" id="gw-link" placeholder="Paste Cloudflare Link Here">
+        <button class="btn-gold" onclick="updateGateway()">SAVE & CONNECT</button>
+        <p onclick="document.getElementById('gateway-modal').style.display='none'" style="color:red; cursor:pointer; margin-top:15px;">CLOSE</p>
     </div>
 </div>
 
@@ -157,7 +166,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     emailjs.init("HylSZExeEt-yXlXPl");
-    const CLOUD_URL = "https://mortgage-holland-charity-podcast.trycloudflare.com";
 
     let role = '';
     if(!localStorage.getItem('u')) { localStorage.setItem('u', 'admin'); localStorage.setItem('p', 'admin123'); }
@@ -165,7 +173,7 @@
     function openGate(r) { role = r; document.getElementById('gate-modal').style.display='flex'; }
     function unlock() {
         if(document.getElementById('gu').value === localStorage.getItem('u') && document.getElementById('gp').value === localStorage.getItem('p')) {
-            Swal.fire({ title: 'SHALOM MTUMISHI!', text: 'Karibu Ofisini', icon: 'success', background: '#020617', color: '#d4af37' });
+            Swal.fire({ title: 'SHALOM!', text: 'Karibu Ofisini', icon: 'success', background: '#020617', color: '#d4af37' });
             document.getElementById('gate-modal').style.display='none';
             document.getElementById('reception').style.display='none';
             document.getElementById('wing-'+role).classList.add('active-wing');
@@ -187,17 +195,41 @@
         const np = document.getElementById('np').value;
         if(nu && np) {
             localStorage.setItem('u', nu); localStorage.setItem('p', np);
-            Swal.fire('Safi!', 'Login imebadilishwa. Login upya.', 'success').then(() => location.reload());
+            Swal.fire('Safi!', 'Login imebadilishwa.', 'success').then(() => location.reload());
         }
     }
+
+    // UPDATE GATEWAY
+    function updateGateway() {
+        const pin = document.getElementById('gw-pin').value;
+        const link = document.getElementById('gw-link').value;
+        if(pin === localStorage.getItem('p')) {
+            db.ref('settings/sms_link').set(link).then(() => {
+                Swal.fire('Success!', 'SMS Engine Connected.', 'success');
+                document.getElementById('gateway-modal').style.display='none';
+            });
+        } else { Swal.fire('Error', 'PIN Wrong!', 'error'); }
+    }
+
+    db.ref('settings/sms_link').on('value', snap => {
+        const link = snap.val();
+        document.getElementById('ext-status').innerHTML = link ? '<span style="color:#10b981">● SMS ONLINE</span>' : '<span style="color:red">● SMS OFFLINE</span>';
+        document.getElementById('gw-link').value = link || "";
+    });
 
     document.getElementById('regForm').onsubmit = function(e) {
         e.preventDefault();
         const d = { jina: document.getElementById('rjina').value, email: document.getElementById('remail').value, simu: document.getElementById('rsimu').value, aina: document.getElementById('raina').value, tarehe: new Date().toLocaleDateString() };
-        db.ref('waumini').push(d).then(() => {
-            emailjs.send("service_bd4djzs", "template_a5f74dr", { user_name: d.jina, user_email: d.email });
-            fetch(`${CLOUD_URL}/tuma?namba=${d.simu}&msg=SHALOM_${d.jina.replace(/ /g, "_")}_KARIBU_GGC`);
-            Swal.fire('Hongera!', 'Usajili na SMS vimetumwa.', 'success').then(() => location.reload());
+        
+        db.ref('settings/sms_link').once('value').then(snap => {
+            const liveLink = snap.val();
+            db.ref('waumini').push(d).then(() => {
+                if(liveLink) {
+                    fetch(`${liveLink}/tuma?namba=${d.simu}&msg=SHALOM_${d.jina.replace(/ /g, "_")}_KARIBU_GGC`);
+                }
+                emailjs.send("service_bd4djzs", "template_a5f74dr", { user_name: d.jina, user_email: d.email });
+                Swal.fire('Hongera!', 'Usajili na SMS vimetumwa.', 'success').then(() => location.reload());
+            });
         });
     };
 
