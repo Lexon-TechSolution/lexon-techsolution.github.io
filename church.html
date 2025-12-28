@@ -19,14 +19,8 @@
         .section { display: none; padding: 20px; animation: fadeIn 0.4s; max-width: 1200px; margin: 0 auto; }
         .active-section { display: block; }
         .glass-card { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-top: 5px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .stat-box { background: white; padding: 15px; border-radius: 10px; text-align: center; border-bottom: 4px solid var(--accent); }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f4f4f4; color: var(--primary); }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
-        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.3s; text-transform: uppercase; }
-        .btn-action:hover { opacity: 0.9; transform: scale(0.98); }
+        input, select { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
@@ -46,42 +40,63 @@
 </header>
 
 <div class="section active-section" id="registration">
-    <div class="grid">
-        <div class="glass-card">
-            <h3>📋 Usajili wa Waumini / Wageni</h3>
-            <form id="regForm">
-                <input type="text" id="jina" placeholder="Jina Kamili" required>
-                <input type="tel" id="simu" placeholder="Namba ya Simu (07xxxxxxxx)" required>
-                <input type="email" id="email" placeholder="Barua Pepe" required>
-                <select id="aina"><option>Mshirika</option><option>Mgeni</option></select>
-                <button type="submit" class="btn-action" style="background:var(--primary); color:white;">SAJILI & TUMA SMS</button>
-            </form>
-        </div>
-        <div class="glass-card" style="border-top-color:var(--success)">
-            <h3>✨ Shuhudia Muujiza</h3>
-            <form id="shuhudaForm">
-                <input type="text" id="s-jina" placeholder="Jina la Mtoa Shuhuda" required>
-                <textarea id="s-msg" placeholder="Elezea muujiza kwa kifupi..." rows="4" required></textarea>
-                <button type="submit" class="btn-action" style="background:var(--success); color:white;">TUMA SHUHUDA KWA PASTOR</button>
-            </form>
+    <div class="glass-card" style="max-width: 500px; margin: auto;">
+        <h3>📋 Usajili wa Waumini / Wageni</h3>
+        <form id="regForm">
+            <label>Tarehe ya Usajili:</label>
+            <input type="text" id="leo" readonly style="background: #eee;">
+            <input type="text" id="jina" placeholder="Jina Kamili" required>
+            <input type="tel" id="simu" placeholder="Namba ya Simu (07xxxxxxxx)" required>
+            <input type="email" id="email" placeholder="Barua Pepe" required>
+            <select id="aina"><option>Mshirika</option><option>Mgeni</option></select>
+            <button type="submit" class="btn-action" style="background:var(--primary); color:white;">SAJILI & TUMA SMS</button>
+        </form>
+    </div>
+</div>
+
+<div class="section" id="mtumishi-office">
+    <div class="glass-card">
+        <h2 style="color:var(--primary); text-align: center;">🏛️ OFISI KUU YA MTUMISHI</h2>
+        <p>Karibu Mtumishi. Hapa unaweza kuona ripoti zote za kanisa.</p>
+        <div style="background:#f4f4f4; padding:20px; border-radius:10px;">
+            <h4>Hali ya Usajili wa Leo</h4>
+            <p>Usajili unaendelea... Data inachakatwa kwenye MacBook ofisini.</p>
         </div>
     </div>
 </div>
 
+<div class="section" id="finance-office">
+    <div class="glass-card">
+        <h2 style="color:var(--success); text-align: center;">💰 IDARA YA FEDHA</h2>
+        <p>Karibu kwenye idara ya Fedha na Masomo.</p>
+        <input type="number" placeholder="Kiasi cha Sadaka">
+        <button class="btn-action" style="background:var(--success); color:white;">HIFADHI REKODI</button>
+    </div>
+</div>
+
+<div id="login-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:40px; border-radius:20px; text-align:center; width: 300px;">
+        <h3 id="login-title">Idhini Inahitajika</h3>
+        <input type="password" id="pass" placeholder="Neno la Siri">
+        <button class="btn-action" style="background:black; color:white;" onclick="checkLogin()">INGIA</button>
+        <p onclick="closeLogin()" style="color:red; cursor:pointer; margin-top:15px;">Ghairi</p>
+    </div>
+</div>
+
 <script>
-    // 1. UPDATE: LINK YA CLOUDFLARE BRIDGE
+    // 1. WEKA LINK YAKO YA CLOUDFLARE HAPA
     const CLOUDFLARE_URL = "https://mortgage-holland-charity-podcast.trycloudflare.com";
     
+    // Auto-fill Tarehe ya Leo
+    document.getElementById('leo').value = new Date().toLocaleDateString('sw-TZ');
+
     let currentRole = '';
-    let currentPassword = "1234"; 
+    const correctPassword = "1234"; 
 
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
         document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active-btn'));
         document.getElementById(id).classList.add('active-section');
-        if(id === 'registration') document.getElementById('nav-reg').classList.add('active-btn');
-        if(id === 'mtumishi-office') document.getElementById('nav-mtu').classList.add('active-btn');
-        if(id === 'finance-office') document.getElementById('nav-fin').classList.add('active-btn');
     }
 
     function openLogin(role) {
@@ -93,39 +108,39 @@
     function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; }
 
     function checkLogin() {
-        const p = document.getElementById('pass').value;
-        if(p === currentPassword) {
+        const inputPass = document.getElementById('pass').value;
+        if(inputPass === correctPassword) {
             closeLogin();
             showSection(currentRole === 'mtumishi' ? 'mtumishi-office' : 'finance-office');
-        } else { alert("Nenosiri si sahihi!"); }
+        } else {
+            alert("Nenosiri si sahihi!");
+        }
     }
 
-    // 2. UPDATE: USAJILI & SMS MOJA KWA MOJA KWENYE MACBOOK
+    // USAJILI NA SMS
     document.getElementById('regForm').onsubmit = function(e) {
         e.preventDefault();
         const jina = document.getElementById('jina').value;
         const simu = document.getElementById('simu').value;
-        const ujumbe = `SHALOM_${jina.replace(/ /g, "_")}_KARIBU_GGC_FAMILY_USAJILI_WAKO_UMEKAMILIKA`;
+        const baruaPepe = document.getElementById('email').value;
 
-        // EmailJS bado inafanya kazi yake
-        emailjs.send("service_bd4djzs", "template_a5f74dr", { user_name: jina, user_phone: simu });
-
-        // Tuma amri kwenye MacBook yako kupitia Cloudflare
-        fetch(`${CLOUDFLARE_URL}/tuma?namba=${simu}&msg=${ujumbe}`)
-        .then(res => {
-            alert("✅ " + jina + " amesajiliwa! Simu ya ofisini inatuma SMS sasa.");
-            this.reset();
-        })
-        .catch(err => {
-            alert("⚠️ KOSA: Hakikisha Cloudflare na gateway.py zimewaka kwenye MacBook!");
+        // TUMA EMAIL (EmailJS)
+        emailjs.send("service_bd4djzs", "template_a5f74dr", {
+            user_name: jina,
+            user_phone: simu,
+            user_email: baruaPepe
         });
-    };
 
-    // --- SEHEMU YA SHUHUDA ---
-    document.getElementById('shuhudaForm').onsubmit = function(e) {
-        e.preventDefault();
-        alert("Shuhuda imetumwa kwa Pastor!");
-        this.reset();
+        // TUMA SMS (Cloudflare Bridge to MacBook)
+        const ujumbeSms = `SHALOM_${jina.replace(/ /g, "_")}_KARIBU_GGC_FAMILY`;
+        
+        fetch(`${CLOUDFLARE_URL}/tuma?namba=${simu}&msg=${ujumbeSms}`)
+        .then(res => {
+            alert("✅ USAJILI KAMILI: Email na SMS zimetumwa kwa " + jina);
+            this.reset();
+            document.getElementById('leo').value = new Date().toLocaleDateString('sw-TZ');
+        })
+        .catch(err => alert("⚠️ KOSA: Hakikisha MacBook na Cloudflare vimewaka!"));
     };
 </script>
 </body>
