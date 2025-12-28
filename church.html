@@ -6,22 +6,27 @@
     <title>GGC EXECUTIVE SYSTEM | LEXSON TECH</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript"> (function() { emailjs.init("HylSZExeEt-yXlXPl"); })(); </script>
 
     <style>
-        :root { --primary: #0f172a; --accent: #d4af37; --success: #10b981; --white: #ffffff; }
-        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: #333; }
-        #bg-video { position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; z-index: -1; filter: brightness(20%); object-fit: cover; }
-        .top-nav { background: rgba(15, 23, 42, 0.9); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
-        .menu-btn { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); padding: 8px 18px; border-radius: 50px; cursor: pointer; margin-left: 5px; font-weight: 600; }
-        .active-btn { background: var(--accent); color: var(--primary); font-weight: bold; }
-        .section { display: none; padding: 20px; animation: fadeIn 0.4s; max-width: 1200px; margin: 0 auto; }
+        :root { --primary: #0f172a; --accent: #d4af37; --success: #10b981; }
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
+        #bg-video { position: fixed; inset: 0; min-width: 100%; min-height: 100%; z-index: -1; filter: brightness(15%); object-fit: cover; }
+        .top-nav { background: rgba(15, 23, 42, 0.95); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); position: sticky; top: 0; z-index: 1000; }
+        .menu-btn { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .menu-btn:hover { background: var(--accent); color: #000; }
+        .section { display: none; padding: 40px 5%; animation: fadeIn 0.5s; max-width: 1200px; margin: auto; }
         .active-section { display: block; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 25px; margin-bottom: 20px; border-top: 5px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, select { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-action { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .glass-card { background: rgba(255, 255, 255, 0.98); color: #333; border-radius: 20px; padding: 30px; margin-bottom: 25px; border-top: 6px solid var(--accent); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; color: #333; font-size: 14px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        input, select, textarea { width: 100%; padding: 14px; margin-top: 12px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 16px; }
+        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 15px; text-transform: uppercase; transition: 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -32,116 +37,160 @@
 
 <header class="top-nav">
     <h1 style="color:var(--accent); margin:0;">GGC <span style="color:white">FAMILY</span></h1>
-    <div>
-        <button onclick="showSection('registration')" id="nav-reg" class="menu-btn active-btn">USAJILI</button>
-        <button onclick="openLogin('mtumishi')" id="nav-mtu" class="menu-btn">MTUMISHI</button>
-        <button onclick="openLogin('finance')" id="nav-fin" class="menu-btn">FINANCE</button>
+    <div style="display: flex; gap: 10px;">
+        <button onclick="showSection('registration')" class="menu-btn">USAJILI</button>
+        <button onclick="openLogin('mtumishi')" class="menu-btn">MTUMISHI</button>
+        <button onclick="openLogin('finance')" class="menu-btn">FINANCE</button>
     </div>
 </header>
 
 <div class="section active-section" id="registration">
-    <div class="glass-card" style="max-width: 500px; margin: auto;">
-        <h3>📋 Usajili wa Waumini / Wageni</h3>
-        <form id="regForm">
-            <label>Tarehe ya Usajili:</label>
-            <input type="text" id="leo" readonly style="background: #eee;">
-            <input type="text" id="jina" placeholder="Jina Kamili" required>
-            <input type="tel" id="simu" placeholder="Namba ya Simu (07xxxxxxxx)" required>
-            <input type="email" id="email" placeholder="Barua Pepe" required>
-            <select id="aina"><option>Mshirika</option><option>Mgeni</option></select>
-            <button type="submit" class="btn-action" style="background:var(--primary); color:white;">SAJILI & TUMA SMS</button>
-        </form>
-    </div>
-</div>
-
-<div class="section" id="mtumishi-office">
-    <div class="glass-card">
-        <h2 style="color:var(--primary); text-align: center;">🏛️ OFISI KUU YA MTUMISHI</h2>
-        <p>Karibu Mtumishi. Hapa unaweza kuona ripoti zote za kanisa.</p>
-        <div style="background:#f4f4f4; padding:20px; border-radius:10px;">
-            <h4>Hali ya Usajili wa Leo</h4>
-            <p>Usajili unaendelea... Data inachakatwa kwenye MacBook ofisini.</p>
+    <div class="grid">
+        <div class="glass-card">
+            <h3 style="color:var(--primary); margin-top:0;">📋 Usajili wa Waumini</h3>
+            <form id="regForm">
+                <input type="text" id="jina" placeholder="Jina Kamili" required>
+                <input type="email" id="email" placeholder="Barua Pepe (Email)" required>
+                <input type="tel" id="simu" placeholder="Namba ya Simu (07xxxxxxxx)" required>
+                <select id="aina"><option>Mshirika</option><option>Mgeni</option></select>
+                <button type="submit" class="btn-action" style="background:var(--primary); color:white;">SAJILI & TUMA KILA KITU</button>
+            </form>
+        </div>
+        <div class="glass-card" style="border-top-color:var(--success)">
+            <h3 style="color:var(--success); margin-top:0;">✨ Shuhudia Muujiza</h3>
+            <form id="shuhudaForm">
+                <input type="text" id="s-jina" placeholder="Jina lako" required>
+                <textarea id="s-msg" placeholder="Andika muujiza wako hapa..." rows="5" required></textarea>
+                <button type="submit" class="btn-action" style="background:var(--success); color:white;">TUMA KWA PASTOR</button>
+            </form>
         </div>
     </div>
 </div>
 
-<div class="section" id="finance-office">
+<div class="section" id="mtumishi-office">
+    <h2 style="text-align: center; margin-bottom: 20px;">🏛️ OFISI YA MTUMISHI</h2>
     <div class="glass-card">
-        <h2 style="color:var(--success); text-align: center;">💰 IDARA YA FEDHA</h2>
-        <p>Karibu kwenye idara ya Fedha na Masomo.</p>
-        <input type="number" placeholder="Kiasi cha Sadaka">
+        <h3>👥 Daftari la Kudumu (Data za Cloud)</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr><th>Tarehe</th><th>Jina</th><th>Email</th><th>Simu</th><th>Aina</th></tr>
+                </thead>
+                <tbody id="member-table"></tbody>
+            </table>
+        </div>
+        <hr style="margin: 30px 0;">
+        <h3>⚙️ Mipangilio (Settings)</h3>
+        <input type="password" id="new-pin" placeholder="Badili PIN ya Mfumo">
+        <button class="btn-action" style="background:#ef4444; color:white; width: 200px;">HIFADHI PIN</button>
+    </div>
+</div>
+
+<div class="section" id="finance-office">
+    <h2 style="text-align: center; margin-bottom: 20px;">💰 IDARA YA FEDHA</h2>
+    <div class="glass-card">
+        <h3>💵 Ingiza Rekodi ya Mchango</h3>
+        <input type="number" id="f-amount" placeholder="Kiasi (TZS)">
+        <select id="f-type">
+            <option>Sadaka</option><option>Fungu la Kumi</option><option>Ujenzi</option>
+        </select>
         <button class="btn-action" style="background:var(--success); color:white;">HIFADHI REKODI</button>
     </div>
 </div>
 
 <div id="login-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:white; padding:40px; border-radius:20px; text-align:center; width: 300px;">
-        <h3 id="login-title">Idhini Inahitajika</h3>
-        <input type="password" id="pass" placeholder="Neno la Siri">
-        <button class="btn-action" style="background:black; color:white;" onclick="checkLogin()">INGIA</button>
-        <p onclick="closeLogin()" style="color:red; cursor:pointer; margin-top:15px;">Ghairi</p>
+    <div style="background:white; padding:40px; border-radius:25px; text-align:center; width: 320px; color: #333;">
+        <h3 id="login-title" style="margin-top:0">Idhini</h3>
+        <input type="password" id="pass" placeholder="PIN ya Mfumo">
+        <button class="btn-action" style="background:var(--primary); color:white;" onclick="checkLogin()">FUNGUA OFISI</button>
+        <p onclick="closeLogin()" style="color:red; cursor:pointer; margin-top:20px; font-weight:600;">GHAIRI</p>
     </div>
 </div>
 
 <script>
-    // 1. WEKA LINK YAKO YA CLOUDFLARE HAPA
-    const CLOUDFLARE_URL = "https://mortgage-holland-charity-podcast.trycloudflare.com";
-    
-    // Auto-fill Tarehe ya Leo
-    document.getElementById('leo').value = new Date().toLocaleDateString('sw-TZ');
+    // 1. CONFIGURATION
+    const SUPABASE_URL = "https://csdlxyowyztapgcbmsyb.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_bTbjD6qqebw6XpiPrsmLWA_RGottB8R";
+    const CLOUD_URL = "https://mortgage-holland-charity-podcast.trycloudflare.com";
 
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentRole = '';
-    const correctPassword = "1234"; 
 
+    // 2. NAVIGATION LOGIC
     function showSection(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
-        document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active-btn'));
-        document.getElementById(id).classList.add('active-section');
+        const sections = ['registration', 'mtumishi-office', 'finance-office'];
+        sections.forEach(s => document.getElementById(s).style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+        if(id === 'mtumishi-office') loadDatabase();
     }
 
     function openLogin(role) {
         currentRole = role;
-        document.getElementById('login-title').innerText = "Ofisi ya " + role.toUpperCase();
+        document.getElementById('login-title').innerText = "Ofisi ya " + (role === 'mtumishi' ? "Mtumishi" : "Finance");
         document.getElementById('login-overlay').style.display = 'flex';
     }
 
     function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; }
 
     function checkLogin() {
-        const inputPass = document.getElementById('pass').value;
-        if(inputPass === correctPassword) {
+        const pin = document.getElementById('pass').value;
+        if(pin === "1234") {
             closeLogin();
             showSection(currentRole === 'mtumishi' ? 'mtumishi-office' : 'finance-office');
-        } else {
-            alert("Nenosiri si sahihi!");
-        }
+            document.getElementById('pass').value = '';
+        } else { alert("PIN Sio Sahihi!"); }
     }
 
-    // USAJILI NA SMS
-    document.getElementById('regForm').onsubmit = function(e) {
+    // 3. USAJILI (SUPABASE + EMAILJS + SMS)
+    document.getElementById('regForm').onsubmit = async function(e) {
         e.preventDefault();
         const jina = document.getElementById('jina').value;
+        const email = document.getElementById('email').value;
         const simu = document.getElementById('simu').value;
-        const baruaPepe = document.getElementById('email').value;
+        const aina = document.getElementById('aina').value;
+        const tarehe = new Date().toLocaleString('sw-TZ');
 
-        // TUMA EMAIL (EmailJS)
+        // A. Hifadhi Supabase (Cloud)
+        const { error } = await supabase.from('waumini').insert([{ jina, email, simu, aina, tarehe }]);
+
+        if (error) {
+            alert("Kosa la Database: " + error.message);
+            return;
+        }
+
+        // B. Tuma Email (EmailJS)
         emailjs.send("service_bd4djzs", "template_a5f74dr", {
             user_name: jina,
-            user_phone: simu,
-            user_email: baruaPepe
+            user_email: email,
+            user_phone: simu
         });
 
-        // TUMA SMS (Cloudflare Bridge to MacBook)
-        const ujumbeSms = `SHALOM_${jina.replace(/ /g, "_")}_KARIBU_GGC_FAMILY`;
-        
-        fetch(`${CLOUDFLARE_URL}/tuma?namba=${simu}&msg=${ujumbeSms}`)
-        .then(res => {
-            alert("✅ USAJILI KAMILI: Email na SMS zimetumwa kwa " + jina);
+        // C. Tuma SMS (MacBook Gateway)
+        const msg = `SHALOM_${jina.replace(/ /g, "_")}_KARIBU_GGC`;
+        fetch(`${CLOUD_URL}/tuma?namba=${simu}&msg=${msg}`)
+        .then(() => {
+            alert("✅ USAJILI KAMILI! Data, Email na SMS zimetumwa.");
             this.reset();
-            document.getElementById('leo').value = new Date().toLocaleDateString('sw-TZ');
         })
-        .catch(err => alert("⚠️ KOSA: Hakikisha MacBook na Cloudflare vimewaka!"));
+        .catch(() => alert("✅ Data na Email zimeenda, lakini MacBook imezima (Hakuna SMS)."));
     };
+
+    // 4. FETCH DATA (OFISI YA MTUMISHI)
+    async function loadDatabase() {
+        const { data, error } = await supabase.from('waumini').select('*').order('id', { ascending: false });
+        if(!error && data) {
+            const tableBody = document.getElementById('member-table');
+            tableBody.innerHTML = data.map(i => `
+                <tr>
+                    <td>${i.tarehe || '-'}</td>
+                    <td>${i.jina}</td>
+                    <td>${i.email || '-'}</td>
+                    <td>${i.simu}</td>
+                    <td><strong>${i.aina}</strong></td>
+                </tr>
+            `).join('');
+        }
+    }
 </script>
 </body>
 </html>
