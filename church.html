@@ -3,47 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GGC HQ | POWERED BY LEXSON TECH</title>
+    <title>GGC HQ MASTER SYSTEM | BY LEXSON TECH</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        :root { --gold: #d4af37; --dark: #020617; --glass: rgba(15, 23, 42, 0.96); }
+        :root { --gold: #d4af37; --dark: #020617; --glass: rgba(15, 23, 42, 0.98); }
         body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: var(--dark); color: #fff; height: 100vh; overflow: hidden; }
-        
-        #bg-video { position: fixed; inset: 0; min-width: 100%; min-height: 100%; z-index: -3; filter: brightness(10%); object-fit: cover; }
-        
-        .moving-watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150%; font-size: 8rem; font-weight: 900; color: rgba(212, 175, 55, 0.03); white-space: nowrap; z-index: -2; pointer-events: none; animation: slideText 20s linear infinite; }
-        @keyframes slideText { from { transform: translate(-50%, -50%) translateX(10%); } to { transform: translate(-50%, -50%) translateX(-10%); } }
-
-        .top-nav { height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 4%; background: rgba(0,0,0,0.9); border-bottom: 3px solid var(--gold); }
-        .logo { font-size: 22px; font-weight: 800; color: var(--gold); }
+        #bg-video { position: fixed; inset: 0; min-width: 100%; min-height: 100%; z-index: -3; filter: brightness(8%); object-fit: cover; }
+        .top-nav { height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 4%; background: #000; border-bottom: 3px solid var(--gold); }
+        .logo { font-size: 20px; font-weight: 800; color: var(--gold); text-transform: uppercase; }
         .nav-btns button { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 18px; border-radius: 50px; cursor: pointer; margin-left: 10px; font-weight: 600; }
-
-        .wing { display: none; height: calc(100vh - 73px); grid-template-columns: 280px 1fr; animation: fadeIn 0.6s ease; }
+        .wing { display: none; height: calc(100vh - 73px); grid-template-columns: 280px 1fr; }
         .active-wing { display: grid !important; }
-        .sidebar { background: rgba(0,0,0,0.85); border-right: 1px solid rgba(212, 175, 55, 0.2); padding: 25px 15px; display: flex; flex-direction: column; gap: 10px; }
-        .side-btn { padding: 15px; border-radius: 12px; color: #94a3b8; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .side-btn:hover, .side-btn.active { background: var(--gold); color: #000; font-weight: 700; transform: translateX(8px); }
-
-        .workspace { padding: 30px; overflow-y: auto; background: rgba(2, 6, 23, 0.2); }
-        .glass-box { background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 20px; padding: 25px; margin-bottom: 25px; }
-
-        input, select, textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(212, 175, 55, 0.3); padding: 12px; border-radius: 10px; color: white; margin-top: 10px; }
+        .sidebar { background: rgba(0,0,0,0.9); border-right: 1px solid rgba(212, 175, 55, 0.2); padding: 25px 15px; display: flex; flex-direction: column; gap: 8px; }
+        .side-btn { padding: 14px; border-radius: 12px; color: #94a3b8; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
+        .side-btn:hover, .side-btn.active { background: var(--gold); color: #000; font-weight: 700; }
+        .workspace { padding: 30px; overflow-y: auto; background: rgba(2, 6, 23, 0.5); }
+        .glass-box { background: var(--glass); border: 1px solid rgba(212, 175, 55, 0.15); border-radius: 20px; padding: 25px; margin-bottom: 25px; }
+        input, select, textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(212, 175, 55, 0.3); padding: 12px; border-radius: 10px; color: white; margin-top: 10px; box-sizing: border-box; }
         .btn-gold { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 15px; text-transform: uppercase; }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; color: var(--gold); padding: 12px; border-bottom: 2px solid var(--gold); }
-        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
+        th { text-align: left; color: var(--gold); padding: 12px; border-bottom: 2px solid var(--gold); font-size: 13px; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
         #reception { height: 90vh; display: flex; justify-content: center; align-items: center; }
         .login-card { padding: 40px; border-radius: 30px; background: var(--glass); border: 2px solid var(--gold); width: 380px; text-align: center; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -51,7 +42,6 @@
 <video autoplay muted loop id="bg-video">
     <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-blue-circuit-board-447-large.mp4" type="video/mp4">
 </video>
-<div class="moving-watermark">LEXSON TECH SYSTEM • LEXSON TECH SYSTEM • LEXSON TECH</div>
 
 <header class="top-nav">
     <div class="logo">GGC EXECUTIVE HQ</div>
@@ -64,64 +54,62 @@
 
 <div id="reception">
     <div class="login-card">
-        <i class="fas fa-mosque" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
-        <h2>Welcome to GGC</h2>
+        <i class="fas fa-church" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
+        <h2>GGC HQ RECEPTION</h2>
         <button class="btn-gold" onclick="showModal('reg-modal')">SAJILI MUUMINI</button>
-        <button class="btn-gold" style="background:none; border:1px solid var(--gold); color:var(--gold)" onclick="showModal('mir-modal')">TUMA SHUHUDA</button>
-        
-        <hr style="margin:20px 0; border:0; border-top:1px solid rgba(212,175,55,0.1)">
-        <button class="btn-gold" style="background:#1e293b; color:#fff; font-size:12px; padding:10px;" onclick="showModal('gateway-modal')">
-            <i class="fas fa-plug"></i> CONNECT SMS ENGINE
-        </button>
-        <div id="ext-status" style="font-size:10px; margin-top:5px; color:#94a3b8;">Checking...</div>
-    </div>
-</div>
-
-<div id="gateway-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:11000; align-items:center; justify-content:center;">
-    <div class="login-card">
-        <h3>SMS Gateway Link</h3>
-        <input type="password" id="gw-pin" placeholder="Security PIN">
-        <input type="text" id="gw-link" placeholder="Paste Cloudflare Link Here">
-        <button class="btn-gold" onclick="updateGateway()">SAVE & CONNECT</button>
-        <p onclick="document.getElementById('gateway-modal').style.display='none'" style="color:red; cursor:pointer; margin-top:15px;">CLOSE</p>
+        <button class="btn-gold" style="background:none; border:1px solid var(--gold); color:var(--gold)" onclick="showModal('miracle-modal')">TOA USHUHUDA/MIUJIZA</button>
+        <div id="ext-status" style="font-size:10px; margin-top:10px;">Checking...</div>
     </div>
 </div>
 
 <div class="wing" id="wing-mtumishi">
     <div class="sidebar">
-        <div class="side-btn active" onclick="showRoom('m-dash')"><i class="fas fa-home"></i> Dashboard</div>
-        <div class="side-btn" onclick="showRoom('m-members')"><i class="fas fa-users"></i> Waumini (M-G)</div>
-        <div class="side-btn" onclick="showRoom('m-finance')"><i class="fas fa-file-invoice-dollar"></i> Zaka & Michango</div>
-        <div class="side-btn" onclick="showRoom('m-masomo')"><i class="fas fa-book"></i> Maktaba ya Masomo</div>
-        <div class="side-btn" onclick="showRoom('m-security')"><i class="fas fa-user-lock"></i> Change Password</div>
+        <div class="side-btn active" onclick="showRoom('m-dash')"><i class="fas fa-chart-line"></i> Dashboard</div>
+        <div class="side-btn" onclick="showRoom('m-library')"><i class="fas fa-book-open"></i> Maktaba ya Masomo</div>
+        <div class="side-btn" onclick="showRoom('m-miracles')"><i class="fas fa-pray"></i> Shuhuda/Miujiza</div>
+        <div class="side-btn" onclick="showRoom('m-assets')"><i class="fas fa-boxes"></i> Asset Evaluation</div>
+        <div class="side-btn" onclick="showRoom('m-settings')"><i class="fas fa-cog"></i> Settings</div>
     </div>
     <div class="workspace">
         <div id="m-dash" class="room">
             <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-bottom:20px;">
-                <div class="glass-box" style="text-align:center"><h3>Washirika</h3><h2 id="cnt-w">0</h2></div>
-                <div class="glass-box" style="text-align:center"><h3>Wageni</h3><h2 id="cnt-g">0</h2></div>
-                <div class="glass-box" style="text-align:center"><h3>Shuhuda</h3><h2 id="cnt-m">0</h2></div>
+                <div class="glass-box" style="text-align:center"><h3>Mali TZS</h3><h2 id="total-assets-val" style="color:var(--gold)">0</h2></div>
+                <div class="glass-box" style="text-align:center"><h3>Cash TZS</h3><h2 id="total-bal-m">0</h2></div>
+                <div class="glass-box" style="text-align:center"><h3>Waumini</h3><h2 id="cnt-w">0</h2></div>
             </div>
             <div class="glass-box">
-                <h3>Andika Somo la Leo</h3>
-                <input type="text" id="s-title" placeholder="Kichwa">
-                <textarea id="s-body" rows="4" placeholder="Maelezo..."></textarea>
-                <button class="btn-gold" onclick="saveSomo()">HIFADHI</button>
+                <h3>Andika Somo Jipya</h3>
+                <input type="text" id="s-title" placeholder="Kichwa cha Somo">
+                <textarea id="s-body" rows="4" placeholder="Maelezo kamili ya somo..."></textarea>
+                <button class="btn-gold" onclick="saveSomo()">POST TO LIBRARY</button>
             </div>
         </div>
-        <div id="m-members" class="room" style="display:none">
-            <div class="glass-box"><table><thead><tr><th>Tarehe</th><th>Jina</th><th>Email</th><th>Simu</th><th>Hali</th></tr></thead><tbody id="tb-members"></tbody></table></div>
+        <div id="m-library" class="room" style="display:none">
+            <div class="glass-box">
+                <h3>Maktaba ya Masomo</h3>
+                <div id="library-content">Pakua masomo...</div>
+            </div>
         </div>
-        <div id="m-finance" class="room" style="display:none">
-            <div class="glass-box"><h3>Kumbukumbu ya Zaka</h3><table><thead><tr><th>Tarehe</th><th>Jina</th><th>Kiasi</th></tr></thead><tbody id="tb-zaka"></tbody></table></div>
-            <div class="glass-box"><h3>Michango ya Dharura</h3><table><thead><tr><th>Tarehe</th><th>Mchangiaji</th><th>Kiasi</th></tr></thead><tbody id="tb-dharura"></tbody></table></div>
+        <div id="m-miracles" class="room" style="display:none">
+            <div class="glass-box">
+                <h3>Shuhuda na Miujiza ya Waumini</h3>
+                <table><thead><tr><th>Tarehe</th><th>Muumini</th><th>Ushuhuda</th></tr></thead><tbody id="tb-miracles"></tbody></table>
+            </div>
         </div>
-        <div id="m-security" class="room" style="display:none">
-            <div class="glass-box" style="max-width:400px; margin:auto">
-                <h3>Update Credentials</h3>
-                <input type="text" id="nu" placeholder="New Username">
-                <input type="password" id="np" placeholder="New Password">
-                <button class="btn-gold" onclick="updateSecurity()">SAVE CHANGES</button>
+        <div id="m-assets" class="room" style="display:none">
+            <div class="glass-box">
+                <h3>Asset Evaluation</h3>
+                <table><thead><tr><th>Tarehe</th><th>Mali</th><th>Hali</th><th>Thamani</th></tr></thead><tbody id="tb-assets-m"></tbody></table>
+            </div>
+        </div>
+        <div id="m-settings" class="room" style="display:none">
+            <div class="glass-box">
+                <h3>Mfumo Settings</h3>
+                <input type="text" id="set-u" placeholder="New Username">
+                <input type="password" id="set-p" placeholder="New Password">
+                <button class="btn-gold" onclick="saveSettings()">SAVE NEW CREDENTIALS</button>
+                <hr style="margin:20px 0; opacity:0.1">
+                <button class="btn-gold" style="background:#ef4444; color:white" onclick="showModal('gateway-modal')">UPDATE SMS GATEWAY LINK</button>
             </div>
         </div>
     </div>
@@ -129,31 +117,81 @@
 
 <div class="wing" id="wing-finance">
     <div class="sidebar">
-        <div class="side-btn active" onclick="showRoom('f-zaka')"><i class="fas fa-hand-holding-heart"></i> Ingiza Zaka</div>
-        <div class="side-btn" onclick="showRoom('f-sadaka')"><i class="fas fa-donate"></i> Ingiza Sadaka</div>
-        <div class="side-btn" onclick="showRoom('f-dharura')"><i class="fas fa-ambulance"></i> Ingiza Dharura</div>
+        <div class="side-btn active" onclick="showRoom('f-entry')"><i class="fas fa-plus-circle"></i> Mapato</div>
+        <div class="side-btn" onclick="showRoom('f-request')"><i class="fas fa-minus-circle"></i> Matumizi</div>
+        <div class="side-btn" onclick="showRoom('f-assets')"><i class="fas fa-tools"></i> Asset Valuation</div>
+        <div class="side-btn" onclick="showRoom('f-report')"><i class="fas fa-file-pdf"></i> Ripoti ya Wiki</div>
     </div>
     <div class="workspace">
-        <div id="f-zaka" class="room">
-            <div class="glass-box"><h3>Fomu ya Zaka</h3><input type="text" id="fz-jina" placeholder="Jina"><input type="number" id="fz-amt" placeholder="Kiasi"><button class="btn-gold" onclick="saveFin('zaka')">SAVE</button></div>
+        <div id="f-entry" class="room">
+            <div class="glass-box">
+                <h3>Ingiza Mapato</h3>
+                <select id="f-type"><option>Zaka</option><option>Sadaka ya Ujenzi</option><option>Sadaka ya Kawaida</option><option>Shukrani</option></select>
+                <input type="text" id="f-jina" placeholder="Jina la Mtoaji">
+                <input type="number" id="f-amt" placeholder="Kiasi (TZS)">
+                <button class="btn-gold" onclick="saveFinance()">HIFADHI MAPATO</button>
+            </div>
         </div>
-        <div id="f-dharura" class="room" style="display:none">
-            <div class="glass-box"><h3>Fomu ya Dharura</h3><input type="text" id="fd-desc" placeholder="Dharura Gani"><input type="text" id="fd-jina" placeholder="Mchangiaji"><input type="number" id="fd-amt" placeholder="Kiasi"><button class="btn-gold" onclick="saveFin('dharura')">SAVE</button></div>
+        <div id="f-request" class="room" style="display:none">
+            <div class="glass-box">
+                <h3>Rekodi Matumizi</h3>
+                <input type="text" id="req-for" placeholder="Maelezo ya Matumizi">
+                <input type="number" id="req-amt" placeholder="Kiasi kilichotoka">
+                <button class="btn-gold" style="background:#ef4444; color:white" onclick="saveRequest()">THIBITISHA MATUMIZI</button>
+            </div>
+        </div>
+        <div id="f-assets" class="room" style="display:none">
+            <div class="glass-box">
+                <h3>Asset Valuation</h3>
+                <input type="text" id="a-name" placeholder="Mali (Mf: Viti 50)">
+                <input type="number" id="a-val" placeholder="Thamani ya Mali">
+                <textarea id="a-desc" placeholder="Hali ya mali kwa sasa..."></textarea>
+                <button class="btn-gold" onclick="saveAsset()">HIFADHI MALI</button>
+            </div>
+        </div>
+        <div id="f-report" class="room" style="display:none">
+            <div class="glass-box">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>Financial Statement</h3>
+                    <button class="btn-gold" style="width:200px; margin-top:0;" onclick="downloadPDF()">DOWNLOAD PDF</button>
+                </div>
+                <table><thead><tr><th>Tarehe</th><th>Aina</th><th>Mhusika</th><th>Kiasi</th></tr></thead><tbody id="tb-finance"></tbody></table>
+            </div>
         </div>
     </div>
 </div>
 
-<div id="reg-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9000; padding:50px;">
-    <div class="login-card" style="margin:auto">
-        <h2>USAJILI</h2>
+<div id="reg-modal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center;">
+    <div class="login-card">
+        <h2>USAJILI MUUMINI</h2>
         <form id="regForm">
             <input type="text" id="rjina" placeholder="Jina Kamili" required>
-            <input type="email" id="remail" placeholder="Email Address" required>
-            <input type="tel" id="rsimu" placeholder="07xxxxxxxx" required>
+            <input type="email" id="remail" placeholder="Barua Pepe" required>
+            <input type="tel" id="rsimu" placeholder="Namba ya Simu" required>
             <select id="raina"><option>Mshirika</option><option>Mgeni</option></select>
-            <button type="submit" class="btn-gold">SUBMIT</button>
+            <button type="submit" class="btn-gold">SAJILI SASA</button>
         </form>
-        <button onclick="document.getElementById('reg-modal').style.display='none'" style="color:red; margin-top:10px; background:none; border:none; cursor:pointer;">CLOSE</button>
+        <p onclick="this.parentElement.parentElement.style.display='none'" style="color:red; cursor:pointer; margin-top:15px;">X FUNGA</p>
+    </div>
+</div>
+
+<div id="miracle-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center;">
+    <div class="login-card">
+        <h2>TOA USHUHUDA</h2>
+        <input type="text" id="m-jina" placeholder="Jina Lako">
+        <textarea id="m-text" rows="4" placeholder="Mungu amekutendea nini leo?"></textarea>
+        <button class="btn-gold" onclick="saveMiracle()">TUMA USHUHUDA</button>
+        <p onclick="this.parentElement.parentElement.style.display='none'" style="color:red; cursor:pointer; margin-top:15px;">X FUNGA</p>
+    </div>
+</div>
+
+<div id="gateway-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center;">
+    <div class="login-card">
+        <h3>SMS Gateway Setup</h3>
+        <input type="password" id="gw-pin" placeholder="Enter Admin PIN">
+        <input type="text" id="gw-link" placeholder="Paste Cloudflare Tunnel Link">
+        <button class="btn-gold" onclick="updateGateway()">CONNECT ENGINE</button>
+        <p onclick="this.parentElement.parentElement.style.display='none'" style="color:red; cursor:pointer; margin-top:15px;">CLOSE</p>
     </div>
 </div>
 
@@ -167,89 +205,148 @@
     const db = firebase.database();
     emailjs.init("HylSZExeEt-yXlXPl");
 
-    let role = '';
+    let currentRole = '';
     if(!localStorage.getItem('u')) { localStorage.setItem('u', 'admin'); localStorage.setItem('p', 'admin123'); }
 
-    function openGate(r) { role = r; document.getElementById('gate-modal').style.display='flex'; }
+    function openGate(r) { currentRole = r; document.getElementById('gate-modal').style.display='flex'; }
     function unlock() {
         if(document.getElementById('gu').value === localStorage.getItem('u') && document.getElementById('gp').value === localStorage.getItem('p')) {
-            Swal.fire({ title: 'SHALOM!', text: 'Karibu Ofisini', icon: 'success', background: '#020617', color: '#d4af37' });
             document.getElementById('gate-modal').style.display='none';
             document.getElementById('reception').style.display='none';
-            document.getElementById('wing-'+role).classList.add('active-wing');
-            if(role === 'mtumishi') loadData();
-        } else { Swal.fire('Error', 'Incorrect Credentials!', 'error'); }
+            document.querySelectorAll('.wing').forEach(w => w.classList.remove('active-wing'));
+            document.getElementById('wing-'+currentRole).classList.add('active-wing');
+            loadData();
+        } else { Swal.fire('Error', 'Username au Password siyo sahihi!', 'error'); }
     }
 
     function showRoom(id) {
         document.querySelectorAll('.room').forEach(r => r.style.display='none');
         document.getElementById(id).style.display='block';
         document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+        if(event) event.currentTarget.classList.add('active');
     }
 
     function showModal(id) { document.getElementById(id).style.display='flex'; }
 
-    function updateSecurity() {
-        const nu = document.getElementById('nu').value;
-        const np = document.getElementById('np').value;
-        if(nu && np) {
-            localStorage.setItem('u', nu); localStorage.setItem('p', np);
-            Swal.fire('Safi!', 'Login imebadilishwa.', 'success').then(() => location.reload());
+    // DATA SAVING
+    function saveSomo() {
+        const title = document.getElementById('s-title').value;
+        const body = document.getElementById('s-body').value;
+        if(title && body) {
+            db.ref('masomo').push({ title, body, date: new Date().toLocaleDateString() }).then(() => {
+                Swal.fire('Safi!', 'Somo limehifadhiwa kwenye Library', 'success');
+                document.getElementById('s-title').value=''; document.getElementById('s-body').value='';
+            });
         }
     }
 
-    // UPDATE GATEWAY
+    function saveMiracle() {
+        const jina = document.getElementById('m-jina').value;
+        const text = document.getElementById('m-text').value;
+        if(jina && text) {
+            db.ref('miracles').push({ jina, text, date: new Date().toLocaleDateString() }).then(() => {
+                Swal.fire('Utukufu kwa Mungu!', 'Ushuhuda wako umepokelewa', 'success');
+                document.getElementById('miracle-modal').style.display='none';
+            });
+        }
+    }
+
+    function saveFinance() {
+        db.ref('fedha').push({ aina: document.getElementById('f-type').value, jina: document.getElementById('f-jina').value, amt: parseInt(document.getElementById('f-amt').value), date: new Date().toLocaleDateString() });
+        Swal.fire('Success', 'Mapato yamehifadhiwa', 'success');
+    }
+
+    function saveRequest() {
+        db.ref('fedha').push({ aina: "MATUMIZI", jina: document.getElementById('req-for').value, amt: -parseInt(document.getElementById('req-amt').value), date: new Date().toLocaleDateString() });
+        Swal.fire('Warning', 'Matumizi yamepunguzwa kwenye Cash', 'warning');
+    }
+
+    function saveAsset() {
+        db.ref('assets').push({ name: document.getElementById('a-name').value, val: parseInt(document.getElementById('a-val').value), desc: document.getElementById('a-desc').value, date: new Date().toLocaleDateString() });
+        Swal.fire('Safi', 'Mali imethaminiwa', 'success');
+    }
+
+    function saveSettings() {
+        const u = document.getElementById('set-u').value;
+        const p = document.getElementById('set-p').value;
+        if(u && p) {
+            localStorage.setItem('u', u); localStorage.setItem('p', p);
+            Swal.fire('Safi!', 'Login Credentials zimebadilishwa', 'success');
+        }
+    }
+
+    // LOADING DATA
+    function loadData() {
+        // Assets
+        db.ref('assets').on('value', snap => {
+            let r = ''; let total = 0;
+            snap.forEach(i => { const v=i.val(); total += v.val; r = `<tr><td>${v.date}</td><td>${v.name}</td><td>${v.desc}</td><td>${v.val.toLocaleString()}</td></tr>` + r; });
+            document.getElementById('tb-assets-m').innerHTML = r;
+            document.getElementById('total-assets-val').innerText = total.toLocaleString();
+        });
+
+        // Finance
+        db.ref('fedha').on('value', snap => {
+            let r = ''; let bal = 0;
+            snap.forEach(i => { const v = i.val(); bal += v.amt; r = `<tr><td>${v.date}</td><td>${v.aina}</td><td>${v.jina}</td><td>${v.amt.toLocaleString()}</td></tr>` + r; });
+            document.getElementById('tb-finance').innerHTML = r;
+            document.getElementById('total-bal-m').innerText = bal.toLocaleString();
+        });
+
+        // Miracles
+        db.ref('miracles').on('value', snap => {
+            let r = ''; snap.forEach(i => { const v=i.val(); r = `<tr><td>${v.date}</td><td>${v.jina}</td><td>${v.text}</td></tr>` + r; });
+            document.getElementById('tb-miracles').innerHTML = r;
+        });
+
+        // Library (Masomo)
+        db.ref('masomo').on('value', snap => {
+            let r = ''; snap.forEach(i => { 
+                const v = i.val();
+                r += `<div class="glass-box" style="margin-bottom:10px;">
+                        <h4 style="color:var(--gold); margin:0;">${v.title} <small style="color:#94a3b8">(${v.date})</small></h4>
+                        <p style="font-size:13px; margin-top:10px;">${v.body}</p>
+                      </div>`;
+            });
+            document.getElementById('library-content').innerHTML = r;
+        });
+
+        // Waumini Count
+        db.ref('waumini').on('value', snap => { document.getElementById('cnt-w').innerText = snap.numChildren(); });
+    }
+
     function updateGateway() {
-        const pin = document.getElementById('gw-pin').value;
-        const link = document.getElementById('gw-link').value;
-        if(pin === localStorage.getItem('p')) {
-            db.ref('settings/sms_link').set(link).then(() => {
-                Swal.fire('Success!', 'SMS Engine Connected.', 'success');
+        if(document.getElementById('gw-pin').value === localStorage.getItem('p')) {
+            db.ref('settings/sms_link').set(document.getElementById('gw-link').value).then(() => {
+                Swal.fire('Engine Online', 'SMS Gateway Imewaka!', 'success');
                 document.getElementById('gateway-modal').style.display='none';
             });
-        } else { Swal.fire('Error', 'PIN Wrong!', 'error'); }
+        }
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf; const doc = new jsPDF();
+        doc.text("GGC FINANCIAL REPORT", 14, 15);
+        doc.autoTable({ html: '#tb-finance', startY: 25 });
+        doc.save("GGC_Report.pdf");
     }
 
     db.ref('settings/sms_link').on('value', snap => {
-        const link = snap.val();
-        document.getElementById('ext-status').innerHTML = link ? '<span style="color:#10b981">● SMS ONLINE</span>' : '<span style="color:red">● SMS OFFLINE</span>';
-        document.getElementById('gw-link').value = link || "";
+        document.getElementById('ext-status').innerHTML = snap.val() ? '<span style="color:#10b981">● SMS ENGINE LIVE</span>' : '<span style="color:red">● SMS ENGINE OFFLINE</span>';
     });
 
     document.getElementById('regForm').onsubmit = function(e) {
         e.preventDefault();
         const d = { jina: document.getElementById('rjina').value, email: document.getElementById('remail').value, simu: document.getElementById('rsimu').value, aina: document.getElementById('raina').value, tarehe: new Date().toLocaleDateString() };
-        
         db.ref('settings/sms_link').once('value').then(snap => {
-            const liveLink = snap.val();
+            const link = snap.val();
             db.ref('waumini').push(d).then(() => {
-                if(liveLink) {
-                    fetch(`${liveLink}/tuma?namba=${d.simu}&msg=SHALOM_${d.jina.replace(/ /g, "_")}_KARIBU_GGC`);
-                }
+                if(link) fetch(`${link}/tuma?namba=${d.simu}&msg=SHALOM_${d.jina.replace(/ /g, "_")}_KARIBU_GGC_HQ`);
                 emailjs.send("service_bd4djzs", "template_a5f74dr", { user_name: d.jina, user_email: d.email });
-                Swal.fire('Hongera!', 'Usajili na SMS vimetumwa.', 'success').then(() => location.reload());
+                Swal.fire('Safi!', 'Usajili na SMS zimeenda.', 'success').then(() => location.reload());
             });
         });
     };
-
-    function saveFin(path) {
-        let d = { tarehe: new Date().toLocaleDateString() };
-        if(path==='zaka'){ d.jina=document.getElementById('fz-jina').value; d.amt=parseFloat(document.getElementById('fz-amt').value); }
-        else { d.mchangiaji=document.getElementById('fd-jina').value; d.amt=parseFloat(document.getElementById('fd-amt').value); d.desc=document.getElementById('fd-desc').value; }
-        db.ref(path).push(d).then(() => { Swal.fire('Success', 'Imehifadhiwa', 'success').then(()=>location.reload()); });
-    }
-
-    function loadData() {
-        db.ref('waumini').on('value', snap => {
-            let r = ''; let w = 0; let g = 0;
-            snap.forEach(i => { const v=i.val(); v.aina==='Mshirika'?w++:g++; r = `<tr><td>${v.tarehe}</td><td>${v.jina}</td><td>${v.email}</td><td>${v.simu}</td><td>${v.aina}</td></tr>` + r; });
-            document.getElementById('tb-members').innerHTML = r;
-            document.getElementById('cnt-w').innerText = w; document.getElementById('cnt-g').innerText = g;
-        });
-        db.ref('zaka').on('value', snap => { let r=''; snap.forEach(i => { r = `<tr><td>${i.val().tarehe}</td><td>${i.val().jina}</td><td>${i.val().amt.toLocaleString()}</td></tr>` + r; }); document.getElementById('tb-zaka').innerHTML=r; });
-        db.ref('dharura').on('value', snap => { let r=''; snap.forEach(i => { r = `<tr><td>${i.val().tarehe}</td><td>${i.val().mchangiaji}</td><td>${i.val().amt.toLocaleString()}</td></tr>` + r; }); document.getElementById('tb-dharura').innerHTML=r; });
-    }
 </script>
 </body>
 </html>
