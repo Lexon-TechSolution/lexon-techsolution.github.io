@@ -5,10 +5,10 @@ import { ArrowUpRight, BookOpen } from 'lucide-react';
 const News: React.FC<{ lang: Language }> = ({ lang }) => {
   const articles = [
     {
-      title: lang === 'EN' ? "Business Automation in Tanzania: The 2025 Guide" : "Business Automation Tanzania: Mwongozo wa 2025",
-      slug: "business-automation-tanzania",
-      date: "Jan 2025",
-      // Picha ya Robot/Mifumo ya kisasa
+      title: lang === 'EN' ? "Business Automation in Tanzania: The 2026 Guide" : "Business Automation Tanzania: Mwongozo wa 2026",
+      // MUHIMU: Slug lazima ifanane na jina la faili kule GitHub
+      slug: "automation", 
+      date: "Jan 2026",
       image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
       tag: "Automation"
     },
@@ -16,7 +16,6 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
       title: lang === 'EN' ? "Inventory System vs Manual: Why Notebooks are Killing Profit" : "Inventory System vs Manual: Kwanini Daftari Inaua Faida",
       slug: "inventory-system-vs-manual",
       date: "Feb 2025",
-      // Picha ya Warehouse/Stoo iliyopangika
       image: "https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=2070&auto=format&fit=crop",
       tag: "Inventory"
     },
@@ -24,7 +23,6 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
       title: lang === 'EN' ? "Why Excel is Dangerous for Growing Businesses" : "Kwanini Excel ni Hatari kwa Biashara Inayokua",
       slug: "why-excel-is-dangerous-for-business",
       date: "Feb 2025",
-      // Picha ya Data/Graphs za biashara
       image: "https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=2070&auto=format&fit=crop",
       tag: "Expert Insight"
     }
@@ -51,7 +49,8 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
           {articles.map((art, i) => (
             <a 
               key={i} 
-              href={`https://lexon-techsolution.github.io/blog/${art.slug}`}
+              // TUMEONGEZA .html MWISHONI ILI LINK IFANYE KAZI GITHUB
+              href={`https://lexon-techsolution.github.io/blog/${art.slug}.html`}
               target="_blank" 
               rel="noopener noreferrer"
               className="group cursor-pointer flex flex-col h-full"
@@ -80,7 +79,7 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
 
               <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 overflow-hidden">
                 <BookOpen size={12} className="text-electric-cyan" />
-                lexon-techsolution.github.io/blog/{art.slug}
+                lexon-techsolution.github.io/blog/{art.slug}.html
               </div>
             </a>
           ))}
