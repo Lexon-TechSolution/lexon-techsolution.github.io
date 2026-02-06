@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Nimeongeza useEffect hapa
 import { Language } from './types';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -19,6 +18,16 @@ import ContactModal from './components/ContactModal';
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>(Language.EN);
   const [isContactOpen, setIsContactOpen] = useState(false);
+
+  // SEO Update: Hii inabadilisha jina la website yako Google bila kugusa index.html
+  useEffect(() => {
+    document.title = "Lexon Tech Solution | IT Solutions & Mifumo ya Mauzo (POS) Tanzania";
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Lexon Tech Solution: Tunatoa mifumo ya IT, Administration Systems, na POS kuzuia upotevu wa fedha na kuongeza mauzo kwa biashara Tanzania.");
+    }
+  }, []);
 
   const toggleLang = () => {
     setLang(prev => prev === Language.EN ? Language.SW : Language.EN);
