@@ -13,7 +13,7 @@ import TrustAuthority from './components/TrustAuthority';
 import News from './components/News';
 import WhyLexon from './components/WhyLexon';
 import Footer from './components/Footer';
-import ChatAssistant from './components/ChatAssistant';
+import ChatAssistant from './components/LexonBot.tsx';
 import ContactModal from './components/ContactModal';
 
 const App: React.FC = () => {
