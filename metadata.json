@@ -1,0 +1,9 @@
+
+{
+  "name": "Lexon Tech Solutions Co. Ltd",
+  "description": "High-end corporate website for Lexon Tech Solutions, focusing on business automation, ROI, and industry-specific digital transformations.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
