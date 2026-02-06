@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Language } from '../types';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, BookOpen } from 'lucide-react';
 
 const News: React.FC<{ lang: Language }> = ({ lang }) => {
   const articles = [
@@ -9,21 +8,24 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
       title: lang === 'EN' ? "Business Automation in Tanzania: The 2025 Guide" : "Business Automation Tanzania: Mwongozo wa 2025",
       slug: "business-automation-tanzania",
       date: "Jan 2025",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+      // Picha ya Robot/Mifumo ya kisasa
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
       tag: "Automation"
     },
     {
       title: lang === 'EN' ? "Inventory System vs Manual: Why Notebooks are Killing Profit" : "Inventory System vs Manual: Kwanini Daftari Inaua Faida",
       slug: "inventory-system-vs-manual",
       date: "Feb 2025",
-      image: "https://images.unsplash.com/photo-1586769852044-692d6e692453?q=80&w=2070&auto=format&fit=crop",
+      // Picha ya Warehouse/Stoo iliyopangika
+      image: "https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=2070&auto=format&fit=crop",
       tag: "Inventory"
     },
     {
       title: lang === 'EN' ? "Why Excel is Dangerous for Growing Businesses" : "Kwanini Excel ni Hatari kwa Biashara Inayokua",
       slug: "why-excel-is-dangerous-for-business",
       date: "Feb 2025",
-      image: "https://images.unsplash.com/photo-1543286386-713bdd548da4?q=80&w=2070&auto=format&fit=crop",
+      // Picha ya Data/Graphs za biashara
+      image: "https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=2070&auto=format&fit=crop",
       tag: "Expert Insight"
     }
   ];
@@ -47,7 +49,13 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {articles.map((art, i) => (
-            <div key={i} className="group cursor-pointer flex flex-col h-full">
+            <a 
+              key={i} 
+              href={`https://lexon-techsolution.github.io/blog/${art.slug}`}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group cursor-pointer flex flex-col h-full"
+            >
               <div className="overflow-hidden rounded-3xl mb-6 aspect-[16/10] relative">
                 <img 
                   src={art.image} 
@@ -56,6 +64,7 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
                 />
                 <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors"></div>
               </div>
+              
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-electric-cyan px-2.5 py-1 rounded-full bg-electric-cyan/10 border border-electric-cyan/20">
                   {art.tag}
@@ -64,13 +73,16 @@ const News: React.FC<{ lang: Language }> = ({ lang }) => {
                   {art.date}
                 </span>
               </div>
+
               <h4 className="text-lg md:text-xl font-bold text-white group-hover:text-electric-cyan transition-colors leading-snug mb-4 flex-grow">
                 {art.title}
               </h4>
-              <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 overflow-hidden whitespace-nowrap overflow-ellipsis">
-                lexontech.co.tz/blog/{art.slug}
+
+              <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest flex items-center gap-2 overflow-hidden">
+                <BookOpen size={12} className="text-electric-cyan" />
+                lexon-techsolution.github.io/blog/{art.slug}
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
