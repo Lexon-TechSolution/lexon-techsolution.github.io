@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { MessageSquare, X, Send, Bot, Sparkles, Bell, LayoutDashboard, AlertCircle, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { 
+  MessageSquare, X, Send, Bot, Sparkles, Bell, 
+  LayoutDashboard, AlertCircle, TrendingUp, CheckCircle2,
+  RotateCcw 
+} from 'lucide-react';
 
 const CONTACT_NUMBER = "+255 621 887 100";
 
-// MABADILIKO: Sasa inasoma kutoka kwenye .env file lako la terminal
+// Inasoma kutoka kwenye .env file lako
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY; 
 
 const MiniDemoView: React.FC = () => (
@@ -64,6 +68,20 @@ const LexonAI: React.FC = () => {
     }
   }, [messages, loading]);
 
+  // Function ya kuanza upya mazungumzo
+  const resetChat = () => {
+    if (window.confirm("Je, unataka kuanza audit upya?")) {
+      setMessages([
+        { 
+          role: 'model', 
+          text: 'Habari! Karibu Lexon AI Assistant. Nitakuuliza maswali 5 pekee kugundua kama biashara yako inapoteza pesa bila wewe kujua.\n\nTayari? Tuiteanze. Unafanya biashara ya aina gani?' 
+        }
+      ]);
+      setInput('');
+      setLoading(false);
+    }
+  };
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
@@ -77,33 +95,17 @@ const LexonAI: React.FC = () => {
     setTimeout(() => setLastLead(null), 6000);
 
     try {
-      // Uhakiki kama Key ipo
       if (!GEMINI_API_KEY) {
-        throw new Error("API Key haijaonekana kwenye .env file");
+        throw new Error("API Key missing");
       }
 
       const genAI = new GoogleGenAI(GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
+        model: "gemini-1.5-flash", // Imetumika stable model hapa
         systemInstruction: `You are "Lexon AI Business Diagnostic Assistant" by Lexon Tech Solutions. CEO: Mohamedi M. Saidi.
-
-MISSION:
-Diagnose business weaknesses and guide them to Lexon automation.
-
-CONVERSATION FLOW (STRICT):
-Step 1: Ask "What type of business do you run?" (Already asked in greeting)
-Step 2: Ask "How do you record sales and stock? (notebook, Excel, or system?)"
-Step 3: Ask "Can you see today's sales report within 10 seconds?"
-Step 4: Ask "How many employees handle stock or sales?"
-Step 5: Ask "Have you ever experienced stock loss or record confusion?"
-
-RULES:
-- Ask ONE question at a time. Wait for answer.
-- Detect user's language (Swahili or English) automatically and continue in it.
-- After all questions, provide a CONCLUSION: Tell them their business is losing money/control.
-- MINI-DEMO: Include the tag [SHOW_DEMO] in your response after the conclusion.
-- CTA: End with: "Je, ungependa kupanga demo ya bure?" and provide WhatsApp: ${CONTACT_NUMBER}.
-- Stay professional and consultative.`
+        MISSION: Diagnose business weaknesses and guide them to Lexon automation.
+        CONVERSATION FLOW: Ask 5 questions (Business type, recording method, report speed, staff count, loss history).
+        RULES: One question at a time. Use Swahili/English. Tag [SHOW_DEMO] at the end of conclusion.`
       });
 
       const chat = model.startChat({
@@ -148,7 +150,7 @@ RULES:
               <div className="bg-electric-cyan/20 p-2.5 rounded-full h-fit text-electric-cyan animate-pulse"><Sparkles size={18} /></div>
               <div>
                 <p className="text-slate-900 text-[13px] font-black uppercase tracking-tight">Audit Biashara Yako</p>
-                <p className="text-slate-600 text-xs">Gundua kama unapoteza pesa bila kujua. Hebu nikuulize maswali 5 pekee...</p>
+                <p className="text-slate-600 text-xs">Gundua kama unapoteza pesa bila kujua...</p>
               </div>
             </div>
           </div>
@@ -163,28 +165,30 @@ RULES:
             <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-slate-950 animate-pulse flex items-center justify-center text-[10px] font-black text-white">1</span>
           </button>
         ) : (
-          <div className="w-full h-full md:w-[420px] md:h-[650px] bg-[#020617] md:glass md:rounded-[2.5rem] flex flex-col shadow-2xl border-white/10 overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="bg-electric-cyan p-5 md:p-6 flex justify-between items-center border-b border-white/10 shrink-0">
+          <div className="w-full h-full md:w-[420px] md:h-[650px] bg-[#020617] md:rounded-[2.5rem] flex flex-col shadow-2xl border border-white/10 overflow-hidden animate-in zoom-in-95 duration-300">
+            {/* HEADER NA KITUFE CHA RESET */}
+            <div className="bg-electric-cyan p-5 flex justify-between items-center border-b border-white/10 shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-slate-950 rounded-2xl flex items-center justify-center border border-white/20"><Bot className="text-electric-cyan" size={24} /></div>
+                <div className="w-10 h-10 bg-slate-950 rounded-xl flex items-center justify-center"><Bot className="text-electric-cyan" size={20} /></div>
                 <div>
-                  <h3 className="text-slate-950 font-black text-sm uppercase tracking-widest leading-none">Lexon AI Diagnostic</h3>
-                  <div className="flex items-center gap-1.5 mt-1"><span className="w-2 h-2 bg-green-900 rounded-full animate-pulse"></span><span className="text-slate-900 text-[10px] uppercase font-black tracking-widest">Active Audit</span></div>
+                  <h3 className="text-slate-950 font-black text-xs uppercase tracking-widest">Lexon AI</h3>
+                  <div className="flex items-center gap-1 mt-0.5"><span className="w-1.5 h-1.5 bg-green-900 rounded-full animate-pulse"></span><span className="text-slate-900 text-[9px] font-black uppercase">Live Audit</span></div>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsOpen(false)} 
-                className="text-slate-950 hover:bg-slate-950/20 p-3 rounded-full transition-colors"
-                title="Funga Chat"
-              >
-                <X size={28} />
-              </button>
+              <div className="flex items-center gap-1">
+                <button onClick={resetChat} title="Anza upya" className="p-2 text-slate-950 hover:bg-black/10 rounded-lg transition-colors">
+                  <RotateCcw size={18} />
+                </button>
+                <button onClick={() => setIsOpen(false)} className="p-2 text-slate-950 hover:bg-black/10 rounded-lg">
+                  <X size={24} />
+                </button>
+              </div>
             </div>
 
             <div ref={scrollRef} className="flex-grow overflow-y-auto p-5 space-y-6 bg-slate-950/40">
               {messages.map((m, i) => (
                 <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`max-w-[85%] p-4 rounded-2xl text-[14px] leading-relaxed shadow-lg ${
+                  <div className={`max-w-[85%] p-4 rounded-2xl text-[14px] leading-relaxed ${
                     m.role === 'user' 
                     ? 'bg-electric-cyan text-slate-950 font-bold rounded-tr-none' 
                     : 'bg-white/10 text-slate-100 border border-white/10 rounded-tl-none backdrop-blur-md'
@@ -193,14 +197,12 @@ RULES:
                     {m.isDemo && <MiniDemoView />}
                   </div>
                   {m.isDemo && (
-                    <div className="mt-3 flex flex-col gap-2 w-full max-w-[85%]">
-                      <button 
-                        onClick={() => window.open(`https://wa.me/255621887100?text=Habari, nimefanya audit na Lexon AI, nahitaji book free demo ya mfumo.`, '_blank')}
-                        className="w-full py-3 bg-green-500/20 text-green-400 rounded-xl text-xs font-black uppercase tracking-widest border border-green-500/20 flex items-center justify-center gap-2 hover:bg-green-500/30 transition-all"
-                      >
-                        <CheckCircle2 size={14} /> Book Free Demo
-                      </button>
-                    </div>
+                    <button 
+                      onClick={() => window.open(`https://wa.me/255621887100?text=Habari, nimefanya audit na Lexon AI...`, '_blank')}
+                      className="mt-3 w-[85%] py-3 bg-green-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-green-600 transition-all shadow-lg shadow-green-500/20"
+                    >
+                      <CheckCircle2 size={14} /> Book Free Demo Now
+                    </button>
                   )}
                 </div>
               ))}
@@ -210,20 +212,19 @@ RULES:
                     <span className="w-1.5 h-1.5 bg-electric-cyan rounded-full animate-bounce"></span>
                     <span className="w-1.5 h-1.5 bg-electric-cyan rounded-full animate-bounce [animation-delay:0.2s]"></span>
                     <span className="w-1.5 h-1.5 bg-electric-cyan rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                    <span className="text-[10px] text-slate-500 font-bold ml-2 uppercase tracking-widest italic">Analyzing records...</span>
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="p-5 border-t border-white/5 bg-slate-950/90 pb-8 md:pb-5">
+            <div className="p-5 border-t border-white/5 bg-slate-950/90">
               <div className="flex gap-3">
                 <input 
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Andika jibu hapa..."
-                  className="flex-grow bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:border-electric-cyan outline-none text-white transition-all placeholder:text-slate-600"
+                  placeholder="Andika hapa..."
+                  className="flex-grow bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm outline-none text-white focus:border-electric-cyan transition-all"
                 />
                 <button 
                   onClick={handleSend} 
