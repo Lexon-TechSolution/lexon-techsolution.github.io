@@ -1,9 +1,11 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { MessageSquare, X, Send, Bot, Sparkles, Bell, LayoutDashboard, AlertCircle, TrendingUp, CheckCircle2 } from 'lucide-react';
 
 const CONTACT_NUMBER = "+255 621 887 100";
+
+// MABADILIKO: Sasa inasoma kutoka kwenye .env file lako la terminal
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY; 
 
 const MiniDemoView: React.FC = () => (
   <div className="bg-slate-900/95 border border-electric-cyan/40 rounded-2xl p-4 my-4 overflow-hidden animate-in fade-in slide-in-from-bottom-2 shadow-2xl">
@@ -71,20 +73,19 @@ const LexonAI: React.FC = () => {
     setLoading(true);
     setShowGreeting(false);
 
-    // Lead Capture Notification
     setLastLead({ name: "Mteja", text: userMsg });
     setTimeout(() => setLastLead(null), 6000);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: messages.map(m => ({
-          role: m.role,
-          parts: [{ text: m.text }]
-        })).concat({ role: 'user', parts: [{ text: userMsg }] }),
-        config: {
-          systemInstruction: `You are "Lexon AI Business Diagnostic Assistant" by Lexon Tech Solutions. CEO: Mohamedi M. Saidi.
+      // Uhakiki kama Key ipo
+      if (!GEMINI_API_KEY) {
+        throw new Error("API Key haijaonekana kwenye .env file");
+      }
+
+      const genAI = new GoogleGenAI(GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        systemInstruction: `You are "Lexon AI Business Diagnostic Assistant" by Lexon Tech Solutions. CEO: Mohamedi M. Saidi.
 
 MISSION:
 Diagnose business weaknesses and guide them to Lexon automation.
@@ -102,17 +103,26 @@ RULES:
 - After all questions, provide a CONCLUSION: Tell them their business is losing money/control.
 - MINI-DEMO: Include the tag [SHOW_DEMO] in your response after the conclusion.
 - CTA: End with: "Je, ungependa kupanga demo ya bure?" and provide WhatsApp: ${CONTACT_NUMBER}.
-- Stay professional and consultative.`,
-        },
+- Stay professional and consultative.`
       });
 
-      const aiText = response.text || "Naelewa. Tuendelee...";
+      const chat = model.startChat({
+        history: messages.map(m => ({
+          role: m.role === 'user' ? 'user' : 'model',
+          parts: [{ text: m.text }],
+        })),
+      });
+
+      const result = await chat.sendMessage(userMsg);
+      const aiText = result.response.text();
+      
       const hasDemo = aiText.includes("[SHOW_DEMO]");
       const cleanText = aiText.replace("[SHOW_DEMO]", "");
 
       setMessages(prev => [...prev, { role: 'model', text: cleanText, isDemo: hasDemo }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'model', text: "Samahani, kuna tatizo la mtandao. Unaweza kumpata CEO moja kwa moja hapa: " + CONTACT_NUMBER }]);
+      console.error(error);
+      setMessages(prev => [...prev, { role: 'model', text: "Samahani, kuna tatizo la mtandao au API Key. Unaweza kumpata CEO moja kwa moja hapa: " + CONTACT_NUMBER }]);
     } finally {
       setLoading(false);
     }
@@ -120,7 +130,6 @@ RULES:
 
   return (
     <>
-      {/* Real-time Lead Alert */}
       {lastLead && (
         <div className="fixed top-20 right-4 z-[200] bg-slate-900 border-l-4 border-electric-cyan p-4 rounded-xl shadow-2xl animate-in slide-in-from-right-full duration-500 max-w-[280px]">
           <div className="flex items-center gap-2 mb-1.5">
@@ -132,7 +141,6 @@ RULES:
       )}
 
       <div className={`fixed z-[100] font-sans transition-all duration-300 ${isOpen ? 'inset-0 md:inset-auto md:bottom-6 md:right-6' : 'bottom-6 right-6'}`}>
-        {/* Proactive Greeting */}
         {showGreeting && !isOpen && (
           <div className="absolute bottom-20 right-0 w-72 bg-white p-5 rounded-2xl shadow-2xl border border-electric-cyan/20 animate-in fade-in slide-in-from-bottom-4 group cursor-pointer" onClick={() => setIsOpen(true)}>
             <button onClick={(e) => { e.stopPropagation(); setShowGreeting(false); }} className="absolute -top-2 -right-2 bg-slate-900 text-white rounded-full p-1.5 shadow-lg"><X size={12} /></button>
@@ -156,7 +164,6 @@ RULES:
           </button>
         ) : (
           <div className="w-full h-full md:w-[420px] md:h-[650px] bg-[#020617] md:glass md:rounded-[2.5rem] flex flex-col shadow-2xl border-white/10 overflow-hidden animate-in zoom-in-95 duration-300">
-            {/* Header */}
             <div className="bg-electric-cyan p-5 md:p-6 flex justify-between items-center border-b border-white/10 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-slate-950 rounded-2xl flex items-center justify-center border border-white/20"><Bot className="text-electric-cyan" size={24} /></div>
@@ -165,10 +172,15 @@ RULES:
                   <div className="flex items-center gap-1.5 mt-1"><span className="w-2 h-2 bg-green-900 rounded-full animate-pulse"></span><span className="text-slate-900 text-[10px] uppercase font-black tracking-widest">Active Audit</span></div>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-slate-950 hover:bg-slate-950/10 p-2 rounded-full"><X size={24} /></button>
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="text-slate-950 hover:bg-slate-950/20 p-3 rounded-full transition-colors"
+                title="Funga Chat"
+              >
+                <X size={28} />
+              </button>
             </div>
 
-            {/* Content */}
             <div ref={scrollRef} className="flex-grow overflow-y-auto p-5 space-y-6 bg-slate-950/40">
               {messages.map((m, i) => (
                 <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
@@ -204,7 +216,6 @@ RULES:
               )}
             </div>
 
-            {/* Input */}
             <div className="p-5 border-t border-white/5 bg-slate-950/90 pb-8 md:pb-5">
               <div className="flex gap-3">
                 <input 
