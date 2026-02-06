@@ -9,7 +9,7 @@ import {
 const CONTACT_NUMBER = "+255 621 887 100";
 
 // NIMEPESITI KEY YAKO HAPA MOJA KWA MOJA ILI KUONDOA SHIDA YA .ENV
-const GEMINI_API_KEY = "AIzaSyCUUZWPPVT8k5m1Gi-O488OJpFL5B9sFVg"; 
+const GEMINI_API_KEY = "AIzaSyCSvFaNB3m1CZpOYLWLezh9JaOZtp9fWyw; 
 
 const MiniDemoView: React.FC = () => (
   <div className="bg-slate-900/95 border border-electric-cyan/40 rounded-2xl p-4 my-4 overflow-hidden animate-in fade-in slide-in-from-bottom-2 shadow-2xl">
