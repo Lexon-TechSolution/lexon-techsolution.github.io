@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eMINISTRY Platform | School, Church & Business ERP Systems Tanzania</title>
+  
+  <meta name="description" content="eMinistry Platform inatoa Mifumo ya Shule (MSSIS - GPA & Parents SMS), Mifumo ya Parishi (eMinistry Grace ERP), na Mifumo ya Biashara Tanzania. Pata mifumo bora sasa.">
+  <meta name="keywords" content="School Management System, MSSIS, Church ERP Tanzania, eMinistry Platform, IT Solutions Tanzania, ERP Systems Tanzania, Mifumo ya POS, Website Design Tanzania, IT Support Dar es Salaam, Business Automation">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Alpine.js (for simple static interactivity & routing) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #03040b;
+      color: #cbd5e1;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #635bff 0%, #d946ef 50%, #0ea5e9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: shimmer 6s linear infinite;
+    }
+    @keyframes shimmer {
+      to { background-position: 200% center; }
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .neon-border-tz {
+      border: 2px solid #16a34a;
+      border-color: #16a34a #f59e0b #2563eb #1e293b;
+      background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+      box-shadow: 0 0 30px rgba(37, 99, 235, 0.35), inset 0 0 15px rgba(245, 158, 11, 0.1);
+    }
+    .neon-border-purple {
+      border: 1.5px solid rgb(120, 110, 255);
+      background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+      box-shadow: 0 0 25px rgba(120, 110, 255, 0.45);
+    }
+    .neon-border-cyan {
+      border: 1.5px solid rgb(30, 190, 255);
+      background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+      box-shadow: 0 0 25px rgba(30, 190, 255, 0.45);
+    }
+    .neon-border-orange {
+      border: 1.5px solid rgb(255, 130, 40);
+      background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+      box-shadow: 0 0 25px rgba(255, 130, 40, 0.45);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
+    }
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+<body x-data="appState()" x-init="initApp()" class="selection:bg-cyan-500/30 selection:text-white">
+
+  <!-- Glow effects in background -->
+  <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#635bff]/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#0ea5e9]/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+  <!-- Header -->
+  <header class="fixed top-0 inset-x-0 bg-slate-950/75 backdrop-blur-xl border-b border-white/5 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" @click="navigate('#/')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#635bff] to-[#0ea5e9] flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <div class="leading-none">
+          <span class="text-lg font-black text-white tracking-tight block">eMINISTRY</span>
+          <span class="text-[9px] uppercase tracking-[0.25em] text-cyan-400 font-bold block">Tanzania ERP</span>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Navbar -->
+      <nav class="hidden md:flex items-center gap-1">
+        <template x-for="link in navLinks">
+          <button 
+            @click="navigate(link.hash)"
+            :class="currentPage === link.id ? 'text-cyan-400 bg-white/5 font-bold' : 'text-slate-300 hover:text-white hover:bg-white/5'"
+            class="px-4 py-2 rounded-full text-xs transition duration-300 tracking-wide block"
+            x-text="link.label">
+          </button>
+        </template>
+      </nav>
+
+      <div class="hidden md:flex items-center gap-4">
+        <button @click="navigate('#/dashboard')" class="text-xs text-slate-300 hover:text-white flex items-center gap-1 px-4 py-2 rounded-full hover:bg-white/5 border border-white/10">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Admin Hub
+        </button>
+        <button @click="navigate('#/contact')" class="bg-gradient-to-r from-[#635bff] to-[#0ea5e9] hover:opacity-90 text-white text-xs font-bold px-5 py-2.5 rounded-full transition shadow-md shadow-[#635bff]/20">
+          Tengeneza Mfumo
+        </button>
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button @click="showMobileMenu = !showMobileMenu" class="md:hidden text-slate-300 hover:text-white p-2">
+        <i :data-lucide="showMobileMenu ? 'x' : 'menu'" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div x-show="showMobileMenu" x-cloak class="fixed inset-0 bg-slate-950/95 z-40 md:hidden flex flex-col justify-center px-6 animate-fade-in pt-20">
+    <div class="space-y-6">
+      <template x-for="link in navLinks">
+        <button 
+          @click="navigate(link.hash); showMobileMenu = false"
+          :class="currentPage === link.id ? 'text-cyan-400 font-black' : 'text-slate-300 hover:text-white'"
+          class="block text-2xl font-display text-left font-bold tracking-tight"
+          x-text="link.label">
+        </button>
+      </template>
+      <div class="h-px bg-white/10 my-6"></div>
+      <div class="flex flex-col gap-4">
+        <button @click="navigate('#/dashboard'); showMobileMenu = false;" class="text-left text-lg text-slate-300 hover:text-white flex items-center gap-2">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Admin Hub / Leads
+        </button>
+        <button @click="navigate('#/contact'); showMobileMenu = false" class="bg-gradient-to-r from-[#635bff] to-[#0ea5e9] text-white text-center font-bold py-4 rounded-2xl shadow-lg">
+          Mawasiliano / Demu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <main class="pt-24 min-h-screen relative z-10 flex flex-col">
+
+    <!-- HOME PAGE -->
+    <div x-show="currentPage === 'home'" x-cloak class="space-y-24 pb-20">
+      
+      <!-- HERO SECTIONS WITH SLIDER -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+          <!-- Text Columns -->
+          <div class="lg:col-span-6 space-y-8 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> Mfumo Namba Moja Tanzania
+            </div>
+            <h1 class="text-5xl sm:text-7xl font-display font-black leading-tight text-white tracking-tighter">
+              Mifumo Yenye Akili <br class="hidden sm:inline">
+              Kuimarisha <span class="gradient-text">Taasisi Yako.</span>
+            </h1>
+            <p class="text-lg text-slate-400 max-w-xl mx-auto lg:mx-0">
+              eMinistry Platform inasaidia parishi, dioceses na shule kote nchini Tanzania kupata mifumo mizuri ya ERP inayorun online, Selcom mobile payments, Next SMS notifications, na NECTA Auto-calculations.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <button @click="navigate('#/contact')" class="w-full sm:w-auto bg-gradient-to-r from-[#635bff] to-[#0ea5e9] hover:opacity-90 text-white font-bold px-8 py-4 rounded-full transition shadow-lg shadow-[#635bff]/20 flex items-center justify-center gap-2">
+                Pata Demo Bure <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+              <button @click="navigate('#/services')" class="w-full sm:w-auto border border-white/10 hover:bg-white/5 text-white font-bold px-8 py-4 rounded-full transition flex items-center justify-center gap-2">
+                Tazama Huduma
+              </button>
+            </div>
+          </div>
+
+          <!-- Hero Graphic Slide Switcher Column -->
+          <div class="lg:col-span-6">
+            <div class="glass-card rounded-[32px] p-6 border-white/10 relative overflow-hidden h-[450px] flex flex-col justify-between">
+              
+              <!-- SLIDE 1: Worship Service -->
+              <div x-show="activeSlide === 0" class="h-full flex flex-col justify-between" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
+                <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                  <div class="flex items-center gap-2">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                    </span>
+                    <span class="text-xs font-mono text-amber-400 uppercase tracking-wider font-bold">SUNDAY WORSHIP BULLET</span>
+                  </div>
+                  <span class="text-[10px] bg-white/5 text-slate-300 font-mono px-2.5 py-1 rounded border border-white/5">GRACE & GLORY CHURCH (T)</span>
+                </div>
+                
+                <div class="my-6 space-y-4">
+                  <h3 class="text-3xl font-black text-white font-display tracking-tight leading-tight uppercase">
+                    MTUMISHI PASTOR HANS<br />
+                    <span class="gradient-text">FAITH IN ACTION</span>
+                  </h3>
+                  <p class="text-sm text-slate-400 leading-relaxed">
+                    Ungana nasi kila siku ya Jumapili kuanzia saa 02:00 asubuhi katika ibada takatifu ya sifa na maombi chini ya mwongozo wa Pastor Hans pale Chanika Zingiziwa, Dar es Salaam.
+                  </p>
+                </div>
+                
+                <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                      <i data-lucide="phone" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                      <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Worship Direct Hotline</span>
+                      <span class="text-sm font-bold text-white">+255 621 887 100</span>
+                    </div>
+                  </div>
+                  <a href="tel:+255621887100" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-4 py-2 rounded-xl text-xs transition">
+                    Piga Simu
+                  </a>
+                </div>
+              </div>
+
+              <!-- SLIDE 2: MSSIS Portal Preview -->
+              <div x-show="activeSlide === 1" class="h-full flex flex-col justify-between" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
+                <div class="flex items-center justify-between border-b border-white/5 pb-4">
+                  <div class="flex items-center gap-2">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                    </span>
+                    <span class="text-xs font-mono text-cyan-400 uppercase tracking-wider font-bold">MSSIS AUTO-GRADING ENGINE</span>
+                  </div>
+                  <span class="text-[10px] bg-white/5 text-slate-300 font-mono px-2.5 py-1 rounded border border-white/5">NECTA STANDARD CERTIFIED</span>
+                </div>
+                
+                <div class="my-6 space-y-4">
+                  <h3 class="text-3xl font-black text-white font-display tracking-tight leading-tight">
+                    Mifumo ya Shule <br />
+                    <span class="gradient-text">MSSIS GPA Engine</span>
+                  </h3>
+                  <p class="text-sm text-slate-400 leading-relaxed">
+                    Ondoa hesabu za mkono! Mfumo unapiga Divisheni, GPA, na nafasi (Positioning) kiotomatiki kwa viwango vipya kabisa vya NECTA vya shule za Msingi na Sekondari.
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-slate-950/40 border border-white/5 rounded-2xl p-3.5 text-center">
+                    <span class="text-2xl font-black text-white font-display leading-none block">100%</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 mt-1 block">Yasiyo na Makosa</span>
+                  </div>
+                  <div class="bg-slate-950/40 border border-white/5 rounded-2xl p-3.5 text-center">
+                    <span class="text-2xl font-black text-cyan-400 font-display leading-none block">1-Sec</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 mt-1 block">Uzalishaji Ripoti</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slider Navigation Dot Indicators -->
+              <div class="flex justify-between items-center mt-6 pt-4 border-t border-white/5">
+                <div class="flex gap-1.5">
+                  <button @click="activeSlide = 0" :class="activeSlide === 0 ? 'bg-amber-400 w-8' : 'bg-slate-600 hover:bg-slate-500 w-2.5'" class="h-2.5 rounded-full transition-all duration-300"></button>
+                  <button @click="activeSlide = 1" :class="activeSlide === 1 ? 'bg-cyan-400 w-8' : 'bg-slate-600 hover:bg-slate-500 w-2.5'" class="h-2.5 rounded-full transition-all duration-300"></button>
+                </div>
+                <div class="flex gap-2 text-slate-400">
+                  <button @click="activeSlide = activeSlide === 0 ? 1 : 0" class="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center hover:bg-white/5 hover:text-white transition">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                  </button>
+                  <button @click="activeSlide = activeSlide === 1 ? 0 : 1" class="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center hover:bg-white/5 hover:text-white transition">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BRAND PARTNERS SLIDER -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-y border-white/5 bg-slate-950/30 overflow-hidden">
+        <p class="text-center text-[10px] uppercase tracking-[0.25em] font-extrabold text-cyan-400 mb-8 font-mono">WASHIRIKA WAKUBWA WA MIFUMO YETU NCHINI TANZANIA</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          <div class="neon-border-tz rounded-2xl p-4 text-center">
+            <span class="text-xs font-black text-white block">TEC</span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 mt-1 block">Episcopal Standards</span>
+          </div>
+          <div class="neon-border-purple rounded-2xl p-4 text-center">
+            <span class="text-xs font-black text-white block">Selcom</span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 mt-1 block">Payment Gateway</span>
+          </div>
+          <div class="neon-border-cyan rounded-2xl p-4 text-center">
+            <span class="text-xs font-black text-white block">Next SMS</span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 mt-1 block">SMS Operators</span>
+          </div>
+          <div class="neon-border-orange rounded-2xl p-4 text-center">
+            <span class="text-xs font-black text-white block">TAG</span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 mt-1 block">Grace & Glory</span>
+          </div>
+          <div class="border border-white/5 rounded-2xl p-4 text-center bg-slate-900/60">
+            <span class="text-xs font-black text-white block">CCT</span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 mt-1 block">Ecumenical Net</span>
+          </div>
+          <div class="border border-white/5 rounded-2xl p-4 text-center bg-slate-900/60">
+            <span class="text-xs font-black text-white block">KKKT</span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 mt-1 block">Church Networks</span>
+          </div>
+          <div class="border border-white/5 rounded-2xl p-4 text-center bg-slate-900/60">
+            <span class="text-xs font-black text-white block">ACT Diocese</span>
+            <span class="text-[9px] uppercase tracking-wider text-slate-400 mt-1 block">Anglican Church (T)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- INTERACTIVE TANZANIAN SYSTEM MOCKUPS PORTAL -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4 font-mono">
+            Onyesho Maalum (Live Interactivity)
+          </div>
+          <h2 class="text-4xl sm:text-5xl font-display font-black text-white tracking-tight leading-tight">
+            Tazama Jinsi Mifumo Yetu <br />
+            <span class="gradient-text">Inavyofanya Kazi Live</span>
+          </h2>
+          <p class="text-slate-400 mt-4">
+            Bonyeza tab hapa chini ili kufungua simulation na kuanza kujaribu vipengele mbalimbali vya Mifumo yetu.
+          </p>
+        </div>
+
+        <div class="flex justify-center gap-2 mb-12 flex-wrap">
+          <button @click="activeMockup = 'mssis'" :class="activeMockup === 'mssis' ? 'bg-[#0066D6] text-white font-bold border-transparent' : 'border border-white/10 text-slate-300 hover:bg-white/5'" class="px-5 py-3 rounded-xl text-xs uppercase tracking-wider transition-all">
+            🏫 MSSIS NECTA Auto-Grade
+          </button>
+          <button @click="activeMockup = 'church'" :class="activeMockup === 'church' ? 'bg-[#10b981] text-white font-bold border-transparent' : 'border border-white/10 text-slate-300 hover:bg-white/5'" class="px-5 py-3 rounded-xl text-xs uppercase tracking-wider transition-all">
+            ⛪ eMinistry Grace ERP Ledger
+          </button>
+          <button @click="activeMockup = 'sms'" :class="activeMockup === 'sms' ? 'bg-[#f97316] text-white font-bold border-transparent' : 'border border-white/10 text-slate-300 hover:bg-white/5'" class="px-5 py-3 rounded-xl text-xs uppercase tracking-wider transition-all">
+            📱 Next SMS Broadcaster
+          </button>
+        </div>
+
+        <!-- MOCKUP CONTAINER -->
+        <div class="max-w-4xl mx-auto">
+          
+          <!-- MSSIS ACADEMIC PANEL -->
+          <div x-show="activeMockup === 'mssis'" class="bg-slate-900 border border-slate-700/60 rounded-3xl overflow-hidden shadow-2xl font-sans text-slate-800">
+            <div class="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700/50">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span class="text-[10px] text-slate-400 font-mono ml-2">mssis.eministry.co.tz/panel</span>
+              </div>
+              <span class="text-[10px] text-cyan-400 font-mono font-bold bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-900/30">AUTO CALC: ON</span>
+            </div>
+            
+            <div class="flex flex-col md:flex-row h-[420px] bg-slate-50 text-[11px] overflow-hidden">
+              <!-- Left Mini menu -->
+              <div class="w-full md:w-44 bg-[#0066D6] text-white p-4 flex flex-col justify-between flex-shrink-0">
+                <div class="space-y-4">
+                  <div class="flex items-center gap-2 pb-3 border-b border-white/10">
+                    <div class="w-6 h-6 rounded bg-white flex items-center justify-center text-[#0066D6] font-bold">M</div>
+                    <span class="font-bold uppercase tracking-wide text-xs">MSSIS Portal</span>
+                  </div>
+                  <div class="space-y-1">
+                    <span class="block px-3 py-1.5 rounded-lg bg-white/20 font-bold cursor-pointer">🏫 Academics</span>
+                    <span class="block px-3 py-1.5 rounded-lg text-blue-100 hover:bg-white/10 cursor-pointer">📊 Result Slips</span>
+                    <span class="block px-3 py-1.5 rounded-lg text-blue-100 hover:bg-white/10 cursor-pointer">💬 Parent SMS</span>
+                  </div>
+                </div>
+                <div class="text-[10px] text-blue-200">Dar es Salaam Gateway</div>
+              </div>
+
+              <!-- Workspace Swahili Grade Calculator Simulator -->
+              <div class="flex-1 bg-white p-5 overflow-y-auto text-slate-700">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+                  <div>
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">NECTA Division Engine</span>
+                    <h4 class="text-sm font-black text-slate-900">Swahili/English Marks Calculator</h4>
+                  </div>
+                  <span class="text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">NECTA Formula Standard</span>
+                </div>
+
+                <div class="space-y-4">
+                  <!-- Input Grid -->
+                  <div class="bg-slate-50 border border-slate-150 rounded-xl p-3.5 space-y-3">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Ingiza Alama za Mwanafunzi Upone Mahesabu (Demo):</p>
+                    <div class="grid grid-cols-4 gap-2">
+                      <div>
+                        <label class="block text-[9px] font-bold text-slate-500 mb-1">CIVICS</label>
+                        <input type="number" x-model.number="mssisMarks.civ" class="w-full bg-white border border-slate-300 rounded p-1 text-center font-bold text-xs" max="100">
+                      </div>
+                      <div>
+                        <label class="block text-[9px] font-bold text-slate-500 mb-1">HISTORY</label>
+                        <input type="number" x-model.number="mssisMarks.his" class="w-full bg-white border border-slate-300 rounded p-1 text-center font-bold text-xs" max="100">
+                      </div>
+                      <div>
+                        <label class="block text-[9px] font-bold text-slate-500 mb-1">GEO</label>
+                        <input type="number" x-model.number="mssisMarks.geo" class="w-full bg-white border border-slate-300 rounded p-1 text-center font-bold text-xs" max="100">
+                      </div>
+                      <div>
+                        <label class="block text-[9px] font-bold text-slate-500 mb-1">KISW</label>
+                        <input type="number" x-model.number="mssisMarks.kis" class="w-full bg-white border border-slate-300 rounded p-1 text-center font-bold text-xs" max="100">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Output Summary Box -->
+                  <div class="bg-[#0066D6]/5 border border-[#0066D6]/20 rounded-xl p-4 grid grid-cols-2 gap-4">
+                    <div class="text-center border-r border-slate-200">
+                      <span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase block font-mono">GPA Score</span>
+                      <span class="text-3xl font-black text-[#0066D6] font-display mt-1 block" x-text="calculateMssisGPA()">--</span>
+                    </div>
+                    <div class="text-center">
+                      <span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase block font-mono">NECTA Division</span>
+                      <span class="text-3xl font-black text-emerald-600 font-display mt-1 block" x-text="calculateMssisDiv()">--</span>
+                    </div>
+                  </div>
+                  
+                  <p class="text-[10px] text-slate-400 text-center italic">Ingiza namba yoyote kati ya 0 na 100 juu, Divisheni itabadilika automatiki!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHURCH LEDGER PANEL -->
+          <div x-show="activeMockup === 'church'" class="bg-slate-900 border border-slate-700/60 rounded-3xl overflow-hidden shadow-2xl font-sans text-slate-800" x-cloak>
+            <div class="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700/50">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span class="text-[10px] text-slate-400 font-mono ml-2">portal.eministry.co.tz/tag-chanika</span>
+              </div>
+              <span class="text-[10px] text-emerald-400 font-mono font-bold bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-900/30">SELCOM SECURED</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row h-[420px] bg-slate-50 text-[11px] overflow-hidden">
+              <!-- Left Mini menu -->
+              <div class="w-full md:w-44 bg-[#10b981] text-white p-4 flex flex-col justify-between flex-shrink-0">
+                <div class="space-y-4">
+                  <div class="flex items-center gap-2 pb-3 border-b border-white/10">
+                    <div class="w-6 h-6 rounded bg-white flex items-center justify-center text-[#10b981] font-bold">⛪</div>
+                    <span class="font-bold uppercase tracking-wide text-xs">eMinistry ERP</span>
+                  </div>
+                  <div class="space-y-1">
+                    <span class="block px-3 py-1.5 rounded-lg bg-white/20 font-bold cursor-pointer">💰 Sadaka & Zaka</span>
+                    <span class="block px-3 py-1.5 rounded-lg text-emerald-100 hover:bg-white/10 cursor-pointer">📊 Parish Accounts</span>
+                    <span class="block px-3 py-1.5 rounded-lg text-emerald-100 hover:bg-white/10 cursor-pointer">👥 Jumuia Records</span>
+                  </div>
+                </div>
+                <div class="text-[10px] text-emerald-200">Parish Bookkeeper Core</div>
+              </div>
+
+              <!-- Workspace Swahili Tithing Simulator -->
+              <div class="flex-grow bg-white p-5 overflow-y-auto text-slate-700">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+                  <div>
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Selcom & Mobile Money Web</span>
+                    <h4 class="text-sm font-black text-slate-900">Digital Sadaka & SMS Reconciler</h4>
+                  </div>
+                  <span class="text-xs font-bold text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">Automated SMS Trigger</span>
+                </div>
+
+                <div class="space-y-4">
+                  <!-- Inputs -->
+                  <div class="bg-slate-50 border border-slate-150 rounded-xl p-3.5 space-y-3">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Jaribu Kupokea Michango (Kikokotoo cha Sadaka):</p>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-[9px] font-bold text-slate-500 mb-1">Mchango wa Zaka (TSH)</label>
+                        <input type="number" x-model.number="tithingData.tithe" class="w-full bg-white border border-slate-300 rounded p-1.5 font-bold text-xs text-right">
+                      </div>
+                      <div>
+                        <label class="block text-[9px] font-bold text-slate-500 mb-1">Kujenga Kanisa (TSH)</label>
+                        <input type="number" x-model.number="tithingData.building" class="w-full bg-white border border-slate-300 rounded p-1.5 font-bold text-xs text-right">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tithing Out -->
+                  <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 grid grid-cols-2 gap-4 text-center">
+                    <div>
+                      <span class="text-[10px] font-bold text-slate-500 uppercase block">Jumla Kuu (Tsh)</span>
+                      <span class="text-xl font-bold text-[#10b981] block pointer-events-none" x-text="formatMoney(tithingData.tithe + tithingData.building)">--</span>
+                    </div>
+                    <div>
+                      <span class="text-[10px] font-bold text-slate-500 uppercase block">Aslimia za Ujenzi</span>
+                      <span class="text-xl font-bold text-slate-900 block pointer-events-none" x-text="calculateBuildingPercent() + '%'">--</span>
+                    </div>
+                  </div>
+
+                  <!-- Custom Mobile SMS View Simulator -->
+                  <div class="bg-slate-950 text-slate-200 rounded-xl p-3 font-mono text-[9px] border border-slate-800 shadow-md">
+                    <div class="flex justify-between text-slate-500 mb-1 pb-1 border-b border-slate-800">
+                      <span>NEXT_SMS_SERVER</span>
+                      <span x-text="getNowString()"></span>
+                    </div>
+                    <div>
+                      <span class="text-amber-400">SMS YA SHUKRANI (PREVIEW):</span><br class="mb-1" />
+                      "Mtumishi, michango yako ya <span class="text-green-400" x-text="'Tsh ' + formatMoney(tithingData.tithe + tithingData.building)"></span> imepokelewa heri kwa ujenzi wa madhabahu. Baraka na Amani zikutawale. - TAG Grace & Glory, Chanika."
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- NEXT SMS GATEWAY PANEL -->
+          <div x-show="activeMockup === 'sms'" class="bg-slate-900 border border-slate-700/60 rounded-3xl overflow-hidden shadow-2xl font-sans text-slate-800" x-cloak>
+            <div class="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700/50">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span class="text-[10px] text-slate-400 font-mono ml-2">nextsms.eministry.co.tz/broadcaster</span>
+              </div>
+              <span class="text-[10px] text-orange-400 font-mono font-bold bg-orange-950/50 px-2 py-0.5 rounded border border-orange-900/30">TCRA APPROVED</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row h-[420px] bg-slate-50 text-[11px] overflow-hidden">
+              <!-- Left Mini menu -->
+              <div class="w-full md:w-44 bg-[#f97316] text-white p-4 flex flex-col justify-between flex-shrink-0">
+                <div class="space-y-4">
+                  <div class="flex items-center gap-2 pb-3 border-b border-white/10">
+                    <div class="w-6 h-6 rounded bg-white flex items-center justify-center text-[#f97316] font-bold">📱</div>
+                    <span class="font-bold uppercase tracking-wide text-xs">Next SMS Hub</span>
+                  </div>
+                  <div class="space-y-1">
+                    <span class="block px-3 py-1.5 rounded-lg bg-white/20 font-bold cursor-pointer">📢 Bulk Campaign</span>
+                    <span class="block px-3 py-1.5 rounded-lg text-orange-100 hover:bg-white/10 cursor-pointer">💬 Custom Senders</span>
+                    <span class="block px-3 py-1.5 rounded-lg text-orange-100 hover:bg-white/10 cursor-pointer">📈 Delivery Rates</span>
+                  </div>
+                </div>
+                <div class="text-[10px] text-orange-200 font-mono">Next SMS Broadcaster</div>
+              </div>
+
+              <!-- Workspace Bulk SMS Broadcaster Simulator -->
+              <div class="flex-grow bg-white p-5 overflow-y-auto text-slate-700">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+                  <div>
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Dar es Salaam Bulk SMS Operator</span>
+                    <h4 class="text-sm font-black text-slate-900">Ujumbe Mfupi wa Vikundi (SMS Simulator)</h4>
+                  </div>
+                  <span class="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-100 px-2 py-0.5 rounded-full">Next SMS Gateway</span>
+                </div>
+
+                <div class="space-y-4" x-data="{ smsSent: false, smsSending: false, smsRecipients: 'Waumini wote - 1500 Contacts', customMessage: 'Mpendwa muumini, unakumbushwa kuhudhuria ibada kuu ya Jumapili kuanzia saa mbili asubuhi Chanika Zingiziwa chini ya Mzee wetu wa kiroho Pastor Hans.' }">
+                  <div class="space-y-3">
+                    <div>
+                      <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Kikundi cha Mapokezi:</label>
+                      <select x-model="smsRecipients" class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs font-medium">
+                        <option>Waumini wote - 1500 Contacts</option>
+                        <option>Wazazi wa Shule (MSSIS) - 450 Contacts</option>
+                        <option>Wanakwaya & Washirika - 80 Contacts</option>
+                        <option>Wanakamati na Bodi - 15 Contacts</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="block text-[9px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Ujumbe wako (Swahili custom):</label>
+                      <textarea x-model="customMessage" rows="3" class="w-full bg-slate-50 border border-slate-300 rounded p-2 text-xs" placeholder="Andika ujumbe wako hapa..."></textarea>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-end gap-2">
+                    <button @click="smsSending = true; setTimeout(() => { smsSending = false; smsSent = true; }, 1500)" :disabled="smsSending" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
+                      <span x-show="smsSending" class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      <span x-text="smsSending ? 'Inatuma...' : 'Tuma SMS Sasa'"></span>
+                    </button>
+                  </div>
+
+                  <!-- Success Display inside widget -->
+                  <div x-show="smsSent" class="bg-emerald-50 border border-emerald-100 rounded-xl p-3.5 flex items-center gap-3 animate-fade-in" x-cloak>
+                    <div class="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                      <i data-lucide="check" class="w-4 h-4"></i>
+                    </div>
+                    <div>
+                      <span class="text-xs font-bold text-slate-900 block">Ujumbe Umewasilishwa Kila Mahali!</span>
+                      <span class="text-[9px] text-slate-400 block" x-text="'Next SMS Gateway imewasilisha ujumbe wako kwa: ' + smsRecipients"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- KEY SERVICES / CORE VALUES GRID -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center">
+              <i data-lucide="shield" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold font-display text-white">Usalama wa Hali ya Juu</h3>
+            <p class="text-sm text-slate-400 leading-relaxed text-slate-400">
+              Mifumo yetu inaendeshwa kwa usalama mkubwa kwa kufuata miongozo na leseni zote nchini Tanzania (database yetu imelindwa dhidi ya upotevu wa data).
+            </p>
+          </div>
+          <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6">
+            <div class="w-12 h-12 rounded-2xl bg-[#635bff]/10 border border-[#635bff]/20 text-[#635bff] flex items-center justify-center">
+              <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold font-display text-white">Kasi na Ufanisi Mkubwa</h3>
+            <p class="text-sm text-slate-400 leading-relaxed text-slate-400">
+              Kurasa na mifumo inafunguka kwa haraka sana hata kwa kutumia mtandao wa simu ya mkononi (gigs size is kept minimal ili isile bando).
+            </p>
+          </div>
+          <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6">
+            <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center">
+              <i data-lucide="database" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold font-display text-white">Toleo ya 100% Offline/Online</h3>
+            <p class="text-sm text-slate-400 leading-relaxed text-slate-400">
+              Kila toleo la mfumo linarun kwa synchronized database, kukuwezesha kutumia offline ofisini na kuupload data pindi mtandao unapopatikana.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ABOUT US PAGE -->
+    <div x-show="currentPage === 'about'" x-cloak class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="text-center space-y-4">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider font-mono">Kuhusu Sisi</span>
+        <h2 class="text-4xl sm:text-5xl font-display font-black text-white">Sisi ni nani?</h2>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">eMinistry Platform ni chapa maalumu inayosimamiwa na <span class="text-white hover:underline cursor-pointer">Lexon Tech Solutions Co. Ltd</span>, kampuni hodari ya watengeneza mifumo nchini Tanzania.</p>
+      </div>
+
+      <div class="glass-card rounded-[32px] p-8 border-white/5 grid md:grid-cols-2 gap-8 items-center">
+        <div class="space-y-4">
+          <h3 class="text-2xl font-black text-white">Lengo Letu</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Lengo letu kuu kama timu ni <strong>"Tujenge Ushindi Mmoja"</strong>. Tunaamini kuwa mafanikio ya mifumo yetu yanatokana na mafanikio na furaha ya wateja wetu wanaotumia mifumo hii kila siku ya maisha yao. Ofisi zetu kuu ziko jijini Dar es Salaam, Tanzania.
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-white block">CEO & Founder</span>
+              <span class="text-[10px] text-slate-400 block font-mono">Saidi Mohamed Saidi (saidimohamedisaidi7@gmail.com)</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-slate-950/50 rounded-2xl p-6 border border-white/5 space-y-4">
+          <span class="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">Maadili Yetu Core Values</span>
+          <div class="space-y-3.5 text-xs text-slate-300">
+            <div class="flex items-start gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1 shrink-0"></span>
+              <span><strong>Uaminifu (Integrity):</strong> Tunalinda data zote za kiroho na za elimu kwa kiwango kikubwa nchini.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1 shrink-0"></span>
+              <span><strong>Kazi kwa Pamoja (Teamwork):</strong> Kushirikiana kikamilifu na uongozi wa diocese, parishi au bodi za shule.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+              <span><strong>Ushindi Mmoja:</strong> "Tujenge Ushindi Mmoja" ndio mwongozo wa msaada wetu kwa wateja (support 24/7).</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICES PAGE -->
+    <div x-show="currentPage === 'services'" x-cloak class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="text-center space-y-4">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider font-mono">Mifumo na Huduma</span>
+        <h2 class="text-4xl sm:text-5xl font-display font-black text-white">Huduma za eMinistry</h2>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Tuna uzoefu wa miaka mingi nchini Tanzania kuunda, kuhamisha na kufungisha mifumo ifuatayo.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Service 1 -->
+        <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6">
+          <div class="w-12 h-12 rounded-2xl bg-[#0066D6]/10 border border-[#0066D6]/20 text-[#0066D6] flex items-center justify-center">
+            🏫
+          </div>
+          <h3 class="text-xl font-bold font-display text-white">MSSIS School Systems</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Usimamizi wa matokeo ya wanafunzi, hesabu za ripoti ya GPA (Division Engine) kwa viwango vyote vya NECTA, na automatic bulk SMS kwa wazazi pindi ripoti inapowekwa.
+          </p>
+        </div>
+        <!-- Service 2 -->
+        <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            ⛪
+          </div>
+          <h3 class="text-xl font-bold font-display text-white">eMinistry Grace ERP</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Mfumo mzuri wa parishi: daktari wa kadi za kidijitali za sadaka na zaka, ledger kuu, mapato na matumizi, na mawasiliano ya jumuia mahususi kwa kutumia simu.
+          </p>
+        </div>
+        <!-- Service 3 -->
+        <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6">
+          <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center">
+            📱
+          </div>
+          <h3 class="text-xl font-bold font-display text-white">Next SMS Integration</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Tuma ujumbe mfupi wa SMS kwa sekunde moja nchini kote. Next SMS gateway inafanya kazi nchini Tanzania kwa vibali vyote halali vya TCRA na usalama dhabiti.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS PAGE -->
+    <div x-show="currentPage === 'products'" x-cloak class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="text-center space-y-4">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider font-mono">Mifumo Yetu</span>
+        <h2 class="text-4xl sm:text-5xl font-display font-black text-white">Bidhaa zilizokamilika</h2>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Mifumo hii iko tayari kufungwa na kufundishwa leo katika parishi au shule yako.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6 flex flex-col justify-between">
+          <div class="space-y-4">
+            <span class="text-xs bg-cyan-500/10 text-cyan-400 font-mono tracking-widest uppercase font-bold px-3 py-1 rounded">MSSIS Standard v3</span>
+            <h3 class="text-2xl font-black text-white">Academic Grades & Division Auto-Calc</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Inasajili wanafunzi, matokeo, hutoa report cards za kisasa na ranking za darasa kiotomatiki, na kuwasilisha ripoti kwa wazazi kwa SMS papo hapo.
+            </p>
+          </div>
+          <button @click="navigate('#/contact')" class="border border-[#635bff]/40 hover:bg-[#635bff]/5 text-[#635bff] font-bold py-3 px-6 rounded-xl text-xs transition">Taka Demo Bure</button>
+        </div>
+        <div class="glass-card rounded-[32px] p-8 border-white/5 space-y-6 flex flex-col justify-between">
+          <div class="space-y-4">
+            <span class="text-xs bg-emerald-500/10 text-emerald-400 font-mono tracking-widest uppercase font-bold px-3 py-1 rounded">Grace ERP Enterprise</span>
+            <h3 class="text-2xl font-black text-white">Digital Parish Tithes & Selcom Portal</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Huduma bora inayowezesha waumini wa ngazi zote kutoa michango kwa mitandao yote ya simu. Ofisi kuu inapata list ya mapato na kuandika SMS za shukrani.
+            </p>
+          </div>
+          <button @click="navigate('#/contact')" class="border border-emerald-500/40 hover:bg-emerald-500/5 text-emerald-400 font-bold py-3 px-6 rounded-xl text-xs transition">Taka Demo Bure</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICING PAGE -->
+    <div x-show="currentPage === 'pricing'" x-cloak class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="text-center space-y-4 font-mono">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider">Bei / Gharama</span>
+        <h2 class="text-4xl sm:text-5xl font-display font-black text-white">Gharama za Mifumo</h2>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Gharama zetu ni nafuu sana na zinalenga kuleta tija kubwa.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass-card rounded-[32px] p-8 border-white/5 flex flex-col justify-between relative">
+          <div class="space-y-4">
+            <h4 class="text-lg font-bold text-slate-300">Next SMS Package</h4>
+            <div class="text-3xl font-black text-white">Tsh 15 <span class="text-xs text-slate-400">/ SMS</span></div>
+            <p class="text-xs text-slate-400 leading-relaxed">Pay-as-you-go. Malipia tu meseji unazotuma kwa waumini au wazazi.</p>
+          </div>
+          <button @click="navigate('#/contact')" class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl text-xs transition mt-6">Anza Sasa</button>
+        </div>
+        <div class="glass-card rounded-[32px] p-8 border-white/5 border-cyan-500/30 flex flex-col justify-between relative shadow-lg shadow-cyan-500/5">
+          <span class="absolute top-4 right-4 bg-cyan-500 text-slate-900 text-[9px] font-black uppercase px-2.5 py-0.5 rounded-full font-mono">Inapendekezwa</span>
+          <div class="space-y-4">
+            <h4 class="text-lg font-bold text-white">MSSIS Grade License</h4>
+            <div class="text-2xl font-black text-cyan-400">Custom Quote</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Leseni ya mwaka mzima kulingana na idadi ya wanafunzi. Inajumuisha msaada 24/7 na mafunzo kwa walimu.</p>
+          </div>
+          <button @click="navigate('#/contact')" class="w-full bg-gradient-to-r from-[#635bff] to-[#0ea5e9] text-white font-bold py-3 rounded-xl text-xs transition mt-6">Pata Makadirio</button>
+        </div>
+        <div class="glass-card rounded-[32px] p-8 border-white/5 flex flex-col justify-between relative">
+          <div class="space-y-4">
+            <h4 class="text-lg font-bold text-slate-300">Grace ERP Diocese</h4>
+            <div class="text-2xl font-black text-white">Diocese Standard</div>
+            <p class="text-xs text-slate-400 leading-relaxed">Maandalizi ya mfumu mzima wa diocese na parishi zote zilizomo chini yake kwa synchronization kuu ya ledger.</p>
+          </div>
+          <button @click="navigate('#/contact')" class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl text-xs transition mt-6">Tutafute Sasa</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ PAGE -->
+    <div x-show="currentPage === 'faq'" x-cloak class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="text-center space-y-4">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider font-mono">Maswali FAQs</span>
+        <h2 class="text-4xl sm:text-5xl font-display font-black text-white">Maswali Yanayoulizwa Sana</h2>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Pata majibu ya haraka ya kitaalamu kuhusu eMinistry Platform.</p>
+      </div>
+
+      <div class="space-y-4 text-left" x-data="{ openIdx: 0 }">
+        <template x-for="(faq, idx) in faqs">
+          <div class="glass-card rounded-2xl border-white/5 transition duration-300 overflow-hidden">
+            <button @click="openIdx = (openIdx === idx ? -1 : idx)" class="w-full px-6 py-5 flex items-center justify-between text-left font-bold text-white text-sm transition">
+              <span x-text="faq.q"></span>
+              <i :data-lucide="openIdx === idx ? 'chevron-up' : 'chevron-down'" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+            </button>
+            <div x-show="openIdx === idx" x-cloak class="px-6 pb-5 pt-1 text-xs text-slate-400 leading-relaxed bg-slate-950/20" x-text="faq.a"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- BLOG PAGE -->
+    <div x-show="currentPage === 'blog'" x-cloak class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="text-center space-y-4">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider font-mono">Makala & Blogu</span>
+        <h2 class="text-4xl sm:text-5xl font-display font-black text-white">Toleo la Elimu na Teknolojia</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Soma makala mbalimbali za kitaalamu kuhusu elimu na mifumo ya kanisa nchini Tanzania.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Blog post 1 -->
+        <div class="glass-card rounded-[32px] p-6 border-white/5 space-y-4 relative flex flex-col justify-between">
+          <div class="space-y-3">
+            <span class="text-[10px] font-mono text-cyan-400 uppercase font-bold">Teknolojia Masomo & NECTA</span>
+            <h3 class="text-2xl font-bold font-display text-white">Mbinu za Kupunguza Makosa Kwenye Ripoti za NECTA</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Kujaza alama za wanafunzi kwa mikono (manual marks sheet) husajili makosa mengi sana ya Divisheni na Grade. Kwa nini matumizi ya MSSIS GPA Auto-calculations ni kiboko ya hasara hizi...
+            </p>
+          </div>
+          <button @click="navigate('#/contact')" class="text-xs font-bold text-cyan-400 hover:underline text-left mt-4 flex items-center gap-1.5">Soma Makala Kamili <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+        </div>
+        <!-- Blog post 2 -->
+        <div class="glass-card rounded-[32px] p-6 border-white/5 space-y-4 relative flex flex-col justify-between">
+          <div class="space-y-3">
+            <span class="text-[10px] font-mono text-[#635bff] uppercase font-bold">Usimamizi wa Kikanisa</span>
+            <h3 class="text-2xl font-bold font-display text-white">Kuboresha Mfumo wa Sadaka na Zaka Parishi</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Makanisa ambayo yameweka Selcom and Next SMS integration yameona ongezeko kubwa la 40% katika uwazi na kasi ya ukusanyaji wa michango kwa nchi za Afrika Mashariki...
+            </p>
+          </div>
+          <button @click="navigate('#/contact')" class="text-xs font-bold text-cyan-400 hover:underline text-left mt-4 flex items-center gap-1.5">Soma Makala Kamili <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT US PAGE -->
+    <div x-show="currentPage === 'contact'" x-cloak class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="text-center space-y-4">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-xs font-bold uppercase tracking-wider font-mono">Mawasiliano</span>
+        <h2 class="text-4xl sm:text-5xl font-display font-black text-white">Tujenge Ushindi Mmoja</h2>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto">Wasiliana na timu yetu kupata makadirio ya gharama au demo live ya mfumo kwenye ofisi yako.</p>
+      </div>
+
+      <div class="grid md:grid-cols-12 gap-12 items-start">
+        <!-- Direct Contacts -->
+        <div class="md:col-span-5 space-y-6">
+          <div class="glass-card rounded-2xl p-6 border-white/5 flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0">
+              <i data-lucide="phone" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Hotline ya Huduma</span>
+              <span class="text-sm font-bold text-white block mt-0.5">+255 621 887 100</span>
+              <span class="text-[9px] text-slate-400 block">Inapatikana WhatsApp pia</span>
+            </div>
+          </div>
+          <div class="glass-card rounded-2xl p-6 border-white/5 flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-[#635bff]/10 text-[#635bff] flex items-center justify-center shrink-0">
+              <i data-lucide="mail" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Barua Pepe ya Ofisi</span>
+              <span class="text-sm font-bold text-white block mt-0.5">saidimohamedisaidi7@gmail.com</span>
+            </div>
+          </div>
+          <div class="glass-card rounded-2xl p-6 border-white/5 flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center shrink-0">
+              <i data-lucide="map-pin" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Makao Makuu</span>
+              <span class="text-sm font-bold text-white block mt-0.5">Dar es Salaam, Tanzania</span>
+              <span class="text-[9px] text-slate-400 block">Ofisi na Ibada: Chanika Zingiziwa</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HTML Form with Alpine Local Storage Integration -->
+        <div class="md:col-span-7 bg-slate-900/60 border border-white/5 rounded-3xl p-6 space-y-6 relative">
+          <!-- Form Fields -->
+          <div x-show="!contactSuccess" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase font-mono">Jina Lako Kamili</label>
+                <input required type="text" x-model="contactForm.name" class="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-slate-600 outline-none focus:border-cyan-500 transition-all" placeholder="John Doe">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase font-mono">Barua Pepe / Email</label>
+                <input required type="email" x-model="contactForm.email" class="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-slate-600 outline-none focus:border-cyan-500 transition-all" placeholder="john@example.com">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase font-mono">Taasisi / Shule / Kanisa</label>
+                <input type="text" x-model="contactForm.company" class="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-slate-600 outline-none focus:border-cyan-500 transition-all" placeholder="KKKT Diocese / Parish">
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase font-mono">Mfumo Unaoitaji</label>
+                <select x-model="contactForm.service" class="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-3 text-xs text-white outline-none focus:border-cyan-500 transition-all cursor-pointer">
+                  <option value="MSSIS Grading Engine">MSSIS Grading Tool</option>
+                  <option value="eMinistry Grace ERP">eMinistry ERP Ledger</option>
+                  <option value="Next SMS Gateway">Next SMS Broadcast</option>
+                  <option value="General Consultation">Inquiry / Consultation</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase font-mono">Ujumbe / Maelezo Kuhusu Taasisi Yako</label>
+              <textarea required x-model="contactForm.message" rows="3" class="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-slate-600 outline-none focus:border-cyan-500 transition-all" placeholder="Andika maelezo ya kutosha hapa..."></textarea>
+            </div>
+
+            <button @click="submitContact()" class="w-full bg-gradient-to-r from-[#635bff] to-[#0ea5e9] text-white font-bold py-4 rounded-xl text-xs uppercase tracking-wider shadow-lg transition hover:brightness-105 select-none">
+              Tuma Taarifa Zako
+            </button>
+          </div>
+
+          <!-- Success State -->
+          <div x-show="contactSuccess" x-cloak class="text-center py-12 space-y-6 animate-fade-in">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
+              <i data-lucide="check" class="w-8 h-8"></i>
+            </div>
+            <div class="space-y-2">
+              <h4 class="text-2xl font-black text-white">Taarifa Zimepokelewa!</h4>
+              <p class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
+                Asante sana. Brief ya taasisi yako imehifadhiwa salama. Unaweza pia kuiangalia kwenye **Admin Hub / Leads Dashboard** ya static site yako live sasa!
+              </p>
+            </div>
+            <button @click="contactSuccess = false" class="border border-white/10 hover:bg-white/5 text-xs text-slate-300 px-6 py-2.5 rounded-full transition">Tuma Nyingine</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN LEADS DASHBOARD PAGE -->
+    <div x-show="currentPage === 'leads'" x-cloak class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-white/5 pb-6 gap-4">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">Security Command Hub</span>
+          <h2 class="text-3xl sm:text-4xl font-display font-black text-white">Leads & System Inquiries Registry</h2>
+          <p class="text-xs text-slate-400 block mt-1">Ukurasa huu unaonyesha taarifa za mawasiliano (contact inquiries) zote zilizosubmitiwa kielektroniki.</p>
+        </div>
+        <div class="flex gap-2">
+          <button @click="seedDefaultLeads()" class="text-xs border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-bold px-4 py-2 rounded-xl transition">
+            Seed Demo Leads
+          </button>
+          <button @click="clearLeads()" class="text-xs border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 font-bold px-4 py-2 rounded-xl transition">
+            Futha Zote / Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- No leads display -->
+      <div x-show="leadsList.length === 0" class="glass-card rounded-[32px] p-16 text-center space-y-4 border-dashed">
+        <div class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mx-auto text-slate-400 border border-white/5">
+          <i data-lucide="database" class="w-8 h-8"></i>
+        </div>
+        <div class="space-y-1">
+          <h4 class="text-lg font-bold text-white">Empty Registry</h4>
+          <p class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">Hakuna leads mpya. Kwenda kwenye ukurasa wa 'Mawasiliano' na upige mchango au ujaze fomu ili leads zitokee hapa papo hapo!</p>
+        </div>
+        <button @click="navigate('#/contact')" class="bg-[#635bff] text-white text-xs font-bold px-6 py-3 rounded-full transition">Jaza Fomu Sasa</button>
+      </div>
+
+      <!-- Leads Grid -->
+      <div x-show="leadsList.length > 0" x-cloak class="grid md:grid-cols-2 gap-6">
+        <template x-for="lead in leadsList" :key="lead.createdAt">
+          <div class="glass-card rounded-3xl p-6 border-white/5 space-y-4 relative flex flex-col justify-between">
+            <div class="space-y-3.5">
+              <div class="flex justify-between items-start gap-4">
+                <div>
+                  <h4 class="text-base font-black text-white" x-text="lead.name"></h4>
+                  <p class="text-[10px] text-slate-400 font-mono mt-0.5" x-text="lead.email"></p>
+                </div>
+                <!-- Status select indicator -->
+                <div>
+                  <select 
+                    @change="updateLeadStatus(lead.createdAt, $event.target.value)"
+                    :class="{
+                      'bg-emerald-500/10 text-emerald-400 border-emerald-500/30': lead.status === 'qualified' || lead.status === 'closed',
+                      'bg-amber-500/10 text-amber-400 border-amber-500/30': lead.status === 'contacted',
+                      'bg-cyan-500/10 text-cyan-400 border-cyan-500/30': lead.status === 'new'
+                    }" 
+                    class="text-[9px] uppercase tracking-wider font-extrabold border rounded-lg px-2.5 py-1 cursor-pointer outline-none font-mono">
+                    <option value="new" :selected="lead.status === 'new'">New Inquiry</option>
+                    <option value="contacted" :selected="lead.status === 'contacted'">Contacted</option>
+                    <option value="qualified" :selected="lead.status === 'qualified'">Qualified</option>
+                    <option value="closed" :selected="lead.status === 'closed'">Closed</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Badges grid -->
+              <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-950/30 border border-white/5 rounded-xl p-3 font-mono">
+                <div>
+                  <span class="text-slate-500 block">ORGANIZATION</span>
+                  <span class="text-white font-bold block mt-0.5" x-text="lead.company || 'N/A'"></span>
+                </div>
+                <div>
+                  <span class="text-slate-500 block">SYSTEM NEEDED</span>
+                  <span class="text-cyan-400 font-bold block mt-0.5" x-text="lead.service || 'General'"></span>
+                </div>
+              </div>
+
+              <p class="text-xs text-slate-300 leading-relaxed italic bg-slate-950/20 p-3 rounded-lg border border-white/5" x-text="'&ldquo; ' + lead.message + ' &rdquo;'"></p>
+            </div>
+
+            <!-- Card Bottom controls -->
+            <div class="flex justify-between items-center border-t border-white/5 pt-4 mt-2">
+              <span class="text-[9px] text-slate-500 font-mono" x-text="'Submitted: ' + formatLeadDate(lead.createdAt)"></span>
+              <button @click="deleteLead(lead.createdAt)" class="text-[10px] text-rose-400 hover:text-white flex items-center gap-1 hover:bg-rose-500/10 px-3 py-1.5 rounded-lg transition font-bold font-mono">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete Record
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 border-t border-white/5 py-12 relative z-10 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+      <div class="flex items-center justify-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#635bff] to-[#0ea5e9] flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+        </div>
+        <span class="text-sm font-extrabold text-white tracking-widest font-display">eMINISTRY TANZANIA</span>
+      </div>
+      <p class="text-xs text-slate-500 max-w-md mx-auto leading-relaxed uppercase tracking-wider font-mono">
+        &copy; 2026 eMinistry Platform by Lexon Tech Solutions Co. Ltd. <br />
+        TUMEKAMILISHA KAZI YA UHAKIKA NCHINI TANZANIA. ALL RIGHTS RESERVED.
+      </p>
+    </div>
+  </footer>
+
+  <!-- DYNAMIC CLIENT-SIDE CHATBOT ASISTANT WIDGET (SWAHILI/ENGLISH INTERACTIVE SUPPORT ENGINE) -->
+  <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <!-- Chat Area Box -->
+    <div x-show="chatOpen" x-cloak class="w-80 sm:w-96 h-[480px] bg-slate-950/95 border border-white/10 rounded-[28px] mb-4 shadow-2xl flex flex-col overflow-hidden animate-fade-in" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+      <!-- Title Header -->
+      <div class="bg-gradient-to-r from-[#635bff] to-[#0ea5e9] p-4 flex items-center justify-between text-white">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
+            🤖
+          </div>
+          <div>
+            <h4 class="text-xs font-black uppercase tracking-wider">eMinistry Assistant</h4>
+            <span class="text-[9px] text-cyan-200 block">AI msaada wa mifumo (Swahili/Eng)</span>
+          </div>
+        </div>
+        <button @click="chatOpen = false" class="text-white/80 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div id="chatMessageStream" class="flex-1 p-4 overflow-y-auto space-y-3.5 text-xs text-slate-300 scrollbar-none">
+        <template x-for="msg in chatMessages">
+          <div :class="msg.role === 'user' ? 'justify-end' : 'justify-start'" class="flex items-start gap-2.5">
+            <div x-show="msg.role === 'assistant'" class="w-6 h-6 rounded-full bg-cyan-950 text-cyan-400 flex items-center justify-center text-[10px] shrink-0 font-bold">🤖</div>
+            <div :class="msg.role === 'user' ? 'bg-[#635bff] text-white rounded-tr-none' : 'bg-slate-900 border border-white/5 text-slate-300 rounded-tl-none'" class="max-w-[80%] rounded-2xl p-3 leading-relaxed shadow-sm">
+              <span x-html="msg.content"></span>
+            </div>
+          </div>
+        </template>
+        <div x-show="chatLoading" class="flex items-center gap-2 text-[10px] text-slate-500 font-mono animate-pulse">
+          <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce"></span>
+          <span>eMinistry inajibu...</span>
+        </div>
+      </div>
+
+      <!-- Quick Interactive Question click chips -->
+      <div class="px-4 py-2 bg-slate-950 border-t border-white/5 flex gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-none">
+        <button @click="submitQuickQuestion('Lete Zaka & Sadaka')" class="text-[9px] border border-white/10 hover:bg-white/5 text-slate-300 px-2.5 py-1 rounded-full shrink-0 font-bold">💰 Sadaka & Selcom</button>
+        <button @click="submitQuickQuestion('Maana ya NECTA Grading')" class="text-[9px] border border-white/10 hover:bg-white/5 text-slate-300 px-2.5 py-1 rounded-full shrink-0 font-bold">🏫 NECTA Auto-Calc</button>
+        <button @click="submitQuickQuestion('Kuhusu Mtumishi Pastor Hans')" class="text-[9px] border border-white/10 hover:bg-white/5 text-slate-300 px-2.5 py-1 rounded-full shrink-0 font-bold">⛪ Pastor Hans Worship</button>
+        <button @click="submitQuickQuestion('Ujumbe na Next SMS')" class="text-[9px] border border-white/10 hover:bg-white/5 text-slate-300 px-2.5 py-1 rounded-full shrink-0 font-bold">📱 Next SMS Gateway</button>
+      </div>
+
+      <!-- Chat text input footer -->
+      <div class="p-3 border-t border-white/5 bg-slate-950 flex items-center gap-2">
+        <input type="text" x-model="chatInputText" @keydown.enter="submitChatMessage()" class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white placeholder:text-slate-600 outline-none focus:border-cyan-500" placeholder="Andika swali lako la mifumo... (Swahili / Eng)">
+        <button @click="submitChatMessage()" class="w-9 h-9 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-slate-950 flex items-center justify-center shrink-0 transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Toggle Action bubble -->
+    <button @click="chatOpen = !chatOpen" class="w-14 h-14 rounded-full bg-gradient-to-tr from-[#635bff] to-[#0ea5e9] flex items-center justify-center text-white shadow-xl hover:scale-105 active:scale-95 transition z-50 shadow-cyan-500/10">
+      <i :data-lucide="chatOpen ? 'x' : 'message-square'" class="w-6 h-6"></i>
+    </button>
+  </div>
+
+  <!-- APPLICATION COMPACT SCRIPT CONTROLLER (Alpine.js engine logic) -->
+  <script>
+    function appState() {
+      return {
+        currentPage: 'home',
+        showMobileMenu: false,
+        activeSlide: 0,
+        activeMockup: 'mssis',
+        chatOpen: false,
+        chatLoading: false,
+        chatInputText: '',
+        contactSuccess: false,
+        
+        // Form states
+        contactForm: {
+          name: '',
+          email: '',
+          company: '',
+          service: 'MSSIS Grading Engine',
+          message: ''
+        },
+        
+        mssisMarks: {
+          civ: 85,
+          his: 75,
+          geo: 60,
+          kis: 95
+        },
+
+        tithingData: {
+          tithe: 50000,
+          building: 20000
+        },
+
+        leadsList: [],
+        
+        navLinks: [
+          { id: 'home', hash: '#/', label: 'Nyumbani' },
+          { id: 'about', hash: '#/about', label: 'Kampuni' },
+          { id: 'services', hash: '#/services', label: 'Huduma' },
+          { id: 'products', hash: '#/products', label: 'Mifumo Yetu' },
+          { id: 'pricing', hash: '#/pricing', label: 'Bei' },
+          { id: 'faq', hash: '#/faq', label: 'Maswali / FAQ' },
+          { id: 'blog', hash: '#/blog', label: 'Makala / Blog' },
+        ],
+
+        faqs: [
+          { q: "Mifumo yetu ina vibali gani nchini Tanzania?", a: "Mifumo yote ya SMS (Next SMS Integration) inatumia vibali na gateways ambazo zimethibitishwa kihalali na TCRA (Tanzania Communications Regulatory Authority) na kusajiliwa kwa usalama kamili." },
+          { q: "Necta Auto-Calculations (GPA Engine) inafanyaje kazi?", a: "Mwalimu akiingiza alama (marks) za somo, engine yetu ina viwango vyote vipya vya viwango vya NECTA. Inatathmini na kukokotoa automatic GPA pamoja na Divisheni I, II, III, IV au 0 kwa usahihi wa 100% kwa wanafunzi wote." },
+          { q: "Je, mfumo wa Sadaka unajumuisha mitandao yote ya simu?", a: "Ndiyo. Tunajiunganisha moja kwa moja na Selcom Gateway, ambayo inawezesha waumini kutoa sadaka zao kupitia M-Pesa, Tigo Pesa, Airtel Money, Halopesa na hata kadi za benki kwa usalama wa hali ya juu." },
+          { q: "Inachukua siku ngapi kufunga mfumo kanisani au shuleni kwetu?", a: "Standard setups (pamoja na Next SMS na NECTA calculations template) inachukua kati ya siku 2 hadi 5. Timu yetu kutoka Dar es Salaam inafanya deployment na kutoa mafunzo yote kwa watendaji." }
+        ],
+
+        chatMessages: [
+          { role: 'assistant', content: 'Mambo! Karibu eMinistry Platform Chat Assistant. Mimi nakusaidia kujibu maswali kuhusu: <strong>Zaka na Sadaka za Kidijitali (Selcom)</strong>, <strong>NECTA grading za MSSIS (kwa shule)</strong>, <strong>Next SMS broadcaters yetu</strong>, au <strong>Ibada za Pastor Hans</strong>!' }
+        ],
+
+        initApp() {
+          this.initRouting();
+          this.loadLeads();
+          setTimeout(() => {
+            lucide.createIcons();
+          }, 300);
+        },
+
+        initRouting() {
+          const handleHash = () => {
+            const hash = window.location.hash || '#/';
+            const nextTab = hash.replace('#/', '') || 'home';
+            if (['home', 'about', 'services', 'products', 'pricing', 'faq', 'blog', 'contact', 'leads'].includes(nextTab)) {
+              this.currentPage = nextTab;
+            } else {
+              this.currentPage = 'home';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { lucide.createIcons(); }, 100);
+          };
+          window.addEventListener('hashchange', handleHash);
+          handleHash();
+        },
+
+        navigate(hash) {
+          window.location.hash = hash;
+          this.showMobileMenu = false;
+        },
+
+        // Money formatting Swahili
+        formatMoney(amt) {
+          if (!amt) return '0';
+          return amt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+
+        calculateBuildingPercent() {
+          const total = this.tithingData.tithe + this.tithingData.building;
+          if (total === 0) return 0;
+          return Math.round((this.tithingData.building / total) * 100);
+        },
+
+        getNowString() {
+          const d = new Date();
+          return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0') + ' (EAT)';
+        },
+
+        // MSSIS Necta Grade simulations
+        calculateMssisGPA() {
+          const scores = [this.mssisMarks.civ, this.mssisMarks.his, this.mssisMarks.geo, this.mssisMarks.kis];
+          const totalScore = scores.reduce((a, b) => a + b, 0);
+          const avg = totalScore / scores.length;
+          // Return simulated GPA
+          if (avg >= 81) return '4.8 (First Class Rank)';
+          if (avg >= 61) return '3.8 (Second Upper Rank)';
+          if (avg >= 41) return '2.6 (Pass Grade)';
+          return '1.2 (Needs Improvement)';
+        },
+
+        calculateMssisDiv() {
+          const scores = [this.mssisMarks.civ, this.mssisMarks.his, this.mssisMarks.geo, this.mssisMarks.kis];
+          const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+          if (avg >= 75) return 'Division I (Gold)';
+          if (avg >= 55) return 'Division II (Silver)';
+          if (avg >= 40) return 'Division III';
+          if (avg >= 30) return 'Division IV';
+          return 'Division 0';
+        },
+
+        // Leads crud logic
+        loadLeads() {
+          const stored = localStorage.getItem('eministry_leads');
+          if (stored) {
+            this.leadsList = JSON.parse(stored);
+          } else {
+            this.leadsList = [];
+          }
+        },
+
+        saveLeads() {
+          localStorage.setItem('eministry_leads', JSON.stringify(this.leadsList));
+        },
+
+        submitContact() {
+          const newLead = {
+            name: this.contactForm.name,
+            email: this.contactForm.email,
+            company: this.contactForm.company || 'N/A',
+            service: this.contactForm.service,
+            message: this.contactForm.message,
+            status: 'new',
+            createdAt: new Date().toISOString()
+          };
+          this.leadsList.unshift(newLead);
+          this.saveLeads();
+          
+          this.contactSuccess = true;
+          // Clear
+          this.contactForm = { name: '', email: '', company: '', service: 'MSSIS Grading Engine', message: '' };
+        },
+
+        updateLeadStatus(createdAt, status) {
+          this.leadsList = this.leadsList.map(item => {
+            if (item.createdAt === createdAt) {
+              return { ...item, status };
+            }
+            return item;
+          });
+          this.saveLeads();
+        },
+
+        deleteLead(createdAt) {
+          if (confirm('Futa rekodi hii?')) {
+            this.leadsList = this.leadsList.filter(item => item.createdAt !== createdAt);
+            this.saveLeads();
+          }
+        },
+
+        clearLeads() {
+          if (confirm('Je, una uhakika unataka kufuta leads zote za simulations?')) {
+            this.leadsList = [];
+            this.saveLeads();
+          }
+        },
+
+        seedDefaultLeads() {
+          const seed = [
+            {
+              name: "Fr. Gaston Kimario",
+              email: "gaston@tec.or.tz",
+              company: "TEC Catholic Diocese Mbinga",
+              service: "eMinistry Grace ERP",
+              message: "Tunahitaji maandalizi ya eSadaka kupitia Selcom integration pamoja na Next SMS ili kufikia parishi 45 kote jimboni kwetu.",
+              status: "qualified",
+              createdAt: new Date(Date.now() - 3600000 * 4).toISOString()
+            },
+            {
+              name: "Mwalimu Grace Lyimo",
+              email: "principal@lyimoacademy.ac.tz",
+              company: "Lyimo Secondary Dar es Salaam",
+              service: "MSSIS School System",
+              message: "Tunaomba feedback kuhusu link ya NECTA Auto-Grade form na jinsi inavyomtumia kila mzazi ripoti ya divisheni kwa SMS.",
+              status: "new",
+              createdAt: new Date(Date.now() - 3600000 * 24).toISOString()
+            }
+          ];
+          this.leadsList = [...seed, ...this.leadsList];
+          this.saveLeads();
+        },
+
+        formatLeadDate(isoStr) {
+          const date = new Date(isoStr);
+          return date.toLocaleDateString('sw-TZ') + ' - ' + date.toLocaleTimeString('sw-TZ', {hour: '2-digit', minute:'2-digit'});
+        },
+
+        // Chatbot logic
+        submitQuickQuestion(text) {
+          this.chatInputText = text;
+          this.submitChatMessage();
+        },
+
+        submitChatMessage() {
+          const userText = this.chatInputText.trim();
+          if (!userText) return;
+
+          this.chatMessages.push({ role: 'user', content: userText });
+          this.chatInputText = '';
+          this.chatLoading = true;
+          
+          this.scrollChatBottom();
+
+          // Response delay simulation
+          setTimeout(() => {
+            const reply = this.getChatbotReply(userText);
+            this.chatMessages.push({ role: 'assistant', content: reply });
+            this.chatLoading = false;
+            this.scrollChatBottom();
+          }, 1000);
+        },
+
+        scrollChatBottom() {
+          setTimeout(() => {
+            const stream = document.getElementById('chatMessageStream');
+            if (stream) {
+              stream.scrollTop = stream.scrollHeight;
+            }
+          }, 50);
+        },
+
+        getChatbotReply(text) {
+          const msg = text.toLowerCase();
+          let header = `✨ <strong>eMinistry AI Expert</strong>:<br class="mb-1" />`;
+
+          if (msg.includes('sadaka') || msg.includes('zaka') || msg.includes('mchango') || msg.includes('selcom') || msg.includes('pesa') || msg.includes('tithing') || msg.includes('lote zaka')) {
+            return header + `Habari! Mfumo wetu unaoongozwa na **Selcom integration** unamuwezesha kila muumini kutoa sadaka ya ujenzi, zaka ya kila mwezi, na ahadi kupitia simu yake ya mkononi (M-pesa, Tigo Pesa, Airtel money) kiurahisi kabisa.<br class="mb-1" />Muumini anapomaliza tu kutoa, mfumo wetu unapokea alert na kutuma automatic **Next SMS** ya shukrani mara moja!`;
+          }
+          if (msg.includes('grading') || msg.includes('necta') || msg.includes('shule') || msg.includes('gpa') || msg.includes('division') || msg.includes('grade')) {
+            return header + `Safi sana! Kuhusu **NECTA Auto-Calculations system yetu (MSSIS)**, inachukua alama za darasa zima na kukokotoa automatic GPA, Divisheni (I, II, III, IV), na rankings zote kwa ufanisi wa 100%. Hakuna makosa ya walimu wakati wa likizo! Unaweza kuijaribu tab hiyo hapo juu pia!`;
+          }
+          if (msg.includes('sms') || msg.includes('next') || msg.includes('ujumbe') || msg.includes('broadcast')) {
+            return header + `Mambo! **Next SMS** yetu ni bulk gateway imara sana nchini Tanzania iliyoidhinishwa na TCRA. Unaweza kutuma matangazo kwa waumini wote au matokeo ya shule kwa wazazi kwa sekunde moja tu!`;
+          }
+          if (msg.includes('pastor') || msg.includes('hans') || msg.includes('worship') || msg.includes('church') || msg.includes('kanisa') || msg.includes('ibada')) {
+            return header + `Karibu sana! Ibada zetu kuu zinaongozwa na **Pastor Hans** pale Chanika Zingiziwa, Dar es Salaam kila Jumapili kuanzia saa **02:00 asubuhi**. Kwaya yetu inaimba sifa njema na wote mnakaribishwa katika madhabahu ya Grace & Glory Church!`;
+          }
+          if (msg.includes('lexon') || msg.includes('team') || msg.includes('saidi') || msg.includes('gaston') || msg.includes('ceo')) {
+            return header + `Habari! Sisi ni Lexon Tech Solutions Co Ltd daktari wa mifumo kutoka Dar es Salaam. Developer mkuu ni **Saidi Mohamed Saidi**, unaweza kuwasiliana naye kupitia email hii: **saidimohamedisaidi7@gmail.com** kwa makubaliano yoyote ya kibiashara!`;
+          }
+          
+          return header + `Asante kwa swali lako! Nitafurahi kukusaidia ukiwa na ombi lolote. Unaweza kutuandikia fomu rasmi ya mawasiliano kwenye ukurasa wa <strong>Contact Us</strong> ili timu yetu ya usaidizi kutoka Dar es Salaam ikupigie simu kurekebisha mambo yako yote!`;
+        }
+      }
+    }
+  </script>
+</body>
+</html>

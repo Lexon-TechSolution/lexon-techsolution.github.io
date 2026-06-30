@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Lead": {
+      "title": "Lead Submission",
+      "description": "Lead generation data from contact form",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the lead" },
+        "email": { "type": "string", "format": "email", "description": "Contact email" },
+        "company": { "type": "string", "description": "Organization or company name" },
+        "service": { "type": "string", "description": "Selected service or needed integration" },
+        "message": { "type": "string", "description": "Detailed body message from user" },
+        "status": { 
+          "type": "string", 
+          "enum": ["new", "contacted", "qualified", "closed"], 
+          "description": "Current status of this lead" 
+        },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Submission server timestamp" }
+      },
+      "required": ["name", "email", "service", "message", "status", "createdAt"]
+    },
+    "BlogPost": {
+      "title": "Blog Post",
+      "description": "Content for Lexon Tech solutions blog",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the article" },
+        "slug": { "type": "string", "description": "URL-friendly slug of the post" },
+        "date": { "type": "string", "description": "Publication ISO string date" },
+        "content": { "type": "string", "description": "Markdown body content of the article" },
+        "coverImage": { "type": "string", "format": "uri", "description": "URL link to cover image" },
+        "excerpt": { "type": "string", "description": "Short excerpt highlighting the post content" }
+      },
+      "required": ["title", "slug", "date", "content"]
+    }
+  },
+  "firestore": {
+    "leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Captured business leads and integration inquiries"
+    },
+    "blog_posts/{postId}": {
+      "schema": "BlogPost",
+      "description": "Educational blog articles and publications"
+    }
+  }
+}

@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-blue: #1e3a8a;       /* Deep corporate blue */
+  --color-brand-green: #10b981;      /* Vibrant green */
+  --color-brand-yellow: #facc15;     /* Academic/Corporate yellow */
+  --color-brand-dark: #0f172a;       /* Saturated Slate for heavy text */
+  --color-brand-cyan: #2563eb;       /* Royal Blue */
+  --color-brand-purple: #10b981;     /* Green map */
+  --color-brand-royal: #1e3a8a;      /* Dark blue */
+  --color-brand-magenta: #eab308;    /* Yellow map */
+  --color-brand-slate: #f8fafc;      /* Fine background slate */
+
+  --animate-shimmer: shimmer 5s linear infinite;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes shimmer {
+    to {
+      background-position: 200% center;
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-[#F9FAFB] text-slate-800 font-sans antialiased selection:bg-brand-blue/10 selection:text-brand-blue;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-slate-900 tracking-tight font-black;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/90 backdrop-blur-xl border border-slate-200/80 shadow-sm text-slate-800;
+  }
+  
+  .glass-card {
+    @apply bg-white border border-slate-200/80 rounded-3xl p-8 hover:bg-slate-50 transition-all duration-500 hover:border-brand-blue/30 hover:shadow-[0_15px_40px_rgba(30,58,138,0.06)] text-slate-800;
+  }
+  
+  .btn-primary {
+    @apply relative inline-flex items-center gap-2 bg-[#1e3a8a] text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:bg-[#1d4ed8] hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center gap-2 border border-slate-300 bg-white text-slate-700 font-bold px-8 py-4 rounded-full transition-all duration-300 hover:bg-slate-50 hover:border-brand-blue/30 hover:text-brand-blue;
+  }
+
+  /* Radiant neon borders for that high-end professional glow "kuwaka waka" */
+  .neon-border-purple {
+    border: 1.5px solid rgb(120, 110, 255);
+    background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+    box-shadow: 0 0 28px rgba(120, 110, 255, 0.7), inset 0 0 15px rgba(120, 110, 255, 0.25);
+  }
+  
+  .neon-border-cyan {
+    border: 1.5px solid rgb(30, 190, 255);
+    background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+    box-shadow: 0 0 28px rgba(30, 190, 255, 0.7), inset 0 0 15px rgba(30, 190, 255, 0.25);
+  }
+
+  .neon-border-magenta {
+    border: 1.5px solid rgb(235, 90, 255);
+    background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+    box-shadow: 0 0 28px rgba(235, 90, 255, 0.7), inset 0 0 15px rgba(235, 90, 255, 0.25);
+  }
+
+  .neon-border-orange {
+    border: 1.5px solid rgb(255, 130, 40);
+    background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+    box-shadow: 0 0 28px rgba(255, 130, 40, 0.7), inset 0 0 15px rgba(255, 130, 40, 0.25);
+  }
+
+  .neon-border-emerald {
+    border: 1.5px solid rgb(30, 215, 150);
+    background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+    box-shadow: 0 0 28px rgba(30, 215, 150, 0.7), inset 0 0 15px rgba(30, 215, 150, 0.25);
+  }
+
+  .neon-border-tz {
+    border: 2px solid #16a34a; /* Green */
+    border-color: #16a34a #f59e0b #2563eb #1e293b; /* Green, Yellow, Blue, Black */
+    background: linear-gradient(135deg, rgba(8, 12, 28, 0.96), rgba(18, 22, 45, 0.96));
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.6), inset 0 0 15px rgba(245, 158, 11, 0.25);
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-[#635bff] via-[#d946ef] to-[#0ea5e9] bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer;
+  }
+
+  .markdown-body {
+    @apply prose prose-slate max-w-none prose-headings:font-display prose-a:text-brand-purple;
+  }
+}

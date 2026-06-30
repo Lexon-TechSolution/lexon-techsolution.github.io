@@ -1,0 +1,11 @@
+{
+  "name": "lexon tech solution",
+  "description": "Digital infrastructure for modern organizations across Africa.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
